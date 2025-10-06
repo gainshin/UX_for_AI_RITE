@@ -1,11 +1,19 @@
 import { units } from "./data/units.js";
-import { loadProgress, updateUnitProgress } from "./storage.js";
+import {
+  loadProgress,
+  updateUnitProgress,
+  loadTeacherState,
+  setTeacherMode,
+  updateTeacherNote,
+  removeTeacherNote,
+} from "./storage.js";
 import { clamp, formatDateTime, toPercentage, shuffle } from "./utils.js";
 
 const state = {
   units,
   currentUnitId: units[0]?.id ?? null,
   progress: loadProgress(),
+  teacherState: loadTeacherState(),
   activeQuiz: null,
 };
 
@@ -15,6 +23,8 @@ const elements = {
   scoreboard: document.querySelector("#scoreboard"),
   heroSummary: document.querySelector("#hero-summary"),
   startLearning: document.querySelector("#start-learning"),
+  teacherTools: document.querySelector("#teacher-tools"),
+  teacherToggle: document.querySelector("#teacher-mode-toggle"),
 };
 
 function init() {
@@ -26,6 +36,11 @@ function init() {
     elements.startLearning.addEventListener("click", () => {
       document.querySelector("#units")?.scrollIntoView({ behavior: "smooth" });
     });
+  }
+
+  if (elements.teacherToggle) {
+    elements.teacherToggle.addEventListener("click", handleTeacherToggle);
+    updateTeacherModeUI();
   }
 
   renderUnitsPanel();
@@ -293,6 +308,8 @@ function renderContent() {
 
   renderCodeSnippet(unit, snippetSection);
   container.appendChild(snippetSection);
+
+  renderTeacherPanel(unit);
 }
 
 function renderQuiz(unit, container) {
@@ -655,9 +672,22 @@ function renderQuizResult(unit, container, quizState) {
       li.appendChild(table);
     }
 
-    if (detail.explanation) {
+    const teacherReference = getTeacherReference(unit.id, detail.questionId);
+    if (teacherReference) {
+      const teacherNote = document.createElement("p");
+      const teacherLabel = document.createElement("em");
+      teacherLabel.textContent = "教師答案參考：";
+      teacherNote.appendChild(teacherLabel);
+      teacherNote.append(` ${teacherReference}`);
+      li.appendChild(teacherNote);
+    }
+
+    if (detail.explanation && (!teacherReference || teacherReference !== detail.explanation)) {
       const note = document.createElement("p");
-      note.innerHTML = `<em>解析：</em> ${detail.explanation}`;
+      const defaultLabel = document.createElement("em");
+      defaultLabel.textContent = "原始解析：";
+      note.appendChild(defaultLabel);
+      note.append(` ${detail.explanation}`);
       li.appendChild(note);
     }
 
@@ -719,6 +749,183 @@ function renderCodeSnippet(unit, container) {
   container.appendChild(card);
 }
 
+function isTeacherMode() {
+  return Boolean(state.teacherState?.enabled);
+}
+
+function handleTeacherToggle() {
+  const next = !isTeacherMode();
+  state.teacherState = setTeacherMode(next);
+  updateTeacherModeUI();
+  renderContent();
+  renderHeroSummary();
+}
+
+function updateTeacherModeUI() {
+  const enabled = isTeacherMode();
+  if (elements.teacherToggle) {
+    elements.teacherToggle.setAttribute("aria-pressed", enabled ? "true" : "false");
+    elements.teacherToggle.classList.toggle("active", enabled);
+    elements.teacherToggle.textContent = enabled ? "教師版（開啟）" : "教師版";
+  }
+  if (!enabled && elements.teacherTools) {
+    elements.teacherTools.classList.remove("active");
+    elements.teacherTools.innerHTML = "";
+  }
+}
+
+function getTeacherReference(unitId, questionId) {
+  return state.teacherState?.notes?.[unitId]?.[questionId]?.referenceNote || "";
+}
+
+function getTeacherNoteMeta(unitId, questionId) {
+  return state.teacherState?.notes?.[unitId]?.[questionId] || null;
+}
+
+function handleTeacherNoteSave(unitId, questionId, textValue) {
+  const trimmed = textValue.trim();
+  if (trimmed) {
+    state.teacherState = updateTeacherNote(unitId, questionId, trimmed);
+  } else {
+    state.teacherState = removeTeacherNote(unitId, questionId);
+  }
+  updateTeacherModeUI();
+  renderContent();
+}
+
+function handleTeacherNoteReset(unitId, questionId) {
+  state.teacherState = removeTeacherNote(unitId, questionId);
+  updateTeacherModeUI();
+  renderContent();
+}
+
+function renderTeacherPanel(unit) {
+  const container = elements.teacherTools;
+  if (!container) return;
+
+  const enabled = isTeacherMode();
+  if (!enabled) {
+    container.classList.remove("active");
+    container.innerHTML = "";
+    return;
+  }
+
+  container.classList.add("active");
+  container.innerHTML = "";
+
+  const heading = document.createElement("h2");
+  heading.innerHTML = `教師答案參考面板 <span>Teacher Mode</span>`;
+  container.appendChild(heading);
+
+  const intro = document.createElement("p");
+  intro.className = "teacher-meta";
+  intro.textContent = "此處可直接檢視或編輯答案參考，所有調整僅儲存在本機瀏覽器。";
+  container.appendChild(intro);
+
+  if (!unit) {
+    const empty = document.createElement("p");
+    empty.textContent = "請先選擇單元以管理教師版答案參考。";
+    container.appendChild(empty);
+    return;
+  }
+
+  unit.quiz.forEach((question, index) => {
+    const card = document.createElement("article");
+    card.className = "teacher-card";
+
+    const header = document.createElement("header");
+    const title = document.createElement("h3");
+    title.textContent = `${index + 1}. ${question.prompt}`;
+    header.appendChild(title);
+
+    const meta = document.createElement("div");
+    meta.className = "teacher-meta";
+    const noteMeta = getTeacherNoteMeta(unit.id, question.id);
+    const pieces = [
+      `類型：${translateQuestionType(question)}`,
+      `場景：${translateScenario(question.scenario)}`,
+    ];
+    if (noteMeta?.updatedAt) {
+      pieces.push(`更新：${formatDateTime(noteMeta.updatedAt)}`);
+    }
+    meta.textContent = pieces.join(" ｜ ");
+    header.appendChild(meta);
+    card.appendChild(header);
+
+    const answerBox = document.createElement("div");
+    answerBox.className = "teacher-answer";
+    answerBox.appendChild(buildTeacherAnswerContent(question));
+    card.appendChild(answerBox);
+
+    const textarea = document.createElement("textarea");
+    textarea.id = `teacher-note-${question.id}`;
+    const existingNote = getTeacherReference(unit.id, question.id);
+    const baseline = question.explanation || "";
+    textarea.value = existingNote || baseline;
+    textarea.placeholder = baseline
+      ? "自訂或調整答案參考內容"
+      : "尚未提供官方解析，可自行撰寫教師參考";
+    card.appendChild(textarea);
+
+    const actions = document.createElement("div");
+    actions.className = "teacher-actions";
+
+    const resetBtn = document.createElement("button");
+    resetBtn.type = "button";
+    resetBtn.className = "secondary-btn";
+    resetBtn.textContent = "還原預設";
+    const hasCustomNote = Boolean(getTeacherNoteMeta(unit.id, question.id));
+    resetBtn.disabled = !hasCustomNote && !baseline;
+    resetBtn.title = hasCustomNote ? "移除自訂答案參考" : "";
+    resetBtn.addEventListener("click", () => {
+      handleTeacherNoteReset(unit.id, question.id);
+    });
+
+    const saveBtn = document.createElement("button");
+    saveBtn.type = "button";
+    saveBtn.className = "primary-btn";
+    saveBtn.textContent = "儲存教師版";
+    saveBtn.addEventListener("click", () => {
+      handleTeacherNoteSave(unit.id, question.id, textarea.value);
+    });
+
+    actions.appendChild(resetBtn);
+    actions.appendChild(saveBtn);
+    card.appendChild(actions);
+
+    container.appendChild(card);
+  });
+}
+
+function buildTeacherAnswerContent(question) {
+  if (question.type === "multiple") {
+    const list = document.createElement("ul");
+    list.className = "point-list";
+    question.correctOptionIds.forEach((optionId) => {
+      const option = question.options.find((item) => item.id === optionId);
+      const li = document.createElement("li");
+      li.textContent = option ? option.text : optionId;
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  if (question.type === "matching") {
+    const list = document.createElement("ul");
+    list.className = "point-list";
+    question.pairs.forEach((pair, idx) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<strong>${idx + 1}. ${pair.prompt}</strong><p>${pair.match}</p>`;
+      list.appendChild(li);
+    });
+    return list;
+  }
+
+  const paragraph = document.createElement("p");
+  paragraph.textContent = "目前尚未提供答案資訊。";
+  return paragraph;
+}
+
 function translateScenario(scenario) {
   switch (scenario) {
     case "ecommerce":
@@ -734,4 +941,14 @@ function translateScenario(scenario) {
     default:
       return "多場域";
   }
+}
+
+function translateQuestionType(question) {
+  if (question.type === "multiple") {
+    return question.correctOptionIds?.length > 1 ? "多選題" : "單選題";
+  }
+  if (question.type === "matching") {
+    return "連連看";
+  }
+  return "題目";
 }
