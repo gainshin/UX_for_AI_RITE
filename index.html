@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 策略實戰課程：價值導向的準確率與召回率</title>
+    <meta
+      name="description"
+      content="學習如何在不同情境中運用 AI 的準確率與召回率策略，透過互動練習與測驗解鎖程式模板。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">AI Strategy Lab</span>
+        <p class="tagline">以價值為本，打造高影響力的 AI 產品</p>
+      </div>
+      <nav class="site-nav" aria-label="主要導覽">
+        <a href="#units" class="nav-link">課程單元</a>
+        <a href="#scoreboard" class="nav-link">學習成果</a>
+        <a href="#guidelines" class="nav-link">學習指南</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div class="hero-content">
+        <h1>AI 價值矩陣課程</h1>
+        <p>
+          掌握準確率與召回率背後的價值判斷，透過電商、醫療、社交、教育與 AI 招聘等真實情境，打造最貼近需求的 AI 解決方案。
+        </p>
+        <button id="start-learning" class="primary-btn">開始探索</button>
+      </div>
+      <div class="hero-stats" id="hero-summary" aria-live="polite"></div>
+    </section>
+
+    <main id="app" class="layout">
+      <section id="units" class="units-panel" aria-label="課程單元"></section>
+      <section id="content" class="content-panel" aria-live="polite"></section>
+      <aside id="scoreboard" class="scoreboard" aria-label="學習成果"></aside>
+    </main>
+
+    <section id="guidelines" class="guidelines">
+      <h2>學習指南</h2>
+      <ol>
+        <li>遵循每個單元的觀念與情境分析，將錯誤成本納入考量。</li>
+        <li>完成互動練習與測驗，累積分數並解鎖實作模板。</li>
+        <li>善用解鎖的程式碼片段，延伸出適合自身場域的 AI 應用。</li>
+      </ol>
+    </section>
+
+    <footer class="site-footer">
+      <p>Built for value-driven AI builders · 持續優化中</p>
+    </footer>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>
