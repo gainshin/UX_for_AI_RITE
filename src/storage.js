@@ -2,6 +2,7 @@ const STORAGE_KEY = "ai-course-progress-v1";
 const TEACHER_STATE_KEY = "ai-course-teacher-state-v1";
 const UNIT_ACCESS_KEY = "ai-course-unit-access-v1";
 const BUTTON_CONFIG_KEY = "ai-course-button-config-v1";
+const THEME_KEY = "ai-course-theme-v1";
 
 export function loadProgress() {
   try {
@@ -242,9 +243,35 @@ export function markUnitUnlocked(unitId) {
   return updated;
 }
 
+export function loadThemePreference() {
+  try {
+    const stored = window.localStorage.getItem(THEME_KEY);
+    if (!stored) return null;
+    return typeof stored === "string" ? stored : null;
+  } catch (err) {
+    console.warn("無法載入主題設定：", err);
+    return null;
+  }
+}
+
+export function saveThemePreference(themeId) {
+  try {
+    if (!themeId) {
+      window.localStorage.removeItem(THEME_KEY);
+      return null;
+    }
+    window.localStorage.setItem(THEME_KEY, themeId);
+    return themeId;
+  } catch (err) {
+    console.warn("無法儲存主題設定：", err);
+    return null;
+  }
+}
+
 export const STORAGE_KEYS = {
   progress: STORAGE_KEY,
   teacherState: TEACHER_STATE_KEY,
   unitAccess: UNIT_ACCESS_KEY,
   buttonConfig: BUTTON_CONFIG_KEY,
+  theme: THEME_KEY,
 };

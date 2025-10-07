@@ -6,9 +6,11 @@ import {
   loadUnitAccess,
   markUnitUnlocked,
   loadButtonConfig,
+  loadThemePreference,
   STORAGE_KEYS,
 } from "./storage.js";
 import { clamp, formatDateTime, toPercentage, shuffle } from "./utils.js";
+import { applyTheme, resolveThemeId } from "./theme.js";
 
 const NAVIGATION_UNIT_IDS = ["unit-1", "unit-2", "unit-3"];
 const UNIT_UNLOCK_CODES = {
@@ -29,8 +31,12 @@ const state = {
   teacherState: loadTeacherState(),
   unitAccess: loadUnitAccess(),
   buttonConfig: loadButtonConfig(),
+  theme: resolveThemeId(loadThemePreference()),
+  sectionCollapse: {},
   activeQuiz: null,
 };
+
+applyTheme(state.theme);
 
 const elements = {
   unitsPanel: document.querySelector("#units"),
@@ -71,6 +77,9 @@ window.addEventListener("storage", (event) => {
     ensureAccessibleCurrentUnit();
     renderUnitsPanel();
     renderContent();
+  } else if (event.key === STORAGE_KEYS.theme) {
+    state.theme = resolveThemeId(loadThemePreference());
+    applyTheme(state.theme);
   }
 });
 
@@ -724,18 +733,30 @@ function renderCodeSnippet(unit, container) {
 function createCollapsibleSection({ id, title, description, defaultExpanded = false, contentBuilder }) {
   const section = document.createElement("section");
   section.className = "collapsible-card";
-  if (!defaultExpanded) {
+
+  const storedState = typeof id === "string" ? state.sectionCollapse[id] : undefined;
+  const startExpanded = typeof storedState === "boolean" ? storedState : defaultExpanded;
+
+  if (!startExpanded) {
     section.classList.add("collapsed");
   }
 
   const header = document.createElement("button");
   header.type = "button";
   header.className = "collapsible-header";
-  header.innerHTML = `
-    <span class="collapsible-title">${title}</span>
-    <span class="collapsible-icon" aria-hidden="true"></span>
-  `;
-  header.setAttribute("aria-expanded", defaultExpanded ? "true" : "false");
+
+  const titleSpan = document.createElement("span");
+  titleSpan.className = "collapsible-title";
+  titleSpan.textContent = title;
+  header.appendChild(titleSpan);
+
+  const icon = document.createElement("span");
+  icon.className = "collapsible-icon";
+  icon.setAttribute("aria-hidden", "true");
+  icon.textContent = startExpanded ? "▾" : "▸";
+  header.appendChild(icon);
+
+  header.setAttribute("aria-expanded", startExpanded ? "true" : "false");
   const contentId = id || `collapsible-${Math.random().toString(36).slice(2)}`;
   header.setAttribute("aria-controls", contentId);
   section.appendChild(header);
@@ -743,6 +764,9 @@ function createCollapsibleSection({ id, title, description, defaultExpanded = fa
   const content = document.createElement("div");
   content.className = "collapsible-content";
   content.id = contentId;
+  if (!startExpanded) {
+    content.hidden = true;
+  }
   if (description) {
     const desc = document.createElement("p");
     desc.className = "collapsible-description";
@@ -755,8 +779,14 @@ function createCollapsibleSection({ id, title, description, defaultExpanded = fa
   section.appendChild(content);
 
   header.addEventListener("click", () => {
-    const collapsed = section.classList.toggle("collapsed");
-    header.setAttribute("aria-expanded", collapsed ? "false" : "true");
+    const willCollapse = !section.classList.contains("collapsed");
+    section.classList.toggle("collapsed", willCollapse);
+    header.setAttribute("aria-expanded", willCollapse ? "false" : "true");
+    icon.textContent = willCollapse ? "▸" : "▾";
+    content.hidden = willCollapse;
+    if (typeof id === "string") {
+      state.sectionCollapse[id] = !willCollapse;
+    }
   });
 
   return section;

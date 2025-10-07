@@ -6,9 +6,12 @@ import {
   loadButtonConfig,
   setGlobalButtonConfig,
   setUnitButtonConfig,
+  loadThemePreference,
+  saveThemePreference,
   STORAGE_KEYS,
 } from "./storage.js";
 import { formatDateTime } from "./utils.js";
+import { THEMES, resolveThemeId, applyTheme } from "./theme.js";
 
 const DEFAULT_START_BUTTON = {
   label: "返回課堂投影片",
@@ -23,8 +26,11 @@ const state = {
   currentUnitId: units[0]?.id ?? null,
   teacherState: loadTeacherState(),
   buttonConfig: loadButtonConfig(),
+  theme: resolveThemeId(loadThemePreference()),
   statusMessage: null,
 };
+
+applyTheme(state.theme);
 
 const elements = {
   unitNav: document.querySelector("#teacher-units"),
@@ -50,6 +56,10 @@ window.addEventListener("storage", (event) => {
   } else if (event.key === STORAGE_KEYS.buttonConfig) {
     state.buttonConfig = loadButtonConfig();
     rerenderContentPreserveScroll({ refreshNav: true });
+  } else if (event.key === STORAGE_KEYS.theme) {
+    state.theme = resolveThemeId(loadThemePreference());
+    applyTheme(state.theme);
+    rerenderContentPreserveScroll();
   }
 });
 
@@ -232,7 +242,90 @@ function buildGlobalSettingsSection() {
   });
 
   section.appendChild(form);
+  section.appendChild(buildThemeSelector());
   return section;
+}
+
+function buildThemeSelector() {
+  const fieldset = document.createElement("fieldset");
+  fieldset.className = "theme-selector";
+
+  const legend = document.createElement("legend");
+  legend.textContent = "配色主題";
+  fieldset.appendChild(legend);
+
+  const intro = document.createElement("p");
+  intro.textContent = "選擇學習者與教師視圖共用的配色方案，更新後會即時套用整站樣式。";
+  fieldset.appendChild(intro);
+
+  const options = document.createElement("div");
+  options.className = "theme-options";
+  fieldset.appendChild(options);
+
+  THEMES.forEach((theme) => {
+    const label = document.createElement("label");
+    label.className = "theme-option";
+    label.dataset.themeId = theme.id;
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "global-theme";
+    input.value = theme.id;
+    input.id = `theme-option-${theme.id}`;
+    if (theme.id === state.theme) {
+      input.checked = true;
+      label.classList.add("selected");
+    }
+
+    input.addEventListener("change", () => {
+      if (!input.checked) return;
+      const resolved = resolveThemeId(theme.id);
+      state.theme = resolved;
+      saveThemePreference(resolved);
+      applyTheme(resolved);
+      setStatusMessage(`已切換主題為「${theme.label}」。`, "success");
+      rerenderContentPreserveScroll({ focusId: input.id });
+    });
+
+    const details = document.createElement("div");
+    details.className = "theme-details";
+
+    const name = document.createElement("span");
+    name.className = "theme-name";
+    name.textContent = theme.label;
+    details.appendChild(name);
+
+    const description = document.createElement("p");
+    description.className = "theme-description";
+    description.textContent = theme.description;
+    details.appendChild(description);
+
+    const preview = document.createElement("div");
+    preview.className = "theme-preview";
+
+    const backgroundSwatch = document.createElement("span");
+    backgroundSwatch.style.background = theme.preview.background;
+    backgroundSwatch.title = "背景主色";
+
+    const surfaceSwatch = document.createElement("span");
+    surfaceSwatch.style.background = theme.preview.surface;
+    surfaceSwatch.title = "卡片底色";
+
+    const accentSwatch = document.createElement("span");
+    accentSwatch.style.background = theme.preview.accent;
+    accentSwatch.title = "操作按鈕";
+
+    preview.appendChild(backgroundSwatch);
+    preview.appendChild(surfaceSwatch);
+    preview.appendChild(accentSwatch);
+    details.appendChild(preview);
+
+    label.appendChild(input);
+    label.appendChild(details);
+    options.appendChild(label);
+  });
+
+  return fieldset;
 }
 
 function getCurrentStartButtonConfig() {
