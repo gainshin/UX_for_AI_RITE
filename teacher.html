@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 策略課程：教師版控制台</title>
+    <meta
+      name="description"
+      content="管理 AI 策略課程的教師版：更新參考答案、設定按鈕連結與檢視原型程式碼。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">AI Strategy Lab</span>
+        <p class="tagline">教師版 · 課程控管面板</p>
+      </div>
+      <nav class="site-nav" aria-label="教師導覽">
+        <a href="./index.html" class="nav-link">返回學習者版本</a>
+        <a
+          href="https://userxper.circle.so/c/ux-for-ai-cf9f79"
+          class="nav-link nav-button"
+          target="_blank"
+          rel="noopener"
+        >
+          課堂投影片
+        </a>
+      </nav>
+    </header>
+
+    <main id="teacher-app" class="teacher-layout">
+      <section id="teacher-units" class="units-panel" aria-label="教師單元導航"></section>
+      <section id="teacher-content" aria-live="polite"></section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Teacher Console · 資料僅儲存在本機瀏覽器</p>
+    </footer>
+
+    <script type="module" src="./src/teacher.js"></script>
+  </body>
+</html>

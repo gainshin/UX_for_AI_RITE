@@ -247,6 +247,13 @@ body {
   line-height: 1.5;
 }
 
+.unit-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
 .unit-card {
   border-radius: 1rem;
   padding: 1rem;
@@ -557,6 +564,104 @@ body {
   padding: 1.5rem;
 }
 
+.teacher-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 0 clamp(1.25rem, 5vw, 4rem) clamp(2rem, 5vw, 4rem);
+}
+
+.teacher-section {
+  margin-top: 0;
+  display: block;
+}
+
+.teacher-section + .teacher-section {
+  margin-top: 1.5rem;
+}
+
+#teacher-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+#teacher-content .status-text {
+  margin: 0 0 0.75rem;
+}
+
+.teacher-section-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.teacher-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.form-grid.two-column {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.input-field {
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.9);
+  color: var(--text);
+  font: inherit;
+}
+
+.input-field:focus-visible {
+  outline: 2px solid rgba(56, 189, 248, 0.5);
+  outline-offset: 2px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.status-text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.status-text.success {
+  color: var(--success);
+}
+
+.status-text.error {
+  color: var(--danger);
+}
+
+.status-text.info {
+  color: var(--accent);
+}
+
 .code-snippet pre {
   overflow-x: auto;
   font-family: "Fira Code", "Source Code Pro", Menlo, monospace;
@@ -605,6 +710,10 @@ body {
   .nav-button {
     width: auto;
   }
+
+  .teacher-layout {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -623,6 +732,10 @@ body {
   }
 
   .unit-nav-list {
+    grid-template-columns: 1fr;
+  }
+
+  .form-grid.two-column {
     grid-template-columns: 1fr;
   }
 }

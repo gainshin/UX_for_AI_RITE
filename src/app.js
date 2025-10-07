@@ -3,11 +3,10 @@ import {
   loadProgress,
   updateUnitProgress,
   loadTeacherState,
-  setTeacherMode,
-  updateTeacherNote,
-  removeTeacherNote,
   loadUnitAccess,
   markUnitUnlocked,
+  loadButtonConfig,
+  STORAGE_KEYS,
 } from "./storage.js";
 import { clamp, formatDateTime, toPercentage, shuffle } from "./utils.js";
 
@@ -16,6 +15,12 @@ const UNIT_UNLOCK_CODES = {
   "unit-2": "UX FOR AI_1",
   "unit-3": "UX FOR AI_2",
 };
+const DEFAULT_START_BUTTON = {
+  label: "返回課堂投影片",
+  url: "https://userxper.circle.so/c/ux-for-ai-cf9f79",
+};
+const START_BUTTON_KEY = "startLearning";
+const PROTOTYPE_BUTTON_KEY = "prototype";
 
 const state = {
   units,
@@ -23,6 +28,7 @@ const state = {
   progress: loadProgress(),
   teacherState: loadTeacherState(),
   unitAccess: loadUnitAccess(),
+  buttonConfig: loadButtonConfig(),
   activeQuiz: null,
 };
 
@@ -32,8 +38,6 @@ const elements = {
   scoreboard: document.querySelector("#scoreboard"),
   heroSummary: document.querySelector("#hero-summary"),
   startLearning: document.querySelector("#start-learning"),
-  teacherTools: document.querySelector("#teacher-tools"),
-  teacherToggle: document.querySelector("#teacher-mode-toggle"),
 };
 
 function init() {
@@ -42,17 +46,7 @@ function init() {
   }
 
   ensureAccessibleCurrentUnit();
-
-  if (elements.startLearning) {
-    elements.startLearning.addEventListener("click", () => {
-      document.querySelector("#units")?.scrollIntoView({ behavior: "smooth" });
-    });
-  }
-
-  if (elements.teacherToggle) {
-    elements.teacherToggle.addEventListener("click", handleTeacherToggle);
-    updateTeacherModeUI();
-  }
+  updateStartButtonCta();
 
   renderUnitsPanel();
   renderScoreboard();
@@ -61,6 +55,24 @@ function init() {
 }
 
 document.addEventListener("DOMContentLoaded", init);
+
+window.addEventListener("storage", (event) => {
+  if (!event.key) return;
+  if (event.key === STORAGE_KEYS.buttonConfig) {
+    state.buttonConfig = loadButtonConfig();
+    updateStartButtonCta();
+    renderUnitsPanel();
+    renderContent();
+  } else if (event.key === STORAGE_KEYS.teacherState) {
+    state.teacherState = loadTeacherState();
+    renderContent();
+  } else if (event.key === STORAGE_KEYS.unitAccess) {
+    state.unitAccess = loadUnitAccess();
+    ensureAccessibleCurrentUnit();
+    renderUnitsPanel();
+    renderContent();
+  }
+});
 
 function setCurrentUnit(unitId) {
   if (unitId === state.currentUnitId) return;
@@ -215,13 +227,11 @@ function renderContent() {
   const unit = state.units.find((item) => item.id === state.currentUnitId);
   if (!unit) {
     container.innerHTML = "<p>請先選擇課程單元。</p>";
-    renderTeacherPanel(null);
     return;
   }
 
   if (!isUnitUnlocked(unit.id)) {
     container.innerHTML = "<p>此單元尚未解鎖，請在上方導航欄輸入密碼後再試一次。</p>";
-    renderTeacherPanel(null);
     return;
   }
 
@@ -235,6 +245,7 @@ function renderContent() {
     <div class="chip">${translateScenario(unit.scenario)}｜${unit.minutes} 分鐘</div>
   `;
   container.appendChild(header);
+  renderUnitActions(unit, container);
 
   const introSection = document.createElement("section");
   introSection.className = "concept-section";
@@ -335,8 +346,6 @@ function renderContent() {
 
   renderCodeSnippet(unit, snippetSection);
   container.appendChild(snippetSection);
-
-  renderTeacherPanel(unit);
 }
 
 function renderQuiz(unit, container) {
@@ -776,6 +785,60 @@ function renderCodeSnippet(unit, container) {
   container.appendChild(card);
 }
 
+function getStartButtonConfig() {
+  const stored = state.buttonConfig?.globals?.[START_BUTTON_KEY];
+  if (!stored) return { ...DEFAULT_START_BUTTON };
+  const label = typeof stored.label === "string" && stored.label.trim()
+    ? stored.label.trim()
+    : DEFAULT_START_BUTTON.label;
+  const url = typeof stored.url === "string" && stored.url.trim()
+    ? stored.url.trim()
+    : DEFAULT_START_BUTTON.url;
+  return { label, url };
+}
+
+function updateStartButtonCta() {
+  const element = elements.startLearning;
+  if (!element) return;
+  const config = getStartButtonConfig();
+  element.textContent = config.label;
+  element.setAttribute("href", config.url);
+  element.setAttribute("target", "_blank");
+  element.setAttribute("rel", "noopener");
+}
+
+function getPrototypeButtonConfig(unitId) {
+  if (!unitId) return null;
+  const stored = state.buttonConfig?.units?.[unitId]?.[PROTOTYPE_BUTTON_KEY];
+  if (!stored) return null;
+  const url = typeof stored.url === "string" ? stored.url.trim() : "";
+  if (!url) return null;
+  const label = typeof stored.label === "string" && stored.label.trim()
+    ? stored.label.trim()
+    : "查看原型程式碼";
+  return { label, url };
+}
+
+function renderUnitActions(unit, container) {
+  const actions = document.createElement("div");
+  actions.className = "unit-actions";
+
+  const prototypeButton = getPrototypeButtonConfig(unit.id);
+  if (prototypeButton) {
+    const link = document.createElement("a");
+    link.className = "secondary-btn";
+    link.href = prototypeButton.url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = prototypeButton.label;
+    actions.appendChild(link);
+  }
+
+  if (actions.childElementCount > 0) {
+    container.appendChild(actions);
+  }
+}
+
 function getNavigationUnits() {
   const mapped = NAVIGATION_UNIT_IDS.map((id) => state.units.find((unit) => unit.id === id)).filter(
     Boolean
@@ -847,154 +910,6 @@ function updateTeacherModeUI() {
 
 function getTeacherReference(unitId, questionId) {
   return state.teacherState?.notes?.[unitId]?.[questionId]?.referenceNote || "";
-}
-
-function getTeacherNoteMeta(unitId, questionId) {
-  return state.teacherState?.notes?.[unitId]?.[questionId] || null;
-}
-
-function handleTeacherNoteSave(unitId, questionId, textValue) {
-  const trimmed = textValue.trim();
-  if (trimmed) {
-    state.teacherState = updateTeacherNote(unitId, questionId, trimmed);
-  } else {
-    state.teacherState = removeTeacherNote(unitId, questionId);
-  }
-  updateTeacherModeUI();
-  renderContent();
-}
-
-function handleTeacherNoteReset(unitId, questionId) {
-  state.teacherState = removeTeacherNote(unitId, questionId);
-  updateTeacherModeUI();
-  renderContent();
-}
-
-function renderTeacherPanel(unit) {
-  const container = elements.teacherTools;
-  if (!container) return;
-
-  const enabled = isTeacherMode();
-  if (!enabled) {
-    container.classList.remove("active");
-    container.innerHTML = "";
-    return;
-  }
-
-  container.classList.add("active");
-  container.innerHTML = "";
-
-  const heading = document.createElement("h2");
-  heading.innerHTML = `教師答案參考面板 <span>Teacher Mode</span>`;
-  container.appendChild(heading);
-
-  const intro = document.createElement("p");
-  intro.className = "teacher-meta";
-  intro.textContent = "此處可直接檢視或編輯答案參考，所有調整僅儲存在本機瀏覽器。";
-  container.appendChild(intro);
-
-  if (!unit) {
-    const empty = document.createElement("p");
-    empty.textContent = "請先選擇單元以管理教師版答案參考。";
-    container.appendChild(empty);
-    return;
-  }
-
-  unit.quiz.forEach((question, index) => {
-    const card = document.createElement("article");
-    card.className = "teacher-card";
-
-    const header = document.createElement("header");
-    const title = document.createElement("h3");
-    title.textContent = `${index + 1}. ${question.prompt}`;
-    header.appendChild(title);
-
-    const meta = document.createElement("div");
-    meta.className = "teacher-meta";
-    const noteMeta = getTeacherNoteMeta(unit.id, question.id);
-    const pieces = [
-      `類型：${translateQuestionType(question)}`,
-      `場景：${translateScenario(question.scenario)}`,
-    ];
-    if (noteMeta?.updatedAt) {
-      pieces.push(`更新：${formatDateTime(noteMeta.updatedAt)}`);
-    }
-    meta.textContent = pieces.join(" ｜ ");
-    header.appendChild(meta);
-    card.appendChild(header);
-
-    const answerBox = document.createElement("div");
-    answerBox.className = "teacher-answer";
-    answerBox.appendChild(buildTeacherAnswerContent(question));
-    card.appendChild(answerBox);
-
-    const textarea = document.createElement("textarea");
-    textarea.id = `teacher-note-${question.id}`;
-    const existingNote = getTeacherReference(unit.id, question.id);
-    const baseline = question.explanation || "";
-    textarea.value = existingNote || baseline;
-    textarea.placeholder = baseline
-      ? "自訂或調整答案參考內容"
-      : "尚未提供官方解析，可自行撰寫教師參考";
-    card.appendChild(textarea);
-
-    const actions = document.createElement("div");
-    actions.className = "teacher-actions";
-
-    const resetBtn = document.createElement("button");
-    resetBtn.type = "button";
-    resetBtn.className = "secondary-btn";
-    resetBtn.textContent = "還原預設";
-    const hasCustomNote = Boolean(getTeacherNoteMeta(unit.id, question.id));
-    resetBtn.disabled = !hasCustomNote && !baseline;
-    resetBtn.title = hasCustomNote ? "移除自訂答案參考" : "";
-    resetBtn.addEventListener("click", () => {
-      handleTeacherNoteReset(unit.id, question.id);
-    });
-
-    const saveBtn = document.createElement("button");
-    saveBtn.type = "button";
-    saveBtn.className = "primary-btn";
-    saveBtn.textContent = "儲存教師版";
-    saveBtn.addEventListener("click", () => {
-      handleTeacherNoteSave(unit.id, question.id, textarea.value);
-    });
-
-    actions.appendChild(resetBtn);
-    actions.appendChild(saveBtn);
-    card.appendChild(actions);
-
-    container.appendChild(card);
-  });
-}
-
-function buildTeacherAnswerContent(question) {
-  if (question.type === "multiple") {
-    const list = document.createElement("ul");
-    list.className = "point-list";
-    question.correctOptionIds.forEach((optionId) => {
-      const option = question.options.find((item) => item.id === optionId);
-      const li = document.createElement("li");
-      li.textContent = option ? option.text : optionId;
-      list.appendChild(li);
-    });
-    return list;
-  }
-
-  if (question.type === "matching") {
-    const list = document.createElement("ul");
-    list.className = "point-list";
-    question.pairs.forEach((pair, idx) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${idx + 1}. ${pair.prompt}</strong><p>${pair.match}</p>`;
-      list.appendChild(li);
-    });
-    return list;
-  }
-
-  const paragraph = document.createElement("p");
-  paragraph.textContent = "目前尚未提供答案資訊。";
-  return paragraph;
 }
 
 function translateScenario(scenario) {
