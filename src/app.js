@@ -247,85 +247,21 @@ function renderContent() {
   container.appendChild(header);
   renderUnitActions(unit, container);
 
-  const introSection = document.createElement("section");
-  introSection.className = "concept-section";
-  const introHeading = document.createElement("h3");
-  introHeading.className = "section-title";
-  introHeading.textContent = "核心觀念";
-  introSection.appendChild(introHeading);
-
-  unit.introduction.forEach((paragraph) => {
-    const p = document.createElement("p");
-    p.textContent = paragraph;
-    introSection.appendChild(p);
+  const conceptsCard = createCollapsibleSection({
+    id: `${unit.id}-concepts`,
+    title: "核心觀念",
+    defaultExpanded: false,
+    contentBuilder: (body) => appendConceptContent(body, unit),
   });
+  container.appendChild(conceptsCard);
 
-  unit.concepts.forEach((concept) => {
-    const block = document.createElement("article");
-    block.className = "quiz-card";
-    const h4 = document.createElement("h3");
-    h4.textContent = concept.heading;
-    block.appendChild(h4);
-
-    const list = document.createElement("ul");
-    list.className = "point-list";
-    concept.points.forEach((point) => {
-      const li = document.createElement("li");
-      li.innerHTML = `<strong>${point.title}</strong><p>${point.detail}</p>`;
-      list.appendChild(li);
-    });
-
-    if (concept.example) {
-      const example = document.createElement("p");
-      example.innerHTML = `<em>情境示範：</em> ${concept.example}`;
-      block.appendChild(example);
-    }
-
-    block.appendChild(list);
-    introSection.appendChild(block);
+  const practiceCard = createCollapsibleSection({
+    id: `${unit.id}-practice`,
+    title: "實作練習",
+    defaultExpanded: false,
+    contentBuilder: (body) => appendPracticeContent(body, unit),
   });
-
-  container.appendChild(introSection);
-
-  const practiceSection = document.createElement("section");
-  practiceSection.className = "practice-section";
-  const practiceHeading = document.createElement("h3");
-  practiceHeading.className = "section-title";
-  practiceHeading.textContent = "實作練習";
-  practiceSection.appendChild(practiceHeading);
-
-  unit.practice.forEach((item) => {
-    const card = document.createElement("article");
-    card.className = "quiz-card";
-    const h4 = document.createElement("h3");
-    h4.textContent = item.title;
-    card.appendChild(h4);
-
-    if (item.description) {
-      const desc = document.createElement("p");
-      desc.textContent = item.description;
-      card.appendChild(desc);
-    }
-
-    const list = document.createElement("ul");
-    list.className = "point-list";
-    item.steps.forEach((step) => {
-      const li = document.createElement("li");
-      li.textContent = step;
-      list.appendChild(li);
-    });
-    card.appendChild(list);
-
-    if (item.hint) {
-      const hint = document.createElement("p");
-      hint.innerHTML = `<em>提示：</em> ${item.hint}`;
-      card.appendChild(hint);
-    }
-
-    practiceSection.appendChild(card);
-  });
-
-  container.appendChild(practiceSection);
+  container.appendChild(practiceCard);
 
   const quizSection = document.createElement("section");
   quizSection.className = "quiz-section";
@@ -785,6 +721,126 @@ function renderCodeSnippet(unit, container) {
   container.appendChild(card);
 }
 
+function createCollapsibleSection({ id, title, description, defaultExpanded = false, contentBuilder }) {
+  const section = document.createElement("section");
+  section.className = "collapsible-card";
+  if (!defaultExpanded) {
+    section.classList.add("collapsed");
+  }
+
+  const header = document.createElement("button");
+  header.type = "button";
+  header.className = "collapsible-header";
+  header.innerHTML = `
+    <span class="collapsible-title">${title}</span>
+    <span class="collapsible-icon" aria-hidden="true"></span>
+  `;
+  header.setAttribute("aria-expanded", defaultExpanded ? "true" : "false");
+  const contentId = id || `collapsible-${Math.random().toString(36).slice(2)}`;
+  header.setAttribute("aria-controls", contentId);
+  section.appendChild(header);
+
+  const content = document.createElement("div");
+  content.className = "collapsible-content";
+  content.id = contentId;
+  if (description) {
+    const desc = document.createElement("p");
+    desc.className = "collapsible-description";
+    desc.textContent = description;
+    content.appendChild(desc);
+  }
+  if (typeof contentBuilder === "function") {
+    contentBuilder(content);
+  }
+  section.appendChild(content);
+
+  header.addEventListener("click", () => {
+    const collapsed = section.classList.toggle("collapsed");
+    header.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  });
+
+  return section;
+}
+
+function appendConceptContent(container, unit) {
+  if (!container || !unit) return;
+
+  if (Array.isArray(unit.introduction) && unit.introduction.length) {
+    const introBlock = document.createElement("div");
+    introBlock.className = "collapsible-text-block";
+    unit.introduction.forEach((paragraph) => {
+      const p = document.createElement("p");
+      p.textContent = paragraph;
+      introBlock.appendChild(p);
+    });
+    container.appendChild(introBlock);
+  }
+
+  if (Array.isArray(unit.concepts)) {
+    unit.concepts.forEach((concept) => {
+      const block = document.createElement("article");
+      block.className = "quiz-card";
+      const h4 = document.createElement("h3");
+      h4.textContent = concept.heading;
+      block.appendChild(h4);
+
+      const list = document.createElement("ul");
+      list.className = "point-list";
+      concept.points?.forEach((point) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<strong>${point.title}</strong><p>${point.detail}</p>`;
+        list.appendChild(li);
+      });
+
+      if (concept.example) {
+        const example = document.createElement("p");
+        example.innerHTML = `<em>情境示範：</em> ${concept.example}`;
+        block.appendChild(example);
+      }
+
+      block.appendChild(list);
+      container.appendChild(block);
+    });
+  }
+}
+
+function appendPracticeContent(container, unit) {
+  if (!container || !unit?.practice) return;
+
+  unit.practice.forEach((item) => {
+    const card = document.createElement("article");
+    card.className = "quiz-card";
+    const h4 = document.createElement("h3");
+    h4.textContent = item.title;
+    card.appendChild(h4);
+
+    if (item.description) {
+      const desc = document.createElement("p");
+      desc.textContent = item.description;
+      card.appendChild(desc);
+    }
+
+    if (Array.isArray(item.steps) && item.steps.length) {
+      const list = document.createElement("ul");
+      list.className = "point-list";
+      item.steps.forEach((step) => {
+        const li = document.createElement("li");
+        li.textContent = step;
+        list.appendChild(li);
+      });
+      card.appendChild(list);
+    }
+
+    if (item.hint) {
+      const hint = document.createElement("p");
+      hint.innerHTML = `<em>提示：</em> ${item.hint}`;
+      card.appendChild(hint);
+    }
+
+    container.appendChild(card);
+  });
+}
+
 function getStartButtonConfig() {
   const stored = state.buttonConfig?.globals?.[START_BUTTON_KEY];
   if (!stored) return { ...DEFAULT_START_BUTTON };
@@ -881,31 +937,6 @@ function isUnitUnlocked(unitId) {
   if (!unitId) return false;
   if (unitId === "unit-1") return true;
   return Boolean(state.unitAccess?.[unitId]);
-}
-
-function isTeacherMode() {
-  return Boolean(state.teacherState?.enabled);
-}
-
-function handleTeacherToggle() {
-  const next = !isTeacherMode();
-  state.teacherState = setTeacherMode(next);
-  updateTeacherModeUI();
-  renderContent();
-  renderHeroSummary();
-}
-
-function updateTeacherModeUI() {
-  const enabled = isTeacherMode();
-  if (elements.teacherToggle) {
-    elements.teacherToggle.setAttribute("aria-pressed", enabled ? "true" : "false");
-    elements.teacherToggle.classList.toggle("active", enabled);
-    elements.teacherToggle.textContent = enabled ? "教師版（開啟）" : "教師版";
-  }
-  if (!enabled && elements.teacherTools) {
-    elements.teacherTools.classList.remove("active");
-    elements.teacherTools.innerHTML = "";
-  }
 }
 
 function getTeacherReference(unitId, questionId) {

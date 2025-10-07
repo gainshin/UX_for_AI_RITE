@@ -254,6 +254,100 @@ body {
   gap: 0.75rem;
 }
 
+.collapsible-card {
+  border-radius: 1.1rem;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.6);
+  box-shadow: 0 14px 40px rgba(2, 132, 199, 0.12);
+  overflow: hidden;
+  margin-top: 1.25rem;
+}
+
+.collapsible-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.5rem;
+  background: rgba(15, 23, 42, 0.85);
+  border: none;
+  color: var(--text);
+  font: inherit;
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.collapsible-title {
+  flex: 1;
+  text-align: left;
+}
+
+.collapsible-header:hover,
+.collapsible-header:focus-visible {
+  background: rgba(14, 165, 233, 0.18);
+  color: var(--accent);
+  outline: none;
+}
+
+.collapsible-icon {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(2, 6, 23, 0.45);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.collapsible-icon::before {
+  content: "−";
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.collapsible-card.collapsed .collapsible-icon::before {
+  content: "+";
+}
+
+.collapsible-card.collapsed .collapsible-icon {
+  border-color: rgba(148, 163, 184, 0.6);
+}
+
+.collapsible-content {
+  padding: 0 1.5rem 1.5rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.collapsible-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.collapsible-card.collapsed .collapsible-content {
+  display: none;
+}
+
+.collapsible-text-block {
+  display: grid;
+  gap: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.collapsible-text-block p {
+  margin: 0;
+}
+
 .unit-card {
   border-radius: 1rem;
   padding: 1rem;
@@ -580,6 +674,10 @@ body {
   margin-top: 1.5rem;
 }
 
+.collapsible-card + .collapsible-card {
+  margin-top: 1rem;
+}
+
 #teacher-content {
   display: flex;
   flex-direction: column;
@@ -714,6 +812,15 @@ body {
   .teacher-layout {
     grid-template-columns: 1fr;
   }
+
+  .collapsible-header {
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  .collapsible-content {
+    padding: 0 1.25rem 1.25rem;
+  }
 }
 
 @media (max-width: 640px) {
@@ -737,5 +844,9 @@ body {
 
   .form-grid.two-column {
     grid-template-columns: 1fr;
+  }
+
+  .collapsible-content {
+    padding: 0 1rem 1rem;
   }
 }
