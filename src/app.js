@@ -6,14 +6,23 @@ import {
   setTeacherMode,
   updateTeacherNote,
   removeTeacherNote,
+  loadUnitAccess,
+  markUnitUnlocked,
 } from "./storage.js";
 import { clamp, formatDateTime, toPercentage, shuffle } from "./utils.js";
+
+const NAVIGATION_UNIT_IDS = ["unit-1", "unit-2", "unit-3"];
+const UNIT_UNLOCK_CODES = {
+  "unit-2": "UX FOR AI_1",
+  "unit-3": "UX FOR AI_2",
+};
 
 const state = {
   units,
   currentUnitId: units[0]?.id ?? null,
   progress: loadProgress(),
   teacherState: loadTeacherState(),
+  unitAccess: loadUnitAccess(),
   activeQuiz: null,
 };
 
@@ -31,6 +40,8 @@ function init() {
   if (!state.currentUnitId && state.units.length > 0) {
     state.currentUnitId = state.units[0].id;
   }
+
+  ensureAccessibleCurrentUnit();
 
   if (elements.startLearning) {
     elements.startLearning.addEventListener("click", () => {
@@ -67,42 +78,51 @@ function renderUnitsPanel() {
   container.innerHTML = "";
 
   const heading = document.createElement("h2");
-  heading.textContent = "課程單元";
+  heading.textContent = "課程單元導航";
   container.appendChild(heading);
 
-  state.units.forEach((unit, index) => {
-    const card = document.createElement("article");
-    card.className = `unit-card ${state.currentUnitId === unit.id ? "active" : ""}`;
-    card.tabIndex = 0;
-    card.setAttribute("role", "button");
-    card.setAttribute("aria-pressed", state.currentUnitId === unit.id ? "true" : "false");
+  const nav = document.createElement("nav");
+  nav.className = "unit-nav";
+  nav.setAttribute("aria-label", "課程單元導航");
 
-    const title = document.createElement("h3");
-    title.textContent = `${index + 1}. ${unit.title}`;
-    card.appendChild(title);
+  const list = document.createElement("ul");
+  list.className = "unit-nav-list";
 
-    const summary = document.createElement("p");
-    summary.textContent = unit.summary;
-    card.appendChild(summary);
+  getNavigationUnits().forEach((unit, index) => {
+    const item = document.createElement("li");
+    item.className = "unit-nav-item";
+    if (state.currentUnitId === unit.id) {
+      item.classList.add("active");
+    }
 
-    const meta = document.createElement("div");
-    meta.className = "unit-meta";
-    meta.innerHTML = `
-      <span>場景：${translateScenario(unit.scenario)}</span>
-      <span>${unit.minutes} 分鐘</span>
-    `;
-    card.appendChild(meta);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "unit-nav-button nav-button";
+    const labelIndex = index + 1;
+    const unlocked = isUnitUnlocked(unit.id);
+    button.textContent = `課程單元 ${labelIndex}`;
+    button.setAttribute("aria-pressed", state.currentUnitId === unit.id ? "true" : "false");
+    if (!unlocked) {
+      button.classList.add("locked");
+      button.title = "輸入密碼解鎖";
+      button.setAttribute("aria-label", `課程單元 ${labelIndex} 已鎖定，點擊輸入密碼解鎖`);
+    } else {
+      button.setAttribute("aria-label", `瀏覽課程單元 ${labelIndex}`);
+    }
 
-    card.addEventListener("click", () => setCurrentUnit(unit.id));
-    card.addEventListener("keypress", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setCurrentUnit(unit.id);
-      }
-    });
+    button.addEventListener("click", () => handleUnitNavigation(unit));
 
-    container.appendChild(card);
+    item.appendChild(button);
+    list.appendChild(item);
   });
+
+  nav.appendChild(list);
+  container.appendChild(nav);
+
+  const hint = document.createElement("p");
+  hint.className = "unit-nav-hint";
+  hint.textContent = "單元 2 密碼：UX FOR AI_1｜單元 3 密碼：UX FOR AI_2";
+  container.appendChild(hint);
 }
 
 function renderScoreboard() {
@@ -195,6 +215,13 @@ function renderContent() {
   const unit = state.units.find((item) => item.id === state.currentUnitId);
   if (!unit) {
     container.innerHTML = "<p>請先選擇課程單元。</p>";
+    renderTeacherPanel(null);
+    return;
+  }
+
+  if (!isUnitUnlocked(unit.id)) {
+    container.innerHTML = "<p>此單元尚未解鎖，請在上方導航欄輸入密碼後再試一次。</p>";
+    renderTeacherPanel(null);
     return;
   }
 
@@ -747,6 +774,50 @@ function renderCodeSnippet(unit, container) {
   }
 
   container.appendChild(card);
+}
+
+function getNavigationUnits() {
+  const mapped = NAVIGATION_UNIT_IDS.map((id) => state.units.find((unit) => unit.id === id)).filter(
+    Boolean
+  );
+  if (mapped.length) return mapped;
+  return state.units.slice(0, 3);
+}
+
+function ensureAccessibleCurrentUnit() {
+  if (isUnitUnlocked(state.currentUnitId)) return;
+  const fallback = getNavigationUnits().find((unit) => isUnitUnlocked(unit.id));
+  state.currentUnitId = fallback?.id ?? state.units[0]?.id ?? null;
+}
+
+function handleUnitNavigation(unit) {
+  if (isUnitUnlocked(unit.id)) {
+    setCurrentUnit(unit.id);
+    return;
+  }
+
+  const expectedCode = UNIT_UNLOCK_CODES[unit.id];
+  if (!expectedCode) {
+    setCurrentUnit(unit.id);
+    return;
+  }
+
+  const answer = window.prompt("請輸入解鎖密碼：");
+  if (answer === null) return;
+  if (answer.trim() === expectedCode) {
+    state.unitAccess = markUnitUnlocked(unit.id);
+    setCurrentUnit(unit.id);
+    renderUnitsPanel();
+    alert("解鎖成功！");
+  } else {
+    alert("密碼不正確，請再試一次。");
+  }
+}
+
+function isUnitUnlocked(unitId) {
+  if (!unitId) return false;
+  if (unitId === "unit-1") return true;
+  return Boolean(state.unitAccess?.[unitId]);
 }
 
 function isTeacherMode() {

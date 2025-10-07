@@ -1,5 +1,6 @@
 const STORAGE_KEY = "ai-course-progress-v1";
 const TEACHER_STATE_KEY = "ai-course-teacher-state-v1";
+const UNIT_ACCESS_KEY = "ai-course-unit-access-v1";
 
 export function loadProgress() {
   try {
@@ -111,4 +112,32 @@ export function getTeacherNote(unitId, questionId) {
   const current = loadTeacherState();
   const note = current.notes?.[unitId]?.[questionId];
   return note?.referenceNote || "";
+}
+
+export function loadUnitAccess() {
+  try {
+    const raw = window.localStorage.getItem(UNIT_ACCESS_KEY);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (err) {
+    console.warn("無法載入單元解鎖狀態：", err);
+    return {};
+  }
+}
+
+export function saveUnitAccess(access) {
+  try {
+    window.localStorage.setItem(UNIT_ACCESS_KEY, JSON.stringify(access));
+  } catch (err) {
+    console.warn("無法儲存單元解鎖狀態：", err);
+  }
+}
+
+export function markUnitUnlocked(unitId) {
+  const current = loadUnitAccess();
+  if (current[unitId]) return current;
+  const updated = { ...current, [unitId]: true };
+  saveUnitAccess(updated);
+  return updated;
 }
