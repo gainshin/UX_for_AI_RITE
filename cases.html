@@ -18,6 +18,7 @@
       </div>
       <nav class="site-nav" aria-label="案例庫導覽">
         <a href="./index.html" class="nav-link">返回學習者版本</a>
+        <a href="./patterns.html" class="nav-link">設計模式牆</a>
         <a href="./teacher.html" class="nav-link">教師版</a>
       </nav>
     </header>
@@ -30,7 +31,7 @@
         </p>
         <div class="case-hero-actions">
           <a class="primary-btn" href="#case-method-library">瀏覽方法庫</a>
-          <a class="secondary-btn ghost-btn" href="#pattern-board">探索設計模式</a>
+          <a class="secondary-btn ghost-btn" href="./patterns.html">探索設計模式</a>
         </div>
       </div>
       <div class="case-hero-panel">
@@ -39,7 +40,7 @@
           <ul>
             <li>54+ 實務方法：對應研究、構想、原型與引導四大章節</li>
             <li>劇場化原型案例：轉化情緒、節奏與治理護欄</li>
-            <li>AI 設計模式牆：針對部署、治理、風險控管快速篩選</li>
+            <li>AI 設計模式牆（獨立分頁）：針對部署、治理、風險控管快速篩選</li>
           </ul>
         </div>
       </div>
@@ -57,33 +58,7 @@
       </section>
 
       <section id="case-detail" class="case-detail content-panel" aria-live="polite" aria-label="案例詳細內容"></section>
-
-      <section id="pattern-board" class="pattern-board" aria-label="AI 設計模式牆">
-        <aside class="pattern-filter content-panel">
-          <header>
-            <h2>篩選條件</h2>
-            <p>勾選要套用的分類或主題，找出適合的治理模式。</p>
-          </header>
-          <div id="pattern-filter-list" class="pattern-filter-list"></div>
-          <button id="pattern-reset" class="secondary-btn small-btn" type="button">重設篩選</button>
-        </aside>
-        <div class="pattern-content content-panel">
-          <header class="pattern-content-header">
-            <div>
-              <h2>設計模式牆</h2>
-              <p id="pattern-summary" class="pattern-summary-meta"></p>
-            </div>
-            <div class="pattern-search">
-              <label class="visually-hidden" for="pattern-search">搜尋設計模式</label>
-              <input type="search" id="pattern-search" placeholder="搜尋關鍵字…" />
-            </div>
-          </header>
-          <div id="pattern-grid" class="pattern-grid" role="list"></div>
-        </div>
-      </section>
     </main>
-
-    <div id="case-live-region" class="visually-hidden" aria-live="polite"></div>
 
     <footer class="site-footer">
       <p>© 版權所有 PrivacyUX consulting Ltd. 2025</p>
