@@ -3,6 +3,7 @@ const TEACHER_STATE_KEY = "ai-course-teacher-state-v1";
 const UNIT_ACCESS_KEY = "ai-course-unit-access-v1";
 const BUTTON_CONFIG_KEY = "ai-course-button-config-v1";
 const THEME_KEY = "ai-course-theme-v1";
+const CASE_LIBRARY_KEY = "ai-course-case-library-state-v1";
 
 export function loadProgress() {
   try {
@@ -268,10 +269,38 @@ export function saveThemePreference(themeId) {
   }
 }
 
+export function loadCaseLibraryState() {
+  try {
+    const raw = window.localStorage.getItem(CASE_LIBRARY_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : null;
+  } catch (err) {
+    console.warn("無法載入案例庫狀態：", err);
+    return null;
+  }
+}
+
+export function saveCaseLibraryState(state) {
+  try {
+    if (!state || typeof state !== "object") {
+      window.localStorage.removeItem(CASE_LIBRARY_KEY);
+      return null;
+    }
+    const payload = JSON.stringify(state);
+    window.localStorage.setItem(CASE_LIBRARY_KEY, payload);
+    return state;
+  } catch (err) {
+    console.warn("無法儲存案例庫狀態：", err);
+    return null;
+  }
+}
+
 export const STORAGE_KEYS = {
   progress: STORAGE_KEY,
   teacherState: TEACHER_STATE_KEY,
   unitAccess: UNIT_ACCESS_KEY,
   buttonConfig: BUTTON_CONFIG_KEY,
   theme: THEME_KEY,
+  caseLibrary: CASE_LIBRARY_KEY,
 };
