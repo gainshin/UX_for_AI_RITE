@@ -239,27 +239,13 @@ body[data-theme="forest"] {
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
-}
-
-.primary-btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(135deg, var(--accent-strong), var(--accent));
-  opacity: 0;
-  transition: opacity 0.2s ease;
-}
-
-.primary-btn:hover::before,
-.primary-btn:focus-visible::before {
-  opacity: 1;
 }
 
 .primary-btn:hover,
 .primary-btn:focus-visible {
   transform: translateY(-2px);
   box-shadow: 0 12px 30px var(--accent-glow);
+  filter: brightness(1.1);
 }
 
 .primary-btn:active {
@@ -272,11 +258,6 @@ body[data-theme="forest"] {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
-
-.primary-btn > * {
-  position: relative;
-  z-index: 1;
 }
 
 .hero-actions {
@@ -434,10 +415,10 @@ body[data-theme="forest"] {
 .unit-nav-button.locked {
   border-style: dashed;
   border-color: var(--border);
-  background: var(--card-muted);
-  color: var(--muted);
+  background: var(--card);
+  color: var(--text);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .unit-nav-button.locked:hover,
@@ -576,8 +557,9 @@ body[data-theme="forest"] {
 }
 
 .collapsible-card.collapsed {
-  background: var(--card-muted);
+  background: var(--card);
   box-shadow: none;
+  opacity: 0.85;
 }
 
 .collapsible-header {
@@ -1170,7 +1152,7 @@ body[data-theme="forest"] {
 .input-field:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background: var(--card-muted);
+  background: var(--card);
 }
 
 .input-field.error {
@@ -1828,7 +1810,7 @@ body[data-theme="forest"] {
     position: relative;
     aspect-ratio: 16 / 9;
     overflow: hidden;
-    background: var(--card-muted);
+    background: var(--card);
   }
 
   .tool-card-media img {
@@ -2241,7 +2223,7 @@ body[data-theme="forest"] {
     aspect-ratio: 16 / 9;
     border-radius: 0.75rem;
     overflow: hidden;
-    background: var(--card-muted);
+    background: var(--card);
   }
 
   .admin-entry-media img {
