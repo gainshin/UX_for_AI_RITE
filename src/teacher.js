@@ -665,14 +665,24 @@ function buildThemeSelector() {
 }
 
 function buildMethodsManager() {
+  const { overrides, customs } = partitionAdminItems(state.adminLibrary.methods);
+  const overrideCount = overrides.size;
+  const customCount = customs.length;
+
   const details = document.createElement("details");
   details.className = "admin-manager";
   details.open = true;
 
   const summary = document.createElement("summary");
   summary.innerHTML = `
-    <span>案例庫 / 方法圖書館</span>
-    <span class="admin-count">${state.adminLibrary.methods.length}</span>
+    <div class="admin-summary-header">
+      <span>案例庫 / 方法圖書館</span>
+      <p>覆寫既有方法，或新增專屬案例。</p>
+    </div>
+    <div class="admin-summary-metrics">
+      <span><strong>${overrideCount}</strong> 項覆寫</span>
+      <span><strong>${customCount}</strong> 項自訂</span>
+    </div>
   `;
   details.appendChild(summary);
 
@@ -680,14 +690,303 @@ function buildMethodsManager() {
   body.className = "admin-manager-body";
   details.appendChild(body);
 
-  const list = document.createElement("div");
-  list.className = "admin-entry-list";
-  body.appendChild(list);
+  // Base Panel - Existing Methods with Search/Override
+  const basePanel = document.createElement("section");
+  basePanel.className = "admin-panel base-panel";
+  body.appendChild(basePanel);
+
+  const baseHeader = document.createElement("div");
+  baseHeader.className = "admin-panel-header";
+  baseHeader.innerHTML = `
+    <div>
+      <h3>既有方法案例</h3>
+      <p>調整標題、摘要或章節分類，覆寫案例庫的預設內容。</p>
+    </div>
+  `;
+  basePanel.appendChild(baseHeader);
+
+  let baseQuery = "";
+  const baseSearch = createAdminSearchControl({
+    placeholder: "搜尋方法案例...",
+    ariaLabel: "搜尋方法案例",
+    onInput: (value) => {
+      baseQuery = value.trim().toLowerCase();
+      renderBaseList();
+    },
+  });
+  basePanel.appendChild(baseSearch.wrapper);
+
+  const baseList = document.createElement("div");
+  baseList.className = "admin-entry-collection base";
+  basePanel.appendChild(baseList);
+
+  function renderBaseList() {
+    baseList.innerHTML = "";
+    const filtered = BASE_METHOD_ENTRIES.filter((method) => {
+      if (!baseQuery) return true;
+      return method.searchText.includes(baseQuery);
+    });
+
+    if (!filtered.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "找不到符合搜尋的方法案例。";
+      baseList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((method) => {
+      const override = overrides.get(method.id);
+      const card = document.createElement("article");
+      card.className = "admin-base-card";
+      card.id = `admin-base-method-${method.id}`;
+      if (override) {
+        card.classList.add("has-override");
+      }
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = override?.title || method.title;
+      headerRow.appendChild(title);
+
+      if (override) {
+        const badge = document.createElement("span");
+        badge.className = "admin-badge override";
+        badge.textContent = "已覆寫";
+        headerRow.appendChild(badge);
+      }
+
+      card.appendChild(headerRow);
+
+      const chapterText = override?.chapter || method.chapterLabel;
+      if (chapterText) {
+        const chapter = document.createElement("p");
+        chapter.className = "admin-entry-meta";
+        chapter.textContent = chapterText;
+        card.appendChild(chapter);
+      }
+
+      const summaryText = override?.summary || method.summary;
+      if (summaryText) {
+        const summaryEl = document.createElement("p");
+        summaryEl.className = "admin-entry-summary";
+        summaryEl.textContent = summaryText;
+        card.appendChild(summaryEl);
+      }
+
+      const tags = override?.tags?.length ? override.tags : method.tags || [];
+      if (tags.length) {
+        const tagList = document.createElement("ul");
+        tagList.className = "admin-entry-tags";
+        tags.forEach((tag) => {
+          const li = document.createElement("li");
+          li.textContent = tag;
+          tagList.appendChild(li);
+        });
+        card.appendChild(tagList);
+      }
+
+      const overrideTimestamp = override?.updatedAt || override?.createdAt;
+      if (overrideTimestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `覆寫時間：${formatDateTime(overrideTimestamp)}`;
+        card.appendChild(meta);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = override ? "更新覆寫" : "覆寫內容";
+      editBtn.addEventListener("click", () => {
+        beginBaseEdit(method, override || null);
+      });
+      actions.appendChild(editBtn);
+
+      if (override) {
+        const revertBtn = document.createElement("button");
+        revertBtn.type = "button";
+        revertBtn.className = "secondary-btn small-btn danger";
+        revertBtn.textContent = "移除覆寫";
+        revertBtn.addEventListener("click", () => {
+          if (!window.confirm(`確定要移除「${override.title || method.title}」的覆寫版本嗎？`)) {
+            return;
+          }
+          const next = cloneAdminLibrary();
+          next.methods = next.methods.filter((item) => !(item.id === method.id && item.source === "override"));
+          updateAdminLibrary(next, {
+            message: `已移除方法「${override.title || method.title}」的覆寫版本。`,
+            focusId: `admin-base-method-${method.id}`,
+          });
+        });
+        actions.appendChild(revertBtn);
+      }
+
+      card.appendChild(actions);
+      baseList.appendChild(card);
+    });
+  }
+
+  // Custom Panel - User-created Methods
+  const customPanel = document.createElement("section");
+  customPanel.className = "admin-panel custom-panel";
+  body.appendChild(customPanel);
+
+  const customHeader = document.createElement("div");
+  customHeader.className = "admin-panel-header";
+  customHeader.innerHTML = `
+    <div>
+      <h3>管理者自訂案例</h3>
+      <p>自訂案例會顯示於案例庫的管理者專區。</p>
+    </div>
+  `;
+  customPanel.appendChild(customHeader);
+
+  const customList = document.createElement("div");
+  customList.className = "admin-entry-collection";
+  customPanel.appendChild(customList);
+
+  function renderCustomList() {
+    customList.innerHTML = "";
+    if (!customs.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "尚未新增自訂案例。";
+      customList.appendChild(empty);
+      return;
+    }
+
+    const sorted = [...customs].sort((a, b) => {
+      const aTime = a.updatedAt || a.createdAt || "";
+      const bTime = b.updatedAt || b.createdAt || "";
+      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
+    });
+
+    sorted.forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "admin-entry-card";
+      card.id = `admin-method-${entry.id}`;
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = entry.title;
+      headerRow.appendChild(title);
+
+      const badge = document.createElement("span");
+      badge.className = "admin-badge custom";
+      badge.textContent = "自訂";
+      headerRow.appendChild(badge);
+
+      card.appendChild(headerRow);
+
+      if (entry.chapter) {
+        const chapterEl = document.createElement("p");
+        chapterEl.className = "admin-entry-meta";
+        chapterEl.textContent = entry.chapter;
+        card.appendChild(chapterEl);
+      }
+
+      if (entry.summary) {
+        const summaryEl = document.createElement("p");
+        summaryEl.className = "admin-entry-summary";
+        summaryEl.textContent = entry.summary;
+        card.appendChild(summaryEl);
+      }
+
+      if (entry.tags?.length) {
+        const tagList = document.createElement("ul");
+        tagList.className = "admin-entry-tags";
+        entry.tags.forEach((tag) => {
+          const li = document.createElement("li");
+          li.textContent = tag;
+          tagList.appendChild(li);
+        });
+        card.appendChild(tagList);
+      }
+
+      const timestamp = entry.updatedAt || entry.createdAt;
+      if (timestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `更新：${formatDateTime(timestamp)}`;
+        card.appendChild(meta);
+      }
+
+      if (entry.resources?.length) {
+        const resourceList = document.createElement("ul");
+        resourceList.className = "admin-entry-resources";
+        entry.resources.forEach((resource) => {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = resource.href || "#";
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = resource.label || resource.href;
+          li.appendChild(link);
+          resourceList.appendChild(li);
+        });
+        card.appendChild(resourceList);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = "編輯";
+      editBtn.addEventListener("click", () => {
+        beginCustomEdit(entry);
+      });
+      actions.appendChild(editBtn);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "secondary-btn small-btn danger";
+      deleteBtn.textContent = "刪除";
+      deleteBtn.addEventListener("click", () => {
+        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
+        const next = cloneAdminLibrary();
+        next.methods = next.methods.filter((item) => item.id !== entry.id);
+        updateAdminLibrary(next, {
+          message: `已刪除案例「${entry.title}」。`,
+          focusId: "teacher-content",
+        });
+      });
+      actions.appendChild(deleteBtn);
+
+      card.appendChild(actions);
+      customList.appendChild(card);
+    });
+  }
+
+  // Form Panel
+  const formPanel = document.createElement("section");
+  formPanel.className = "admin-panel form-panel";
+  body.appendChild(formPanel);
+
+  const formHeader = document.createElement("div");
+  formHeader.className = "admin-panel-header";
+  formHeader.innerHTML = `
+    <div>
+      <h3>編輯方法案例</h3>
+      <p>設定方法的標題、摘要、標籤與資源連結。</p>
+    </div>
+  `;
+  formPanel.appendChild(formHeader);
 
   const form = document.createElement("form");
   form.className = "admin-entry-form";
   form.setAttribute("autocomplete", "off");
   form.innerHTML = `
+    <p class="admin-form-mode" data-role="form-mode" hidden></p>
     <div class="admin-form-grid two-column">
       <label class="admin-field">
         <span>標題</span>
@@ -720,9 +1019,10 @@ function buildMethodsManager() {
       <button type="submit" class="primary-btn">儲存案例</button>
     </div>
   `;
-  body.appendChild(form);
+  formPanel.appendChild(form);
 
   const inputs = {
+    mode: form.querySelector("[data-role='form-mode']"),
     title: form.querySelector("#admin-method-title"),
     chapter: form.querySelector("#admin-method-chapter"),
     summary: form.querySelector("#admin-method-summary"),
@@ -734,6 +1034,20 @@ function buildMethodsManager() {
     cancel: form.querySelector("[data-action='cancel']"),
   };
 
+  function setFormMode(message, variant) {
+    if (!inputs.mode) return;
+    if (!message) {
+      inputs.mode.hidden = true;
+      inputs.mode.textContent = "";
+      form.classList.remove("is-override-mode", "is-edit-mode");
+      return;
+    }
+    inputs.mode.hidden = false;
+    inputs.mode.textContent = message;
+    form.classList.toggle("is-override-mode", variant === "override");
+    form.classList.toggle("is-edit-mode", variant === "custom");
+  }
+
   function showFormStatus(message) {
     if (!inputs.status) return;
     inputs.status.textContent = message;
@@ -743,15 +1057,18 @@ function buildMethodsManager() {
   function resetForm() {
     form.reset();
     delete form.dataset.editingId;
+    delete form.dataset.editingSource;
     if (inputs.submit) {
       inputs.submit.textContent = "儲存案例";
       inputs.submit.classList.remove("updating");
     }
+    setFormMode(null);
     showFormStatus("");
   }
 
-  function populateForm(entry) {
+  function beginCustomEdit(entry) {
     form.dataset.editingId = entry.id;
+    form.dataset.editingSource = "custom";
     inputs.title.value = entry.title || "";
     inputs.chapter.value = entry.chapter || "";
     inputs.summary.value = entry.summary || "";
@@ -762,115 +1079,31 @@ function buildMethodsManager() {
       inputs.submit.textContent = "更新案例";
       inputs.submit.classList.add("updating");
     }
+    setFormMode(`編輯自訂案例：「${entry.title}」`, "custom");
     showFormStatus("");
     details.open = true;
     form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  function renderList() {
-    list.innerHTML = "";
-    if (!state.adminLibrary.methods.length) {
-      const empty = document.createElement("p");
-      empty.className = "status-text info";
-      empty.textContent = "尚未新增自訂案例。";
-      list.appendChild(empty);
-      return;
+  function beginBaseEdit(baseEntry, overrideEntry) {
+    form.dataset.editingId = baseEntry.id;
+    form.dataset.editingSource = "base";
+    inputs.title.value = overrideEntry?.title || baseEntry.title || "";
+    inputs.chapter.value = overrideEntry?.chapter || baseEntry.chapterLabel || "";
+    inputs.summary.value = overrideEntry?.summary || baseEntry.summary || "";
+    inputs.notes.value = overrideEntry?.notes || baseEntry.notes || "";
+    const tags = overrideEntry?.tags?.length ? overrideEntry.tags : baseEntry.tags || [];
+    inputs.tags.value = tags.join(", ");
+    const resources = overrideEntry?.resources?.length ? overrideEntry.resources : baseEntry.resources || [];
+    inputs.resources.value = formatResourceLines(resources);
+    if (inputs.submit) {
+      inputs.submit.textContent = overrideEntry ? "更新覆寫" : "儲存覆寫";
+      inputs.submit.classList.add("updating");
     }
-
-    const sorted = [...state.adminLibrary.methods].sort((a, b) => {
-      const aTime = a.updatedAt || a.createdAt || "";
-      const bTime = b.updatedAt || b.createdAt || "";
-      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
-    });
-
-    sorted.forEach((entry) => {
-      const card = document.createElement("article");
-      card.className = "admin-entry-card";
-      card.id = `admin-method-${entry.id}`;
-
-      const titleEl = document.createElement("h4");
-      titleEl.textContent = entry.title;
-      card.appendChild(titleEl);
-
-      if (entry.chapter) {
-        const chapterEl = document.createElement("p");
-        chapterEl.className = "admin-entry-meta";
-        chapterEl.textContent = entry.chapter;
-        card.appendChild(chapterEl);
-      }
-
-      if (entry.summary) {
-        const summaryEl = document.createElement("p");
-        summaryEl.className = "admin-entry-summary";
-        summaryEl.textContent = entry.summary;
-        card.appendChild(summaryEl);
-      }
-
-      if (entry.tags?.length) {
-        const tagList = document.createElement("ul");
-        tagList.className = "admin-entry-tags";
-        entry.tags.forEach((tag) => {
-          const li = document.createElement("li");
-          li.textContent = tag;
-          tagList.appendChild(li);
-        });
-        card.appendChild(tagList);
-      }
-
-      const metaRow = document.createElement("p");
-      metaRow.className = "admin-entry-meta";
-      const timestamp = entry.updatedAt || entry.createdAt;
-      if (timestamp) {
-        metaRow.textContent = `更新：${formatDateTime(timestamp)}`;
-      } else {
-        metaRow.textContent = "已儲存於本機";
-      }
-      card.appendChild(metaRow);
-
-      if (entry.resources?.length) {
-        const resourceList = document.createElement("ul");
-        resourceList.className = "admin-entry-resources";
-        entry.resources.forEach((resource) => {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-          link.href = resource.href || "#";
-          link.target = "_blank";
-          link.rel = "noopener";
-          link.textContent = resource.label || resource.href;
-          li.appendChild(link);
-          resourceList.appendChild(li);
-        });
-        card.appendChild(resourceList);
-      }
-
-      const actions = document.createElement("div");
-      actions.className = "admin-entry-actions";
-
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "secondary-btn small-btn";
-      editBtn.textContent = "編輯";
-      editBtn.addEventListener("click", () => populateForm(entry));
-      actions.appendChild(editBtn);
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.type = "button";
-      deleteBtn.className = "secondary-btn small-btn danger";
-      deleteBtn.textContent = "刪除";
-      deleteBtn.addEventListener("click", () => {
-        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
-        const next = cloneAdminLibrary();
-        next.methods = next.methods.filter((item) => item.id !== entry.id);
-        updateAdminLibrary(next, {
-          message: `已刪除案例「${entry.title}」。`,
-          focusId: "teacher-content",
-        });
-      });
-      actions.appendChild(deleteBtn);
-
-      card.appendChild(actions);
-      list.appendChild(card);
-    });
+    setFormMode(`覆寫內建方法：「${baseEntry.title}」`, "override");
+    showFormStatus("");
+    details.open = true;
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function handleSubmit(event) {
@@ -891,17 +1124,47 @@ function buildMethodsManager() {
     const resources = parseResourceLines(inputs.resources.value);
 
     const editingId = form.dataset.editingId;
+    const editingSource = form.dataset.editingSource || "custom";
     const now = new Date().toISOString();
 
-    if (editingId) {
+    if (editingId && editingSource === "base") {
       const next = cloneAdminLibrary();
-      const existingIndex = next.methods.findIndex((item) => item.id === editingId);
-      if (existingIndex === -1) {
+      const index = next.methods.findIndex((item) => item.id === editingId && item.source === "override");
+      const payload = {
+        id: editingId,
+        title,
+        chapter,
+        summary,
+        notes,
+        tags,
+        resources,
+        source: "override",
+        updatedAt: now,
+      };
+      if (index === -1) {
+        payload.createdAt = now;
+        next.methods.push(payload);
+      } else {
+        payload.createdAt = next.methods[index].createdAt || now;
+        next.methods[index] = { ...next.methods[index], ...payload };
+      }
+      updateAdminLibrary(next, {
+        message: `已${index === -1 ? "建立" : "更新"}方法「${title}」的覆寫版本。`,
+        focusId: `admin-base-method-${editingId}`,
+      });
+      return;
+    }
+
+    const next = cloneAdminLibrary();
+
+    if (editingId) {
+      const index = next.methods.findIndex((item) => item.id === editingId);
+      if (index === -1) {
         showFormStatus("找不到要更新的案例，請重新整理。");
         return;
       }
-      const existing = next.methods[existingIndex];
-      next.methods[existingIndex] = {
+      const existing = next.methods[index];
+      next.methods[index] = {
         ...existing,
         title,
         chapter,
@@ -925,7 +1188,6 @@ function buildMethodsManager() {
     const baseId = slugifyTitle(title, "method");
     const id = generateUniqueId(baseId, existingIds);
 
-    const next = cloneAdminLibrary();
     next.methods.push({
       id,
       title,
@@ -934,6 +1196,7 @@ function buildMethodsManager() {
       notes,
       tags,
       resources,
+      source: "custom",
       createdAt: now,
       updatedAt: now,
     });
@@ -943,7 +1206,8 @@ function buildMethodsManager() {
     });
   }
 
-  renderList();
+  renderBaseList();
+  renderCustomList();
 
   form.addEventListener("submit", handleSubmit);
   inputs.cancel?.addEventListener("click", (event) => {
@@ -1484,14 +1748,24 @@ function buildPatternsManager() {
 }
 
 function buildToolsManager() {
+  const { overrides, customs } = partitionAdminItems(state.adminLibrary.tools);
+  const overrideCount = overrides.size;
+  const customCount = customs.length;
+
   const details = document.createElement("details");
   details.className = "admin-manager";
   details.open = true;
 
   const summary = document.createElement("summary");
   summary.innerHTML = `
-    <span>工具庫</span>
-    <span class="admin-count">${state.adminLibrary.tools.length}</span>
+    <div class="admin-summary-header">
+      <span>工具庫</span>
+      <p>覆寫既有工具，或新增專屬工具。</p>
+    </div>
+    <div class="admin-summary-metrics">
+      <span><strong>${overrideCount}</strong> 項覆寫</span>
+      <span><strong>${customCount}</strong> 項自訂</span>
+    </div>
   `;
   details.appendChild(summary);
 
@@ -1499,14 +1773,338 @@ function buildToolsManager() {
   body.className = "admin-manager-body";
   details.appendChild(body);
 
-  const list = document.createElement("div");
-  list.className = "admin-entry-list";
-  body.appendChild(list);
+  // Base Panel - Existing Tools with Search/Override
+  const basePanel = document.createElement("section");
+  basePanel.className = "admin-panel base-panel";
+  body.appendChild(basePanel);
+
+  const baseHeader = document.createElement("div");
+  baseHeader.className = "admin-panel-header";
+  baseHeader.innerHTML = `
+    <div>
+      <h3>既有工具</h3>
+      <p>調整標題、摘要或分類，覆寫工具庫的預設內容。</p>
+    </div>
+  `;
+  basePanel.appendChild(baseHeader);
+
+  let baseQuery = "";
+  const baseSearch = createAdminSearchControl({
+    placeholder: "搜尋工具...",
+    ariaLabel: "搜尋工具",
+    onInput: (value) => {
+      baseQuery = value.trim().toLowerCase();
+      renderBaseList();
+    },
+  });
+  basePanel.appendChild(baseSearch.wrapper);
+
+  const baseList = document.createElement("div");
+  baseList.className = "admin-entry-collection base";
+  basePanel.appendChild(baseList);
+
+  function renderBaseList() {
+    baseList.innerHTML = "";
+    const filtered = BASE_TOOL_ENTRIES.filter((tool) => {
+      if (!baseQuery) return true;
+      return tool.searchText.includes(baseQuery);
+    });
+
+    if (!filtered.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "找不到符合搜尋的工具。";
+      baseList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((tool) => {
+      const override = overrides.get(tool.id);
+      const card = document.createElement("article");
+      card.className = "admin-base-card";
+      card.id = `admin-base-tool-${tool.id}`;
+      if (override) {
+        card.classList.add("has-override");
+      }
+
+      if (override?.screenshotUrl || tool.screenshotUrl) {
+        const media = document.createElement("div");
+        media.className = "admin-entry-media";
+        const img = document.createElement("img");
+        img.src = override?.screenshotUrl || tool.screenshotUrl;
+        img.alt = `${override?.title || tool.title} 網站縮圖`;
+        img.loading = "lazy";
+        media.appendChild(img);
+        card.appendChild(media);
+      }
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = override?.title || tool.title;
+      headerRow.appendChild(title);
+
+      if (override) {
+        const badge = document.createElement("span");
+        badge.className = "admin-badge override";
+        badge.textContent = "已覆寫";
+        headerRow.appendChild(badge);
+      }
+
+      card.appendChild(headerRow);
+
+      const summaryText = override?.summary || tool.summary;
+      if (summaryText) {
+        const summaryEl = document.createElement("p");
+        summaryEl.className = "admin-entry-summary";
+        summaryEl.textContent = summaryText;
+        card.appendChild(summaryEl);
+      }
+
+      const categories = override?.categories?.length ? override.categories : tool.categories || [];
+      if (categories.length) {
+        const categoryList = document.createElement("ul");
+        categoryList.className = "admin-entry-tags";
+        categories.forEach((categoryId) => {
+          const li = document.createElement("li");
+          li.textContent = TOOL_CATEGORY_LABEL_MAP[categoryId] || categoryId;
+          categoryList.appendChild(li);
+        });
+        card.appendChild(categoryList);
+      }
+
+      const overrideTimestamp = override?.updatedAt || override?.createdAt;
+      if (overrideTimestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `覆寫時間：${formatDateTime(overrideTimestamp)}`;
+        card.appendChild(meta);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = override ? "更新覆寫" : "覆寫內容";
+      editBtn.addEventListener("click", () => {
+        beginBaseEdit(tool, override || null);
+      });
+      actions.appendChild(editBtn);
+
+      if (override) {
+        const revertBtn = document.createElement("button");
+        revertBtn.type = "button";
+        revertBtn.className = "secondary-btn small-btn danger";
+        revertBtn.textContent = "移除覆寫";
+        revertBtn.addEventListener("click", () => {
+          if (!window.confirm(`確定要移除「${override.title || tool.title}」的覆寫版本嗎？`)) {
+            return;
+          }
+          const next = cloneAdminLibrary();
+          next.tools = next.tools.filter((item) => !(item.id === tool.id && item.source === "override"));
+          updateAdminLibrary(next, {
+            message: `已移除工具「${override.title || tool.title}」的覆寫版本。`,
+            focusId: `admin-base-tool-${tool.id}`,
+          });
+        });
+        actions.appendChild(revertBtn);
+      }
+
+      card.appendChild(actions);
+      baseList.appendChild(card);
+    });
+  }
+
+  // Custom Panel - User-created Tools
+  const customPanel = document.createElement("section");
+  customPanel.className = "admin-panel custom-panel";
+  body.appendChild(customPanel);
+
+  const customHeader = document.createElement("div");
+  customHeader.className = "admin-panel-header";
+  customHeader.innerHTML = `
+    <div>
+      <h3>管理者自訂工具</h3>
+      <p>自訂工具會顯示於工具庫的管理者專區。</p>
+    </div>
+  `;
+  customPanel.appendChild(customHeader);
+
+  const customList = document.createElement("div");
+  customList.className = "admin-entry-collection";
+  customPanel.appendChild(customList);
+
+  function renderCustomList() {
+    customList.innerHTML = "";
+    if (!customs.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "尚未新增自訂工具。";
+      customList.appendChild(empty);
+      return;
+    }
+
+    const sorted = [...customs].sort((a, b) => {
+      const aTime = a.updatedAt || a.createdAt || "";
+      const bTime = b.updatedAt || b.createdAt || "";
+      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
+    });
+
+    sorted.forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "admin-entry-card";
+      card.id = `admin-tool-${entry.id}`;
+
+      if (entry.screenshotUrl) {
+        const media = document.createElement("div");
+        media.className = "admin-entry-media";
+        const img = document.createElement("img");
+        img.src = entry.screenshotUrl;
+        img.alt = `${entry.title} 網站縮圖`;
+        img.loading = "lazy";
+        media.appendChild(img);
+        card.appendChild(media);
+      }
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = entry.title;
+      headerRow.appendChild(title);
+
+      const badge = document.createElement("span");
+      badge.className = "admin-badge custom";
+      badge.textContent = "自訂";
+      headerRow.appendChild(badge);
+
+      card.appendChild(headerRow);
+
+      if (entry.summary) {
+        const summaryEl = document.createElement("p");
+        summaryEl.className = "admin-entry-summary";
+        summaryEl.textContent = entry.summary;
+        card.appendChild(summaryEl);
+      }
+
+      if (entry.description) {
+        const descriptionEl = document.createElement("p");
+        descriptionEl.className = "admin-entry-description";
+        descriptionEl.textContent = entry.description;
+        card.appendChild(descriptionEl);
+      }
+
+      if (entry.categories?.length) {
+        const categoryList = document.createElement("ul");
+        categoryList.className = "admin-entry-tags";
+        entry.categories.forEach((categoryId) => {
+          const li = document.createElement("li");
+          li.textContent = TOOL_CATEGORY_LABEL_MAP[categoryId] || categoryId;
+          categoryList.appendChild(li);
+        });
+        card.appendChild(categoryList);
+      }
+
+      if (entry.highlights?.length) {
+        const highlightList = document.createElement("ul");
+        highlightList.className = "admin-entry-tags";
+        entry.highlights.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          highlightList.appendChild(li);
+        });
+        card.appendChild(highlightList);
+      }
+
+      const timestamp = entry.updatedAt || entry.createdAt;
+      if (timestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `更新：${formatDateTime(timestamp)}`;
+        card.appendChild(meta);
+      }
+
+      if (entry.websiteUrl || entry.learnMoreUrl) {
+        const resourceList = document.createElement("ul");
+        resourceList.className = "admin-entry-resources";
+        if (entry.websiteUrl) {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = entry.websiteUrl;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "工具網站";
+          li.appendChild(link);
+          resourceList.appendChild(li);
+        }
+        if (entry.learnMoreUrl) {
+          const li = document.createElement("li");
+          const link = document.createElement("a");
+          link.href = entry.learnMoreUrl;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "延伸閱讀";
+          li.appendChild(link);
+          resourceList.appendChild(li);
+        }
+        card.appendChild(resourceList);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = "編輯";
+      editBtn.addEventListener("click", () => {
+        beginCustomEdit(entry);
+      });
+      actions.appendChild(editBtn);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "secondary-btn small-btn danger";
+      deleteBtn.textContent = "刪除";
+      deleteBtn.addEventListener("click", () => {
+        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
+        const next = cloneAdminLibrary();
+        next.tools = next.tools.filter((item) => item.id !== entry.id);
+        updateAdminLibrary(next, {
+          message: `已刪除工具「${entry.title}」。`,
+          focusId: "teacher-content",
+        });
+      });
+      actions.appendChild(deleteBtn);
+
+      card.appendChild(actions);
+      customList.appendChild(card);
+    });
+  }
+
+  // Form Panel
+  const formPanel = document.createElement("section");
+  formPanel.className = "admin-panel form-panel";
+  body.appendChild(formPanel);
+
+  const formHeader = document.createElement("div");
+  formHeader.className = "admin-panel-header";
+  formHeader.innerHTML = `
+    <div>
+      <h3>編輯工具</h3>
+      <p>設定工具的標題、摘要、分類與相關連結。</p>
+    </div>
+  `;
+  formPanel.appendChild(formHeader);
 
   const form = document.createElement("form");
   form.className = "admin-entry-form";
   form.setAttribute("autocomplete", "off");
   form.innerHTML = `
+    <p class="admin-form-mode" data-role="form-mode" hidden></p>
     <div class="admin-form-grid two-column">
       <label class="admin-field">
         <span>工具名稱</span>
@@ -1551,9 +2149,10 @@ function buildToolsManager() {
       <button type="submit" class="primary-btn">儲存工具</button>
     </div>
   `;
-  body.appendChild(form);
+  formPanel.appendChild(form);
 
   const inputs = {
+    mode: form.querySelector("[data-role='form-mode']"),
     title: form.querySelector("#admin-tool-title"),
     screenshot: form.querySelector("#admin-tool-screenshot"),
     summary: form.querySelector("#admin-tool-summary"),
@@ -1567,6 +2166,20 @@ function buildToolsManager() {
     cancel: form.querySelector("[data-action='cancel']"),
   };
 
+  function setFormMode(message, variant) {
+    if (!inputs.mode) return;
+    if (!message) {
+      inputs.mode.hidden = true;
+      inputs.mode.textContent = "";
+      form.classList.remove("is-override-mode", "is-edit-mode");
+      return;
+    }
+    inputs.mode.hidden = false;
+    inputs.mode.textContent = message;
+    form.classList.toggle("is-override-mode", variant === "override");
+    form.classList.toggle("is-edit-mode", variant === "custom");
+  }
+
   function showFormStatus(message) {
     if (!inputs.status) return;
     inputs.status.textContent = message;
@@ -1576,15 +2189,18 @@ function buildToolsManager() {
   function resetForm() {
     form.reset();
     delete form.dataset.editingId;
+    delete form.dataset.editingSource;
     if (inputs.submit) {
       inputs.submit.textContent = "儲存工具";
       inputs.submit.classList.remove("updating");
     }
+    setFormMode(null);
     showFormStatus("");
   }
 
-  function populateForm(entry) {
+  function beginCustomEdit(entry) {
     form.dataset.editingId = entry.id;
+    form.dataset.editingSource = "custom";
     inputs.title.value = entry.title || "";
     inputs.screenshot.value = entry.screenshotUrl || "";
     inputs.summary.value = entry.summary || "";
@@ -1599,145 +2215,35 @@ function buildToolsManager() {
       inputs.submit.textContent = "更新工具";
       inputs.submit.classList.add("updating");
     }
+    setFormMode(`編輯自訂工具：「${entry.title}」`, "custom");
     showFormStatus("");
     details.open = true;
     form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  function renderList() {
-    list.innerHTML = "";
-    if (!state.adminLibrary.tools.length) {
-      const empty = document.createElement("p");
-      empty.className = "status-text info";
-      empty.textContent = "尚未新增自訂工具。";
-      list.appendChild(empty);
-      return;
+  function beginBaseEdit(baseEntry, overrideEntry) {
+    form.dataset.editingId = baseEntry.id;
+    form.dataset.editingSource = "base";
+    inputs.title.value = overrideEntry?.title || baseEntry.title || "";
+    inputs.screenshot.value = overrideEntry?.screenshotUrl || baseEntry.screenshotUrl || "";
+    inputs.summary.value = overrideEntry?.summary || baseEntry.summary || "";
+    inputs.description.value = overrideEntry?.description || baseEntry.description || "";
+    const categories = overrideEntry?.categories?.length ? overrideEntry.categories : baseEntry.categories || [];
+    inputs.categories.value = categories
+      .map((categoryId) => TOOL_CATEGORY_LABEL_MAP[categoryId] || categoryId)
+      .join(", ");
+    const highlights = overrideEntry?.highlights?.length ? overrideEntry.highlights : baseEntry.highlights || [];
+    inputs.highlights.value = highlights.join(", ");
+    inputs.website.value = overrideEntry?.websiteUrl || baseEntry.websiteUrl || "";
+    inputs.learnMore.value = overrideEntry?.learnMoreUrl || baseEntry.learnMoreUrl || "";
+    if (inputs.submit) {
+      inputs.submit.textContent = overrideEntry ? "更新覆寫" : "儲存覆寫";
+      inputs.submit.classList.add("updating");
     }
-
-    const sorted = [...state.adminLibrary.tools].sort((a, b) => {
-      const aTime = a.updatedAt || a.createdAt || "";
-      const bTime = b.updatedAt || b.createdAt || "";
-      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
-    });
-
-    sorted.forEach((entry) => {
-      const card = document.createElement("article");
-      card.className = "admin-entry-card";
-      card.id = `admin-tool-${entry.id}`;
-
-      if (entry.screenshotUrl) {
-        const media = document.createElement("div");
-        media.className = "admin-entry-media";
-        const img = document.createElement("img");
-        img.src = entry.screenshotUrl;
-        img.alt = `${entry.title} 網站縮圖`;
-        img.loading = "lazy";
-        media.appendChild(img);
-        card.appendChild(media);
-      }
-
-      const titleEl = document.createElement("h4");
-      titleEl.textContent = entry.title;
-      card.appendChild(titleEl);
-
-      if (entry.summary) {
-        const summaryEl = document.createElement("p");
-        summaryEl.className = "admin-entry-summary";
-        summaryEl.textContent = entry.summary;
-        card.appendChild(summaryEl);
-      }
-
-      if (entry.description) {
-        const descriptionEl = document.createElement("p");
-        descriptionEl.className = "admin-entry-description";
-        descriptionEl.textContent = entry.description;
-        card.appendChild(descriptionEl);
-      }
-
-      if (entry.categories?.length) {
-        const categoryList = document.createElement("ul");
-        categoryList.className = "admin-entry-tags";
-        entry.categories.forEach((categoryId) => {
-          const li = document.createElement("li");
-          li.textContent = TOOL_CATEGORY_LABEL_MAP[categoryId] || categoryId;
-          categoryList.appendChild(li);
-        });
-        card.appendChild(categoryList);
-      }
-
-      if (entry.highlights?.length) {
-        const highlightList = document.createElement("ul");
-        highlightList.className = "admin-entry-tags";
-        entry.highlights.forEach((item) => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          highlightList.appendChild(li);
-        });
-        card.appendChild(highlightList);
-      }
-
-      const metaRow = document.createElement("p");
-      metaRow.className = "admin-entry-meta";
-      const timestamp = entry.updatedAt || entry.createdAt;
-      metaRow.textContent = timestamp
-        ? `更新：${formatDateTime(timestamp)}`
-        : "已儲存於本機";
-      card.appendChild(metaRow);
-
-      if (entry.websiteUrl || entry.learnMoreUrl) {
-        const resourceList = document.createElement("ul");
-        resourceList.className = "admin-entry-resources";
-        if (entry.websiteUrl) {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-          link.href = entry.websiteUrl;
-          link.target = "_blank";
-          link.rel = "noopener";
-          link.textContent = "工具網站";
-          li.appendChild(link);
-          resourceList.appendChild(li);
-        }
-        if (entry.learnMoreUrl) {
-          const li = document.createElement("li");
-          const link = document.createElement("a");
-          link.href = entry.learnMoreUrl;
-          link.target = "_blank";
-          link.rel = "noopener";
-          link.textContent = "延伸閱讀";
-          li.appendChild(link);
-          resourceList.appendChild(li);
-        }
-        card.appendChild(resourceList);
-      }
-
-      const actions = document.createElement("div");
-      actions.className = "admin-entry-actions";
-
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "secondary-btn small-btn";
-      editBtn.textContent = "編輯";
-      editBtn.addEventListener("click", () => populateForm(entry));
-      actions.appendChild(editBtn);
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.type = "button";
-      deleteBtn.className = "secondary-btn small-btn danger";
-      deleteBtn.textContent = "刪除";
-      deleteBtn.addEventListener("click", () => {
-        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
-        const next = cloneAdminLibrary();
-        next.tools = next.tools.filter((item) => item.id !== entry.id);
-        updateAdminLibrary(next, {
-          message: `已刪除工具「${entry.title}」。`,
-          focusId: "teacher-content",
-        });
-      });
-      actions.appendChild(deleteBtn);
-
-      card.appendChild(actions);
-      list.appendChild(card);
-    });
+    setFormMode(`覆寫內建工具：「${baseEntry.title}」`, "override");
+    showFormStatus("");
+    details.open = true;
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function handleSubmit(event) {
@@ -1792,11 +2298,43 @@ function buildToolsManager() {
     const summary = inputs.summary.value.trim();
     const description = inputs.description.value.trim();
     const highlights = parseCommaSeparated(inputs.highlights.value);
-    const now = new Date().toISOString();
     const editingId = form.dataset.editingId;
+    const editingSource = form.dataset.editingSource || "custom";
+    const now = new Date().toISOString();
+
+    if (editingId && editingSource === "base") {
+      const next = cloneAdminLibrary();
+      const index = next.tools.findIndex((item) => item.id === editingId && item.source === "override");
+      const payload = {
+        id: editingId,
+        title,
+        summary,
+        description,
+        categories,
+        highlights,
+        screenshotUrl,
+        websiteUrl,
+        learnMoreUrl,
+        source: "override",
+        updatedAt: now,
+      };
+      if (index === -1) {
+        payload.createdAt = now;
+        next.tools.push(payload);
+      } else {
+        payload.createdAt = next.tools[index].createdAt || now;
+        next.tools[index] = { ...next.tools[index], ...payload };
+      }
+      updateAdminLibrary(next, {
+        message: `已${index === -1 ? "建立" : "更新"}工具「${title}」的覆寫版本。`,
+        focusId: `admin-base-tool-${editingId}`,
+      });
+      return;
+    }
+
+    const next = cloneAdminLibrary();
 
     if (editingId) {
-      const next = cloneAdminLibrary();
       const index = next.tools.findIndex((item) => item.id === editingId);
       if (index === -1) {
         showFormStatus("找不到要更新的工具，請重新整理。");
@@ -1829,7 +2367,6 @@ function buildToolsManager() {
     const baseId = slugifyTitle(title, "tool");
     const id = generateUniqueId(baseId, existingIds);
 
-    const next = cloneAdminLibrary();
     next.tools.push({
       id,
       title,
@@ -1840,6 +2377,7 @@ function buildToolsManager() {
       screenshotUrl,
       websiteUrl,
       learnMoreUrl,
+      source: "custom",
       createdAt: now,
       updatedAt: now,
     });
@@ -1850,7 +2388,8 @@ function buildToolsManager() {
     });
   }
 
-  renderList();
+  renderBaseList();
+  renderCustomList();
 
   form.addEventListener("submit", handleSubmit);
   inputs.cancel?.addEventListener("click", (event) => {
