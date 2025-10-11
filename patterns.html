@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 設計模式牆 · 治理與部署策略</title>
+    <meta
+      name="description"
+      content="瀏覽 AI 設計模式牆：依治理主題與風險分類快速篩選模式，支援複製摘要與協作討論。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">Agentic UX Lab</span>
+        <p class="tagline">AI 設計模式牆 · 治理與部署策略</p>
+      </div>
+      <nav class="site-nav" aria-label="模式牆導覽">
+        <a href="./index.html" class="nav-link">返回學習者版本</a>
+        <a href="./cases.html" class="nav-link">案例庫</a>
+        <a href="./tools.html" class="nav-link">工具庫</a>
+        <a href="./teacher.html" class="nav-link">管理者模式</a>
+      </nav>
+    </header>
+
+    <section class="case-hero">
+      <div class="case-hero-content">
+        <h1>AI 設計模式牆</h1>
+        <p>
+          專為價值矩陣課程延伸打造的治理模式資料庫。以部署、風險與管控情境為索引，快速組合下一步的原型實驗與落地策略。
+        </p>
+        <div class="case-hero-actions">
+          <a class="primary-btn" href="#pattern-board">開啟模式牆</a>
+          <a class="secondary-btn ghost-btn" href="./cases.html">返回方法圖書館</a>
+          <a class="secondary-btn ghost-btn" href="./tools.html">瀏覽工具庫</a>
+        </div>
+      </div>
+      <div class="case-hero-panel">
+        <div class="hero-highlight">
+          <h2>模式牆亮點</h2>
+          <ul>
+            <li>跨治理維度篩選：政策、風險控管、部署成熟度</li>
+            <li>自動保存偏好：保留篩選與搜尋字詞，跨分頁同步</li>
+            <li>協作友善：支援複製摘要、快速宣告場景與用途</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <main id="pattern-board" class="pattern-board" aria-label="AI 設計模式牆">
+      <aside class="pattern-filter content-panel">
+        <header>
+          <h2>篩選條件</h2>
+          <p>勾選要套用的分類或主題，找出適合的治理模式。</p>
+        </header>
+        <div id="pattern-filter-list" class="pattern-filter-list"></div>
+        <button id="pattern-reset" class="secondary-btn small-btn" type="button">重設篩選</button>
+      </aside>
+      <div class="pattern-content content-panel">
+        <header class="pattern-content-header">
+          <div>
+            <h2>設計模式牆</h2>
+            <p id="pattern-summary" class="pattern-summary-meta"></p>
+          </div>
+          <div class="pattern-search">
+            <label class="visually-hidden" for="pattern-search">搜尋設計模式</label>
+            <input type="search" id="pattern-search" placeholder="搜尋關鍵字…" />
+          </div>
+        </header>
+        <div id="pattern-grid" class="pattern-grid" role="list"></div>
+      </div>
+    </main>
+
+    <div id="pattern-live-region" class="visually-hidden" aria-live="polite"></div>
+
+    <footer class="site-footer">
+      <p>© 版權所有 PrivacyUX consulting Ltd. 2025</p>
+    </footer>
+
+    <script type="module" src="./src/patterns.js"></script>
+  </body>
+</html>
