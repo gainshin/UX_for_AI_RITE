@@ -3,6 +3,7 @@ import {
   loadThemePreference,
   loadCaseLibraryState,
   saveCaseLibraryState,
+  loadAdminLibrary,
   STORAGE_KEYS,
 } from "./storage.js";
 import { applyTheme, resolveThemeId } from "./theme.js";
@@ -10,6 +11,7 @@ import { applyTheme, resolveThemeId } from "./theme.js";
 const ALL_FILTER_IDS = patternFilters.map((filter) => filter.id);
 
 const storedState = loadCaseLibraryState() || {};
+const adminLibraryState = loadAdminLibrary();
 
 const state = {
   theme: resolveThemeId(loadThemePreference()),
@@ -19,6 +21,7 @@ const state = {
       : ALL_FILTER_IDS
   ),
   searchTerm: typeof storedState.search === "string" ? storedState.search : "",
+  customPatterns: sanitizeCustomPatterns(adminLibraryState.patterns),
 };
 
 applyTheme(state.theme);
@@ -27,6 +30,31 @@ const filterLabelMap = patternFilters.reduce((acc, filter) => {
   acc[filter.id] = filter.label;
   return acc;
 }, {});
+
+function sanitizeCustomPatterns(entries) {
+  if (!Array.isArray(entries)) return [];
+  return entries
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+      const title = typeof entry.title === "string" ? entry.title.trim() : "";
+      if (!id || !title) return null;
+      return {
+        id,
+        title,
+        summary: typeof entry.summary === "string" ? entry.summary.trim() : "",
+        subtitle: typeof entry.subtitle === "string" ? entry.subtitle.trim() : "",
+        filters: Array.isArray(entry.filters)
+          ? entry.filters
+              .map((filterId) => (typeof filterId === "string" ? filterId.trim() : ""))
+              .filter(Boolean)
+          : [],
+        createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
+        updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+      };
+    })
+    .filter(Boolean);
+}
 
 const elements = {
   filterList: document.querySelector("#pattern-filter-list"),
@@ -120,10 +148,16 @@ function bindReset() {
   });
 }
 
+function getAllPatterns() {
+  const customPatterns = state.customPatterns.map((pattern) => ({ ...pattern, isCustom: true }));
+  return [...patternCatalog, ...customPatterns];
+}
+
 function getFilteredPatterns() {
   const search = state.searchTerm.trim().toLowerCase();
-  return patternCatalog.filter((pattern) => {
-    const matchesFilter = pattern.filters?.some((filterId) => state.activeFilters.has(filterId));
+  return getAllPatterns().filter((pattern) => {
+    const validFilters = Array.isArray(pattern.filters) ? pattern.filters : [];
+    const matchesFilter = validFilters.some((filterId) => state.activeFilters.has(filterId));
     const text = `${pattern.title} ${pattern.subtitle ?? ""} ${pattern.summary ?? ""}`.toLowerCase();
     const matchesSearch = !search || text.includes(search);
     return matchesFilter && matchesSearch;
@@ -155,6 +189,13 @@ function renderPatternGrid() {
     const card = document.createElement("article");
     card.className = "pattern-card";
     card.setAttribute("role", "listitem");
+    if (pattern.isCustom) {
+      card.classList.add("custom-pattern-card");
+      const badge = document.createElement("span");
+      badge.className = "pattern-custom-badge";
+      badge.textContent = "管理者新增";
+      card.appendChild(badge);
+    }
 
     const title = document.createElement("h4");
     title.textContent = pattern.title;
@@ -247,6 +288,10 @@ window.addEventListener("storage", (event) => {
       }
       renderPatternGrid();
     }
+  } else if (event.key === STORAGE_KEYS.adminLibrary) {
+    const updatedAdmin = loadAdminLibrary();
+    state.customPatterns = sanitizeCustomPatterns(updatedAdmin.patterns);
+    renderPatternGrid();
   }
 });
 

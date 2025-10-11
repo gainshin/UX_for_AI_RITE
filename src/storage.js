@@ -4,6 +4,7 @@ const UNIT_ACCESS_KEY = "ai-course-unit-access-v1";
 const BUTTON_CONFIG_KEY = "ai-course-button-config-v1";
 const THEME_KEY = "ai-course-theme-v1";
 const CASE_LIBRARY_KEY = "ai-course-case-library-state-v1";
+const ADMIN_LIBRARY_KEY = "ai-course-admin-library-v1";
 
 export function loadProgress() {
   try {
@@ -296,6 +297,135 @@ export function saveCaseLibraryState(state) {
   }
 }
 
+function sanitizeStringArray(value) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set();
+  return value
+    .map((item) => (typeof item === "string" ? item.trim() : ""))
+    .filter((item) => {
+      if (!item || seen.has(item)) return false;
+      seen.add(item);
+      return true;
+    });
+}
+
+function sanitizeResourceEntry(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const label = typeof entry.label === "string" ? entry.label.trim() : "";
+  const href = typeof entry.href === "string" ? entry.href.trim() : "";
+  const fallbackUrl = typeof entry.url === "string" ? entry.url.trim() : "";
+  const finalHref = href || fallbackUrl;
+  if (!label && !finalHref) return null;
+  const description = typeof entry.description === "string" ? entry.description.trim() : "";
+  return {
+    label: label || finalHref,
+    href: finalHref,
+    description,
+  };
+}
+
+function sanitizeMethodEntry(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+  const title = typeof entry.title === "string" ? entry.title.trim() : "";
+  if (!id || !title) return null;
+  return {
+    id,
+    title,
+    chapter: typeof entry.chapter === "string" ? entry.chapter.trim() : "",
+    summary: typeof entry.summary === "string" ? entry.summary.trim() : "",
+    lead: typeof entry.lead === "string" ? entry.lead.trim() : "",
+    notes: typeof entry.notes === "string" ? entry.notes.trim() : "",
+    tags: sanitizeStringArray(entry.tags),
+    resources: Array.isArray(entry.resources)
+      ? entry.resources.map(sanitizeResourceEntry).filter(Boolean)
+      : [],
+    createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
+    updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+  };
+}
+
+function sanitizePatternEntry(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+  const title = typeof entry.title === "string" ? entry.title.trim() : "";
+  if (!id || !title) return null;
+  return {
+    id,
+    title,
+    summary: typeof entry.summary === "string" ? entry.summary.trim() : "",
+    subtitle: typeof entry.subtitle === "string" ? entry.subtitle.trim() : "",
+    filters: sanitizeStringArray(entry.filters),
+    createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
+    updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+  };
+}
+
+function sanitizeToolEntry(entry) {
+  if (!entry || typeof entry !== "object") return null;
+  const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+  const title = typeof entry.title === "string" ? entry.title.trim() : "";
+  if (!id || !title) return null;
+  const summary = typeof entry.summary === "string" ? entry.summary.trim() : "";
+  const screenshotUrl = typeof entry.screenshotUrl === "string" ? entry.screenshotUrl.trim() : "";
+  const websiteUrl = typeof entry.websiteUrl === "string" ? entry.websiteUrl.trim() : "";
+  const learnMoreUrl = typeof entry.learnMoreUrl === "string" ? entry.learnMoreUrl.trim() : "";
+  return {
+    id,
+    title,
+    summary,
+    description: typeof entry.description === "string" ? entry.description.trim() : "",
+    categories: sanitizeStringArray(entry.categories),
+    highlights: sanitizeStringArray(entry.highlights),
+    screenshotUrl,
+    websiteUrl,
+    learnMoreUrl,
+    createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
+    updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+  };
+}
+
+function normalizeAdminLibrary(input) {
+  if (!input || typeof input !== "object") {
+    return { methods: [], patterns: [], tools: [] };
+  }
+  return {
+    methods: Array.isArray(input.methods)
+      ? input.methods.map(sanitizeMethodEntry).filter(Boolean)
+      : [],
+    patterns: Array.isArray(input.patterns)
+      ? input.patterns.map(sanitizePatternEntry).filter(Boolean)
+      : [],
+    tools: Array.isArray(input.tools)
+      ? input.tools.map(sanitizeToolEntry).filter(Boolean)
+      : [],
+  };
+}
+
+export function loadAdminLibrary() {
+  try {
+    const raw = window.localStorage.getItem(ADMIN_LIBRARY_KEY);
+    if (!raw) {
+      return { methods: [], patterns: [], tools: [] };
+    }
+    const parsed = JSON.parse(raw);
+    return normalizeAdminLibrary(parsed);
+  } catch (err) {
+    console.warn("無法載入管理資源庫：", err);
+    return { methods: [], patterns: [], tools: [] };
+  }
+}
+
+export function saveAdminLibrary(library) {
+  const normalized = normalizeAdminLibrary(library);
+  try {
+    window.localStorage.setItem(ADMIN_LIBRARY_KEY, JSON.stringify(normalized));
+  } catch (err) {
+    console.warn("無法儲存管理資源庫：", err);
+  }
+  return normalized;
+}
+
 export const STORAGE_KEYS = {
   progress: STORAGE_KEY,
   teacherState: TEACHER_STATE_KEY,
@@ -303,4 +433,5 @@ export const STORAGE_KEYS = {
   buttonConfig: BUTTON_CONFIG_KEY,
   theme: THEME_KEY,
   caseLibrary: CASE_LIBRARY_KEY,
+  adminLibrary: ADMIN_LIBRARY_KEY,
 };

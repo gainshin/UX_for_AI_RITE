@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 工具庫 · 策略資源圖譜</title>
+    <meta
+      name="description"
+      content="瀏覽 AI 價值矩陣課程的工具庫：依分類、搜尋與精選清單快速找到 UX 研究、設計與治理的輔助工具。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">Agentic UX Lab</span>
+        <p class="tagline">AI 工具庫 · UX 與治理資源選單</p>
+      </div>
+      <nav class="site-nav" aria-label="工具庫導覽">
+        <a href="./index.html" class="nav-link">返回學習者版本</a>
+        <a href="./cases.html" class="nav-link">案例庫</a>
+        <a href="./patterns.html" class="nav-link">設計模式牆</a>
+        <a href="./tools.html" class="nav-link" aria-current="page">工具庫</a>
+        <a
+          href="./teacher.html"
+          class="nav-link nav-button"
+          target="_blank"
+          rel="noopener"
+        >
+          管理者模式
+        </a>
+      </nav>
+    </header>
+
+    <section class="case-hero">
+      <div class="case-hero-content">
+        <h1>AI 工具庫</h1>
+        <p>
+          整理 UX for AI 課程常用的研究、設計與治理工具，依據情境與分類快速找到能支援價值矩陣落地的資源。
+        </p>
+        <div class="tool-quick-header">
+          <h2>精選分類捷徑</h2>
+          <p class="tool-quick-note">根據課堂練習最常使用的工具分類，一鍵切換。</p>
+        </div>
+        <div
+          id="tool-quick-filters"
+          class="tool-quick-filters"
+          role="group"
+          aria-label="精選分類捷徑"
+        ></div>
+        <div class="case-hero-actions">
+          <a class="primary-btn" href="#tool-app">瀏覽工具庫</a>
+          <a class="secondary-btn ghost-btn" href="./cases.html">返回案例庫</a>
+        </div>
+      </div>
+      <div class="case-hero-panel">
+        <div class="hero-highlight">
+          <h2>工具庫亮點</h2>
+          <ul>
+            <li>以 UX 任務分類，快速對應不同價值矩陣策略。</li>
+            <li>支援搜尋與精選篩選，保留瀏覽狀態於本機。</li>
+            <li>點擊卡片按鈕即可前往官方網站或延伸資源。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <main id="tool-app" class="tool-layout" aria-label="AI 工具庫">
+      <aside class="tool-filter content-panel">
+        <header>
+          <h2>篩選分類</h2>
+          <p>選擇想查看的工具類別，或切換至全部工具以探索更多靈感。</p>
+        </header>
+        <div
+          id="tool-filter-list"
+          class="tool-filter-list"
+          role="radiogroup"
+          aria-label="工具分類"
+        ></div>
+        <button id="tool-reset" class="secondary-btn small-btn" type="button">
+          重設條件
+        </button>
+      </aside>
+      <section class="tool-content content-panel">
+        <header class="tool-content-header">
+          <div>
+            <h2>工具總覽</h2>
+            <p id="tool-summary" class="tool-summary-meta"></p>
+          </div>
+          <div class="tool-search">
+            <label class="visually-hidden" for="tool-search">搜尋工具</label>
+            <input type="search" id="tool-search" placeholder="搜尋工具或關鍵字…" />
+          </div>
+        </header>
+        <div class="tool-toggle-row">
+          <label class="toggle-control" for="tool-top-only">
+            <input type="checkbox" id="tool-top-only" />
+            <span>僅顯示精選分類</span>
+          </label>
+        </div>
+        <div id="tool-grid" class="tool-grid" role="list"></div>
+      </section>
+    </main>
+
+    <div id="tool-live-region" class="visually-hidden" aria-live="polite"></div>
+
+    <footer class="site-footer">
+      <p>© 版權所有 PrivacyUX consulting Ltd. 2025</p>
+    </footer>
+
+    <script type="module" src="./src/tools.js"></script>
+  </body>
+</html>
