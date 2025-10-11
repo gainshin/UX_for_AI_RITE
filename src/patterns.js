@@ -22,6 +22,7 @@ const state = {
   ),
   searchTerm: typeof storedState.search === "string" ? storedState.search : "",
   customPatterns: sanitizeCustomPatterns(adminLibraryState.patterns),
+  patternOverrides: buildPatternOverrides(adminLibraryState.patterns),
 };
 
 applyTheme(state.theme);
@@ -34,6 +35,7 @@ const filterLabelMap = patternFilters.reduce((acc, filter) => {
 function sanitizeCustomPatterns(entries) {
   if (!Array.isArray(entries)) return [];
   return entries
+    .filter((entry) => entry && entry.source !== "override")
     .map((entry) => {
       if (!entry || typeof entry !== "object") return null;
       const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
@@ -51,9 +53,25 @@ function sanitizeCustomPatterns(entries) {
           : [],
         createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
         updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+        source: "custom",
       };
     })
     .filter(Boolean);
+}
+
+function buildPatternOverrides(entries) {
+  const map = new Map();
+  if (!Array.isArray(entries)) {
+    return map;
+  }
+  entries.forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+    if (entry.source !== "override") return;
+    const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+    if (!id) return;
+    map.set(id, { ...entry });
+  });
+  return map;
 }
 
 const elements = {
@@ -148,9 +166,34 @@ function bindReset() {
   });
 }
 
+function getPatternCatalogWithOverrides() {
+  return patternCatalog.map((pattern) => {
+    const override = state.patternOverrides.get(pattern.id);
+    if (!override) {
+      return pattern;
+    }
+    const filters = Array.isArray(override.filters) && override.filters.length
+      ? override.filters
+      : pattern.filters;
+    return {
+      ...pattern,
+      title: override.title && override.title.trim() ? override.title.trim() : pattern.title,
+      summary: override.summary && override.summary.trim() ? override.summary.trim() : pattern.summary,
+      subtitle: override.subtitle && override.subtitle.trim() ? override.subtitle.trim() : pattern.subtitle,
+      filters,
+      isOverride: true,
+      overrideMeta: {
+        updatedAt: override.updatedAt || null,
+        createdAt: override.createdAt || null,
+      },
+    };
+  });
+}
+
 function getAllPatterns() {
+  const basePatterns = getPatternCatalogWithOverrides();
   const customPatterns = state.customPatterns.map((pattern) => ({ ...pattern, isCustom: true }));
-  return [...patternCatalog, ...customPatterns];
+  return [...basePatterns, ...customPatterns];
 }
 
 function getFilteredPatterns() {
@@ -194,6 +237,12 @@ function renderPatternGrid() {
       const badge = document.createElement("span");
       badge.className = "pattern-custom-badge";
       badge.textContent = "管理者新增";
+      card.appendChild(badge);
+    } else if (pattern.isOverride) {
+      card.classList.add("override-pattern-card");
+      const badge = document.createElement("span");
+      badge.className = "pattern-override-badge";
+      badge.textContent = "管理者覆寫";
       card.appendChild(badge);
     }
 
@@ -291,6 +340,7 @@ window.addEventListener("storage", (event) => {
   } else if (event.key === STORAGE_KEYS.adminLibrary) {
     const updatedAdmin = loadAdminLibrary();
     state.customPatterns = sanitizeCustomPatterns(updatedAdmin.patterns);
+    state.patternOverrides = buildPatternOverrides(updatedAdmin.patterns);
     renderPatternGrid();
   }
 });

@@ -17,6 +17,7 @@ const state = {
   theme: resolveThemeId(loadThemePreference()),
   selectedMethodId: storedState.selectedMethodId || DEFAULT_METHOD_ID,
   customMethods: sanitizeCustomMethods(adminLibraryState.methods),
+  methodOverrides: buildMethodOverrides(adminLibraryState.methods),
 };
 
 applyTheme(state.theme);
@@ -29,6 +30,7 @@ const elements = {
 function sanitizeCustomMethods(entries) {
   if (!Array.isArray(entries)) return [];
   return entries
+    .filter((entry) => entry && entry.source !== "override")
     .map((entry) => {
       if (!entry || typeof entry !== "object") return null;
       const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
@@ -56,9 +58,25 @@ function sanitizeCustomMethods(entries) {
           : [],
         createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
         updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+        source: "custom",
       };
     })
     .filter(Boolean);
+}
+
+function buildMethodOverrides(entries) {
+  const map = new Map();
+  if (!Array.isArray(entries)) {
+    return map;
+  }
+  entries.forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+    if (entry.source !== "override") return;
+    const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+    if (!id) return;
+    map.set(id, { ...entry });
+  });
+  return map;
 }
 
 function init() {
@@ -74,12 +92,30 @@ function persistState() {
   });
 }
 
+function getMethodColumns() {
+  return methodLibrary.map((column) => ({
+    ...column,
+    groups: (column.groups || []).map((group) => ({
+      ...group,
+      items: (group.items || []).map((item) => {
+        const override = state.methodOverrides.get(item.id);
+        if (!override || !override.title) {
+          return { ...item };
+        }
+        return { ...item, title: override.title };
+      }),
+    })),
+  }));
+}
+
 function renderMethodColumns() {
   const container = elements.methodColumns;
   if (!container) return;
   container.innerHTML = "";
 
-  methodLibrary.forEach((column) => {
+  const columns = getMethodColumns();
+
+  columns.forEach((column) => {
     const article = document.createElement("article");
     article.className = "method-column";
 
@@ -119,8 +155,16 @@ function renderMethodColumns() {
         button.textContent = item.title;
         button.dataset.methodId = item.id;
         const isSelected = item.id === state.selectedMethodId;
+        const isOverridden = state.methodOverrides.has(item.id);
         if (isSelected) {
           button.classList.add("selected");
+        }
+        if (isOverridden) {
+          button.classList.add("overridden");
+          const badge = document.createElement("span");
+          badge.className = "method-item-badge";
+          badge.textContent = "覆寫";
+          button.appendChild(badge);
         }
         button.setAttribute("aria-pressed", isSelected ? "true" : "false");
         button.addEventListener("click", () => selectMethod(item.id));
@@ -212,13 +256,58 @@ function getMethodDetail(methodId) {
   if (!methodId) return null;
   const custom = state.customMethods.find((item) => item.id === methodId);
   if (custom) {
-    return { detail: custom, isCustom: true };
+    return { detail: custom, isCustom: true, isOverride: false };
   }
-  const base = methodDetails[methodId];
+  const override = state.methodOverrides.get(methodId) || null;
+  const base = methodDetails[methodId] || null;
+  if (override) {
+    const merged = mergeMethodDetail(base, override);
+    return { detail: merged, isCustom: false, isOverride: true };
+  }
   if (base) {
-    return { detail: base, isCustom: false };
+    return { detail: base, isCustom: false, isOverride: false };
   }
   return null;
+}
+
+function mergeMethodDetail(baseDetail, overrideEntry) {
+  const base = baseDetail ? { ...baseDetail } : {};
+  const title = overrideEntry.title && overrideEntry.title.trim()
+    ? overrideEntry.title.trim()
+    : base.title ?? overrideEntry.id;
+  const chapter = overrideEntry.chapter && overrideEntry.chapter.trim()
+    ? overrideEntry.chapter.trim()
+    : base.chapter ?? "";
+  const summary = overrideEntry.summary && overrideEntry.summary.trim()
+    ? overrideEntry.summary.trim()
+    : base.summary ?? "";
+  const lead = overrideEntry.lead && overrideEntry.lead.trim()
+    ? overrideEntry.lead.trim()
+    : base.lead ?? "";
+  const notes = overrideEntry.notes && overrideEntry.notes.trim()
+    ? overrideEntry.notes.trim()
+    : base.notes ?? "";
+  const tags = Array.isArray(overrideEntry.tags) && overrideEntry.tags.length
+    ? overrideEntry.tags
+    : base.tags ?? [];
+  const resources = Array.isArray(overrideEntry.resources) && overrideEntry.resources.length
+    ? overrideEntry.resources
+    : base.resources ?? [];
+  return {
+    ...base,
+    id: overrideEntry.id,
+    title,
+    chapter,
+    summary,
+    lead,
+    notes,
+    tags,
+    resources,
+    overrideMeta: {
+      updatedAt: overrideEntry.updatedAt || null,
+      createdAt: overrideEntry.createdAt || null,
+    },
+  };
 }
 
 function methodExists(methodId) {
@@ -236,12 +325,15 @@ function renderCaseDetail() {
     return;
   }
 
-  const { detail, isCustom } = result;
+  const { detail, isCustom, isOverride } = result;
 
   const header = document.createElement("header");
   header.className = "case-detail-header";
   if (isCustom) {
     header.classList.add("custom-case-detail");
+  }
+  if (isOverride) {
+    header.classList.add("override-case-detail");
   }
 
   const heading = document.createElement("div");
@@ -263,6 +355,11 @@ function renderCaseDetail() {
     const badge = document.createElement("span");
     badge.className = "case-custom-badge";
     badge.textContent = "管理者新增";
+    heading.appendChild(badge);
+  } else if (isOverride) {
+    const badge = document.createElement("span");
+    badge.className = "case-override-badge";
+    badge.textContent = "管理者覆寫";
     heading.appendChild(badge);
   }
 
@@ -351,6 +448,24 @@ function renderCaseDetail() {
     container.appendChild(notesSection);
   }
 
+  if (isOverride && detail.notes) {
+    const overrideSection = document.createElement("section");
+    overrideSection.className = "case-section override-notes";
+    const headingEl = document.createElement("h3");
+    headingEl.textContent = "管理者備註";
+    overrideSection.appendChild(headingEl);
+    detail.notes
+      .split(/\r?\n\r?\n|\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .forEach((line) => {
+        const p = document.createElement("p");
+        p.textContent = line;
+        overrideSection.appendChild(p);
+      });
+    container.appendChild(overrideSection);
+  }
+
   if (detail.resources?.length) {
     const resources = document.createElement("section");
     resources.className = "case-resources";
@@ -434,6 +549,7 @@ window.addEventListener("storage", (event) => {
   } else if (event.key === STORAGE_KEYS.adminLibrary) {
     const updatedAdmin = loadAdminLibrary();
     state.customMethods = sanitizeCustomMethods(updatedAdmin.methods);
+    state.methodOverrides = buildMethodOverrides(updatedAdmin.methods);
     renderMethodColumns();
     if (!methodExists(state.selectedMethodId)) {
       const fallbackId = state.customMethods[0]?.id || DEFAULT_METHOD_ID;

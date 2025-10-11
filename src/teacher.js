@@ -1,5 +1,5 @@
 import { units } from "./data/units.js";
-import { methodDetails, patternFilters, patternCatalog } from "./data/cases.js";
+import { methodLibrary, methodDetails, patternFilters, patternCatalog } from "./data/cases.js";
 import { toolCategories, toolLibrary } from "./data/tools.js";
 import {
   loadTeacherState,
@@ -60,7 +60,128 @@ const TOOL_CATEGORY_TOKEN_MAP = toolCategories.reduce((acc, category) => {
   return acc;
 }, {});
 
+const BASE_METHOD_ENTRIES = buildBaseMethodEntries();
+const BASE_METHOD_MAP = new Map(BASE_METHOD_ENTRIES.map((entry) => [entry.id, entry]));
+const BASE_PATTERN_ENTRIES = buildBasePatternEntries();
+const BASE_PATTERN_MAP = new Map(BASE_PATTERN_ENTRIES.map((entry) => [entry.id, entry]));
+const BASE_TOOL_ENTRIES = buildBaseToolEntries();
+const BASE_TOOL_MAP = new Map(BASE_TOOL_ENTRIES.map((entry) => [entry.id, entry]));
+
 applyTheme(state.theme);
+
+function buildBaseMethodEntries() {
+  const entries = [];
+  methodLibrary.forEach((column) => {
+    const chapterLabel = column.chapter
+      ? `Chapter ${column.chapter} · ${column.title}`
+      : column.title || "方法章節";
+    column.groups?.forEach((group) => {
+      group.items?.forEach((item) => {
+        const detail = methodDetails[item.id];
+        const summary = detail?.summary ?? "";
+        const lead = detail?.lead ?? "";
+        const notes = detail?.notes ?? "";
+        const tags = Array.isArray(detail?.tags)
+          ? detail.tags.map((tag) => (typeof tag === "string" ? tag.trim() : ""))
+              .filter(Boolean)
+          : [];
+        const resources = Array.isArray(detail?.resources)
+          ? detail.resources.filter(Boolean)
+          : [];
+        const searchText = [
+          item.title,
+          chapterLabel,
+          group.title ?? "",
+          summary,
+          lead,
+          notes,
+          tags.join(" "),
+        ]
+          .join(" ")
+          .toLowerCase();
+        entries.push({
+          id: item.id,
+          title: item.title,
+          chapterLabel,
+          groupTitle: group.title ?? "",
+          summary,
+          lead,
+          notes,
+          tags,
+          resources,
+          detail,
+          searchText,
+        });
+      });
+    });
+  });
+  return entries.sort((a, b) => a.title.localeCompare(b.title, "zh-Hant"));
+}
+
+function buildBasePatternEntries() {
+  return patternCatalog
+    .map((pattern) => {
+      const filters = Array.isArray(pattern.filters)
+        ? pattern.filters.map((filterId) => (typeof filterId === "string" ? filterId.trim() : ""))
+            .filter(Boolean)
+        : [];
+      const labelTokens = filters.map((filterId) => PATTERN_FILTER_LABEL_MAP[filterId] || filterId);
+      const searchText = [
+        pattern.title,
+        pattern.subtitle ?? "",
+        pattern.summary ?? "",
+        labelTokens.join(" "),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return {
+        id: pattern.id,
+        title: pattern.title,
+        subtitle: pattern.subtitle ?? "",
+        summary: pattern.summary ?? "",
+        filters,
+        searchText,
+      };
+    })
+    .sort((a, b) => a.title.localeCompare(b.title, "zh-Hant"));
+}
+
+function buildBaseToolEntries() {
+  return toolLibrary
+    .map((tool) => {
+      const categories = Array.isArray(tool.categories)
+        ? tool.categories.map((categoryId) => (typeof categoryId === "string" ? categoryId.trim() : ""))
+            .filter(Boolean)
+        : [];
+      const highlights = Array.isArray(tool.highlights)
+        ? tool.highlights.map((item) => (typeof item === "string" ? item.trim() : ""))
+            .filter(Boolean)
+        : [];
+      const categoryLabels = categories.map((categoryId) => TOOL_CATEGORY_LABEL_MAP[categoryId] || categoryId);
+      const searchText = [
+        tool.title,
+        tool.summary ?? "",
+        tool.description ?? "",
+        highlights.join(" "),
+        categoryLabels.join(" "),
+      ]
+        .join(" ")
+        .toLowerCase();
+      return {
+        id: tool.id,
+        title: tool.title,
+        summary: tool.summary ?? "",
+        description: tool.description ?? "",
+        categories,
+        highlights,
+        screenshotUrl: tool.screenshotUrl ?? "",
+        websiteUrl: tool.websiteUrl ?? "",
+        learnMoreUrl: tool.learnMoreUrl ?? "",
+        searchText,
+      };
+    })
+    .sort((a, b) => a.title.localeCompare(b.title, "zh-Hant"));
+}
 
 function cloneAdminLibrary() {
   return {
@@ -68,6 +189,60 @@ function cloneAdminLibrary() {
     patterns: state.adminLibrary.patterns.map((item) => ({ ...item })),
     tools: state.adminLibrary.tools.map((item) => ({ ...item })),
   };
+}
+
+function partitionAdminItems(items) {
+  const overrides = new Map();
+  const customs = [];
+  if (!Array.isArray(items)) {
+    return { overrides, customs };
+  }
+  items.forEach((item) => {
+    if (!item || typeof item !== "object") return;
+    const id = typeof item.id === "string" && item.id.trim() ? item.id.trim() : null;
+    if (!id) return;
+    if (item.source === "override") {
+      overrides.set(id, { ...item });
+    } else {
+      customs.push({ ...item, source: "custom" });
+    }
+  });
+  return { overrides, customs };
+}
+
+function createAdminSearchControl({ placeholder, ariaLabel, onInput }) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "admin-search";
+
+  const input = document.createElement("input");
+  input.type = "search";
+  input.className = "admin-search-input";
+  input.placeholder = placeholder;
+  input.setAttribute("aria-label", ariaLabel || placeholder);
+
+  const clearBtn = document.createElement("button");
+  clearBtn.type = "button";
+  clearBtn.className = "admin-search-clear";
+  clearBtn.setAttribute("aria-label", "清除搜尋");
+  clearBtn.textContent = "✕";
+
+  input.addEventListener("input", (event) => {
+    onInput(event.target.value);
+    clearBtn.hidden = !event.target.value;
+  });
+
+  clearBtn.addEventListener("click", () => {
+    input.value = "";
+    clearBtn.hidden = true;
+    onInput("");
+    input.focus();
+  });
+
+  clearBtn.hidden = true;
+  wrapper.appendChild(input);
+  wrapper.appendChild(clearBtn);
+
+  return { wrapper, input, clearBtn };
 }
 
 function slugifyTitle(title, fallback = "item") {
@@ -393,7 +568,7 @@ function buildAdminLibrarySection() {
   header.className = "teacher-section-header";
   header.innerHTML = `
     <h2>管理者模式 · 資源庫管理</h2>
-    <p class="teacher-meta">新增或編輯案例庫、設計模式與工具庫的自訂卡片，資料僅儲存在本機瀏覽器。</p>
+    <p class="teacher-meta">覆寫既有案例、設計模式與工具卡片，並管理管理者自訂內容。所有變更僅儲存在本機瀏覽器。</p>
   `;
   section.appendChild(header);
 
@@ -784,10 +959,21 @@ function buildPatternsManager() {
   details.className = "admin-manager";
   details.open = true;
 
+  const { overrides, customs } = partitionAdminItems(state.adminLibrary.patterns);
+  const overrideCount = overrides.size;
+  const customCount = customs.length;
+
   const summary = document.createElement("summary");
+  summary.className = "admin-manager-summary";
   summary.innerHTML = `
-    <span>設計模式牆</span>
-    <span class="admin-count">${state.adminLibrary.patterns.length}</span>
+    <div class="admin-summary-title">
+      <span>設計模式牆</span>
+      <p>覆寫既有模式卡片，或新增專屬教學模式。</p>
+    </div>
+    <div class="admin-summary-metrics">
+      <span><strong>${overrideCount}</strong> 項覆寫</span>
+      <span><strong>${customCount}</strong> 項自訂</span>
+    </div>
   `;
   details.appendChild(summary);
 
@@ -795,14 +981,284 @@ function buildPatternsManager() {
   body.className = "admin-manager-body";
   details.appendChild(body);
 
-  const list = document.createElement("div");
-  list.className = "admin-entry-list";
-  body.appendChild(list);
+  const basePanel = document.createElement("section");
+  basePanel.className = "admin-panel base-panel";
+  body.appendChild(basePanel);
+
+  const baseHeader = document.createElement("div");
+  baseHeader.className = "admin-panel-header";
+  baseHeader.innerHTML = `
+    <div>
+      <h3>既有設計模式</h3>
+      <p>調整標題、摘要或篩選分類，覆寫設計模式牆的預設內容。</p>
+    </div>
+  `;
+  basePanel.appendChild(baseHeader);
+
+  let baseQuery = "";
+  const baseSearch = createAdminSearchControl({
+    placeholder: "搜尋設計模式...",
+    ariaLabel: "搜尋設計模式",
+    onInput: (value) => {
+      baseQuery = value.trim().toLowerCase();
+      renderBaseList();
+    },
+  });
+  basePanel.appendChild(baseSearch.wrapper);
+
+  const baseList = document.createElement("div");
+  baseList.className = "admin-entry-collection base";
+  basePanel.appendChild(baseList);
+
+  function renderBaseList() {
+    baseList.innerHTML = "";
+    const filtered = BASE_PATTERN_ENTRIES.filter((pattern) => {
+      if (!baseQuery) return true;
+      return pattern.searchText.includes(baseQuery);
+    });
+
+    if (!filtered.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "找不到符合搜尋的模式。";
+      baseList.appendChild(empty);
+      return;
+    }
+
+    filtered.forEach((pattern) => {
+      const override = overrides.get(pattern.id);
+      const card = document.createElement("article");
+      card.className = "admin-base-card";
+      card.id = `admin-base-pattern-${pattern.id}`;
+      if (override) {
+        card.classList.add("has-override");
+      }
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = override?.title || pattern.title;
+      headerRow.appendChild(title);
+
+      if (override) {
+        const badge = document.createElement("span");
+        badge.className = "admin-badge override";
+        badge.textContent = "已覆寫";
+        headerRow.appendChild(badge);
+      }
+
+      card.appendChild(headerRow);
+
+      const subtitleText = override?.subtitle || pattern.subtitle;
+      if (subtitleText) {
+        const subtitle = document.createElement("p");
+        subtitle.className = "admin-entry-meta";
+        subtitle.textContent = subtitleText;
+        card.appendChild(subtitle);
+      }
+
+      const summaryText = override?.summary || pattern.summary;
+      if (summaryText) {
+        const summaryEl = document.createElement("p");
+        summaryEl.className = "admin-entry-summary";
+        summaryEl.textContent = summaryText;
+        card.appendChild(summaryEl);
+      }
+
+      const filters = override?.filters?.length ? override.filters : pattern.filters || [];
+      if (filters.length) {
+        const tagList = document.createElement("ul");
+        tagList.className = "admin-entry-tags";
+        filters.forEach((filterId) => {
+          const li = document.createElement("li");
+          li.textContent = PATTERN_FILTER_LABEL_MAP[filterId] || filterId;
+          tagList.appendChild(li);
+        });
+        card.appendChild(tagList);
+      }
+
+      const overrideTimestamp = override?.updatedAt || override?.createdAt;
+      if (overrideTimestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `覆寫時間：${formatDateTime(overrideTimestamp)}`;
+        card.appendChild(meta);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = override ? "更新覆寫" : "覆寫內容";
+      editBtn.addEventListener("click", () => {
+        beginBaseEdit(pattern, override || null);
+      });
+      actions.appendChild(editBtn);
+
+      if (override) {
+        const revertBtn = document.createElement("button");
+        revertBtn.type = "button";
+        revertBtn.className = "secondary-btn small-btn danger";
+        revertBtn.textContent = "移除覆寫";
+        revertBtn.addEventListener("click", () => {
+          if (!window.confirm(`確定要移除「${override.title || pattern.title}」的覆寫版本嗎？`)) {
+            return;
+          }
+          const next = cloneAdminLibrary();
+          next.patterns = next.patterns.filter((item) => !(item.id === pattern.id && item.source === "override"));
+          updateAdminLibrary(next, {
+            message: `已移除設計模式「${override.title || pattern.title}」的覆寫版本。`,
+            focusId: `admin-base-pattern-${pattern.id}`,
+          });
+        });
+        actions.appendChild(revertBtn);
+      }
+
+      card.appendChild(actions);
+      baseList.appendChild(card);
+    });
+  }
+
+  const customPanel = document.createElement("section");
+  customPanel.className = "admin-panel custom-panel";
+  body.appendChild(customPanel);
+
+  const customHeader = document.createElement("div");
+  customHeader.className = "admin-panel-header";
+  customHeader.innerHTML = `
+    <div>
+      <h3>管理者自訂模式</h3>
+      <p>自訂模式會顯示於設計模式牆的自訂分區。</p>
+    </div>
+  `;
+  customPanel.appendChild(customHeader);
+
+  const customList = document.createElement("div");
+  customList.className = "admin-entry-collection";
+  customPanel.appendChild(customList);
+
+  function renderCustomList() {
+    customList.innerHTML = "";
+    if (!customs.length) {
+      const empty = document.createElement("p");
+      empty.className = "status-text info";
+      empty.textContent = "尚未新增自訂設計模式。";
+      customList.appendChild(empty);
+      return;
+    }
+
+    const sorted = [...customs].sort((a, b) => {
+      const aTime = a.updatedAt || a.createdAt || "";
+      const bTime = b.updatedAt || b.createdAt || "";
+      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
+    });
+
+    sorted.forEach((entry) => {
+      const card = document.createElement("article");
+      card.className = "admin-entry-card";
+      card.id = `admin-pattern-${entry.id}`;
+
+      const headerRow = document.createElement("div");
+      headerRow.className = "admin-card-header";
+
+      const title = document.createElement("h4");
+      title.textContent = entry.title;
+      headerRow.appendChild(title);
+
+      const badge = document.createElement("span");
+      badge.className = "admin-badge custom";
+      badge.textContent = "自訂";
+      headerRow.appendChild(badge);
+
+      card.appendChild(headerRow);
+
+      if (entry.subtitle) {
+        const subtitle = document.createElement("p");
+        subtitle.className = "admin-entry-meta";
+        subtitle.textContent = entry.subtitle;
+        card.appendChild(subtitle);
+      }
+
+      if (entry.summary) {
+        const summary = document.createElement("p");
+        summary.className = "admin-entry-summary";
+        summary.textContent = entry.summary;
+        card.appendChild(summary);
+      }
+
+      if (entry.filters?.length) {
+        const tagList = document.createElement("ul");
+        tagList.className = "admin-entry-tags";
+        entry.filters.forEach((filterId) => {
+          const li = document.createElement("li");
+          li.textContent = PATTERN_FILTER_LABEL_MAP[filterId] || filterId;
+          tagList.appendChild(li);
+        });
+        card.appendChild(tagList);
+      }
+
+      const timestamp = entry.updatedAt || entry.createdAt;
+      if (timestamp) {
+        const meta = document.createElement("p");
+        meta.className = "admin-entry-meta subtle";
+        meta.textContent = `更新：${formatDateTime(timestamp)}`;
+        card.appendChild(meta);
+      }
+
+      const actions = document.createElement("div");
+      actions.className = "admin-entry-actions";
+
+      const editBtn = document.createElement("button");
+      editBtn.type = "button";
+      editBtn.className = "secondary-btn small-btn";
+      editBtn.textContent = "編輯";
+      editBtn.addEventListener("click", () => {
+        beginCustomEdit(entry);
+      });
+      actions.appendChild(editBtn);
+
+      const deleteBtn = document.createElement("button");
+      deleteBtn.type = "button";
+      deleteBtn.className = "secondary-btn small-btn danger";
+      deleteBtn.textContent = "刪除";
+      deleteBtn.addEventListener("click", () => {
+        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
+        const next = cloneAdminLibrary();
+        next.patterns = next.patterns.filter((item) => item.id !== entry.id);
+        updateAdminLibrary(next, {
+          message: `已刪除設計模式「${entry.title}」。`,
+          focusId: "teacher-content",
+        });
+      });
+      actions.appendChild(deleteBtn);
+
+      card.appendChild(actions);
+      customList.appendChild(card);
+    });
+  }
+
+  const formPanel = document.createElement("section");
+  formPanel.className = "admin-panel form-panel";
+  body.appendChild(formPanel);
+
+  const formHeader = document.createElement("div");
+  formHeader.className = "admin-panel-header";
+  formHeader.innerHTML = `
+    <div>
+      <h3>編輯設計模式</h3>
+      <p>設定設計模式牆卡片的標題、摘要與篩選標籤。</p>
+    </div>
+  `;
+  formPanel.appendChild(formHeader);
 
   const form = document.createElement("form");
   form.className = "admin-entry-form";
   form.setAttribute("autocomplete", "off");
   form.innerHTML = `
+    <p class="admin-form-mode" data-role="form-mode" hidden></p>
     <div class="admin-form-grid two-column">
       <label class="admin-field">
         <span>模式標題</span>
@@ -827,9 +1283,10 @@ function buildPatternsManager() {
       <button type="submit" class="primary-btn">儲存設計模式</button>
     </div>
   `;
-  body.appendChild(form);
+  formPanel.appendChild(form);
 
   const inputs = {
+    mode: form.querySelector("[data-role='form-mode']"),
     title: form.querySelector("#admin-pattern-title"),
     subtitle: form.querySelector("#admin-pattern-subtitle"),
     summary: form.querySelector("#admin-pattern-summary"),
@@ -838,6 +1295,20 @@ function buildPatternsManager() {
     submit: form.querySelector("button[type='submit']"),
     cancel: form.querySelector("[data-action='cancel']"),
   };
+
+  function setFormMode(message, variant) {
+    if (!inputs.mode) return;
+    if (!message) {
+      inputs.mode.hidden = true;
+      inputs.mode.textContent = "";
+      form.classList.remove("is-override-mode", "is-edit-mode");
+      return;
+    }
+    inputs.mode.hidden = false;
+    inputs.mode.textContent = message;
+    form.classList.toggle("is-override-mode", variant === "override");
+    form.classList.toggle("is-edit-mode", variant === "custom");
+  }
 
   function showFormStatus(message) {
     if (!inputs.status) return;
@@ -848,15 +1319,18 @@ function buildPatternsManager() {
   function resetForm() {
     form.reset();
     delete form.dataset.editingId;
+    delete form.dataset.editingSource;
     if (inputs.submit) {
       inputs.submit.textContent = "儲存設計模式";
       inputs.submit.classList.remove("updating");
     }
+    setFormMode(null);
     showFormStatus("");
   }
 
-  function populateForm(entry) {
+  function beginCustomEdit(entry) {
     form.dataset.editingId = entry.id;
+    form.dataset.editingSource = "custom";
     inputs.title.value = entry.title || "";
     inputs.subtitle.value = entry.subtitle || "";
     inputs.summary.value = entry.summary || "";
@@ -867,97 +1341,30 @@ function buildPatternsManager() {
       inputs.submit.textContent = "更新設計模式";
       inputs.submit.classList.add("updating");
     }
+    setFormMode(`編輯自訂模式：「${entry.title}」`, "custom");
     showFormStatus("");
     details.open = true;
     form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  function renderList() {
-    list.innerHTML = "";
-    if (!state.adminLibrary.patterns.length) {
-      const empty = document.createElement("p");
-      empty.className = "status-text info";
-      empty.textContent = "尚未新增自訂設計模式。";
-      list.appendChild(empty);
-      return;
+  function beginBaseEdit(baseEntry, overrideEntry) {
+    form.dataset.editingId = baseEntry.id;
+    form.dataset.editingSource = "base";
+    inputs.title.value = overrideEntry?.title || baseEntry.title || "";
+    inputs.subtitle.value = overrideEntry?.subtitle || baseEntry.subtitle || "";
+    inputs.summary.value = overrideEntry?.summary || baseEntry.summary || "";
+    const filters = overrideEntry?.filters?.length ? overrideEntry.filters : baseEntry.filters || [];
+    inputs.filters.value = filters
+      .map((filterId) => PATTERN_FILTER_LABEL_MAP[filterId] || filterId)
+      .join(", ");
+    if (inputs.submit) {
+      inputs.submit.textContent = overrideEntry ? "更新覆寫" : "儲存覆寫";
+      inputs.submit.classList.add("updating");
     }
-
-    const sorted = [...state.adminLibrary.patterns].sort((a, b) => {
-      const aTime = a.updatedAt || a.createdAt || "";
-      const bTime = b.updatedAt || b.createdAt || "";
-      return bTime.localeCompare(aTime) || a.title.localeCompare(b.title, "zh-Hant");
-    });
-
-    sorted.forEach((entry) => {
-      const card = document.createElement("article");
-      card.className = "admin-entry-card";
-      card.id = `admin-pattern-${entry.id}`;
-
-      const titleEl = document.createElement("h4");
-      titleEl.textContent = entry.title;
-      card.appendChild(titleEl);
-
-      if (entry.subtitle) {
-        const subtitleEl = document.createElement("p");
-        subtitleEl.className = "admin-entry-meta";
-        subtitleEl.textContent = entry.subtitle;
-        card.appendChild(subtitleEl);
-      }
-
-      if (entry.summary) {
-        const summaryEl = document.createElement("p");
-        summaryEl.className = "admin-entry-summary";
-        summaryEl.textContent = entry.summary;
-        card.appendChild(summaryEl);
-      }
-
-      if (entry.filters?.length) {
-        const tagList = document.createElement("ul");
-        tagList.className = "admin-entry-tags";
-        entry.filters.forEach((filterId) => {
-          const li = document.createElement("li");
-          li.textContent = PATTERN_FILTER_LABEL_MAP[filterId] || filterId;
-          tagList.appendChild(li);
-        });
-        card.appendChild(tagList);
-      }
-
-      const metaRow = document.createElement("p");
-      metaRow.className = "admin-entry-meta";
-      const timestamp = entry.updatedAt || entry.createdAt;
-      metaRow.textContent = timestamp
-        ? `更新：${formatDateTime(timestamp)}`
-        : "已儲存於本機";
-      card.appendChild(metaRow);
-
-      const actions = document.createElement("div");
-      actions.className = "admin-entry-actions";
-
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "secondary-btn small-btn";
-      editBtn.textContent = "編輯";
-      editBtn.addEventListener("click", () => populateForm(entry));
-      actions.appendChild(editBtn);
-
-      const deleteBtn = document.createElement("button");
-      deleteBtn.type = "button";
-      deleteBtn.className = "secondary-btn small-btn danger";
-      deleteBtn.textContent = "刪除";
-      deleteBtn.addEventListener("click", () => {
-        if (!window.confirm(`確定要刪除「${entry.title}」嗎？`)) return;
-        const next = cloneAdminLibrary();
-        next.patterns = next.patterns.filter((item) => item.id !== entry.id);
-        updateAdminLibrary(next, {
-          message: `已刪除設計模式「${entry.title}」。`,
-          focusId: "teacher-content",
-        });
-      });
-      actions.appendChild(deleteBtn);
-
-      card.appendChild(actions);
-      list.appendChild(card);
-    });
+    setFormMode(`覆寫內建模式：「${baseEntry.title}」`, "override");
+    showFormStatus("");
+    details.open = true;
+    form.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function handleSubmit(event) {
@@ -974,23 +1381,51 @@ function buildPatternsManager() {
     const subtitle = inputs.subtitle.value.trim();
     const summary = inputs.summary.value.trim();
 
-    const { filters, invalid } = normalizePatternFilterInput(inputs.filters.value);
-    if (invalid.length) {
-      showFormStatus(`無法辨識以下分類：${invalid.join("、")}。請輸入 patternFilters 中的 ID 或名稱。`);
+    const normalizedFilters = normalizePatternFilterInput(inputs.filters.value);
+    if (normalizedFilters.invalid.length) {
+      showFormStatus(`無法辨識以下分類：${normalizedFilters.invalid.join("、")}。請輸入 patternFilters 中的 ID 或名稱。`);
       inputs.filters.focus();
       return;
     }
-    if (!filters.length) {
+    if (!normalizedFilters.filters.length) {
       showFormStatus("請至少指定一個篩選分類。");
       inputs.filters.focus();
       return;
     }
 
     const editingId = form.dataset.editingId;
+    const editingSource = form.dataset.editingSource || "custom";
     const now = new Date().toISOString();
 
-    if (editingId) {
+    if (editingId && editingSource === "base") {
       const next = cloneAdminLibrary();
+      const index = next.patterns.findIndex((item) => item.id === editingId && item.source === "override");
+      const payload = {
+        id: editingId,
+        title,
+        subtitle,
+        summary,
+        filters: normalizedFilters.filters,
+        source: "override",
+        updatedAt: now,
+      };
+      if (index === -1) {
+        payload.createdAt = now;
+        next.patterns.push(payload);
+      } else {
+        payload.createdAt = next.patterns[index].createdAt || now;
+        next.patterns[index] = { ...next.patterns[index], ...payload };
+      }
+      updateAdminLibrary(next, {
+        message: `已${index === -1 ? "建立" : "更新"}設計模式「${title}」的覆寫版本。`,
+        focusId: `admin-base-pattern-${editingId}`,
+      });
+      return;
+    }
+
+    const next = cloneAdminLibrary();
+
+    if (editingId) {
       const index = next.patterns.findIndex((item) => item.id === editingId);
       if (index === -1) {
         showFormStatus("找不到要更新的設計模式，請重新整理。");
@@ -1002,7 +1437,7 @@ function buildPatternsManager() {
         title,
         subtitle,
         summary,
-        filters,
+        filters: normalizedFilters.filters,
         updatedAt: now,
       };
       updateAdminLibrary(next, {
@@ -1019,15 +1454,15 @@ function buildPatternsManager() {
     const baseId = slugifyTitle(title, "pattern");
     const id = generateUniqueId(baseId, existingIds);
 
-    const next = cloneAdminLibrary();
     next.patterns.push({
       id,
       title,
       subtitle,
       summary,
-      filters,
+      filters: normalizedFilters.filters,
       createdAt: now,
       updatedAt: now,
+      source: "custom",
     });
 
     updateAdminLibrary(next, {
@@ -1036,7 +1471,8 @@ function buildPatternsManager() {
     });
   }
 
-  renderList();
+  renderBaseList();
+  renderCustomList();
 
   form.addEventListener("submit", handleSubmit);
   inputs.cancel?.addEventListener("click", (event) => {

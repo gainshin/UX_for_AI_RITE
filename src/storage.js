@@ -329,6 +329,7 @@ function sanitizeMethodEntry(entry) {
   const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
   const title = typeof entry.title === "string" ? entry.title.trim() : "";
   if (!id || !title) return null;
+  const source = entry.source === "override" ? "override" : "custom";
   return {
     id,
     title,
@@ -342,6 +343,7 @@ function sanitizeMethodEntry(entry) {
       : [],
     createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
     updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+    source,
   };
 }
 
@@ -350,6 +352,7 @@ function sanitizePatternEntry(entry) {
   const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
   const title = typeof entry.title === "string" ? entry.title.trim() : "";
   if (!id || !title) return null;
+  const source = entry.source === "override" ? "override" : "custom";
   return {
     id,
     title,
@@ -358,6 +361,7 @@ function sanitizePatternEntry(entry) {
     filters: sanitizeStringArray(entry.filters),
     createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
     updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+    source,
   };
 }
 
@@ -370,6 +374,7 @@ function sanitizeToolEntry(entry) {
   const screenshotUrl = typeof entry.screenshotUrl === "string" ? entry.screenshotUrl.trim() : "";
   const websiteUrl = typeof entry.websiteUrl === "string" ? entry.websiteUrl.trim() : "";
   const learnMoreUrl = typeof entry.learnMoreUrl === "string" ? entry.learnMoreUrl.trim() : "";
+  const source = entry.source === "override" ? "override" : "custom";
   return {
     id,
     title,
@@ -382,6 +387,7 @@ function sanitizeToolEntry(entry) {
     learnMoreUrl,
     createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
     updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+    source,
   };
 }
 

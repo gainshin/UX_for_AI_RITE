@@ -24,6 +24,7 @@ function sanitizeCategory(categoryId) {
 function sanitizeCustomTools(entries) {
   if (!Array.isArray(entries)) return [];
   return entries
+    .filter((entry) => entry && entry.source !== "override")
     .map((entry) => {
       if (!entry || typeof entry !== "object") return null;
       const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
@@ -53,9 +54,25 @@ function sanitizeCustomTools(entries) {
         learnMoreUrl,
         createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
         updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
+        source: "custom",
       };
     })
     .filter(Boolean);
+}
+
+function buildToolOverrides(entries) {
+  const map = new Map();
+  if (!Array.isArray(entries)) {
+    return map;
+  }
+  entries.forEach((entry) => {
+    if (!entry || typeof entry !== "object") return;
+    if (entry.source !== "override") return;
+    const id = typeof entry.id === "string" && entry.id.trim() ? entry.id.trim() : null;
+    if (!id) return;
+    map.set(id, { ...entry });
+  });
+  return map;
 }
 
 const storedState = loadCaseLibraryState() || {};
@@ -67,6 +84,7 @@ const state = {
   searchTerm: typeof storedState.toolSearch === "string" ? storedState.toolSearch : "",
   topOnly: Boolean(storedState.toolTopOnly),
   customTools: sanitizeCustomTools(adminLibraryState.tools),
+  toolOverrides: buildToolOverrides(adminLibraryState.tools),
 };
 
 applyTheme(state.theme);
@@ -229,9 +247,53 @@ function bindReset() {
   });
 }
 
+function getToolLibraryWithOverrides() {
+  return toolLibrary.map((tool) => {
+    const override = state.toolOverrides.get(tool.id);
+    if (!override) {
+      return tool;
+    }
+    const categories = Array.isArray(override.categories) && override.categories.length
+      ? override.categories
+      : tool.categories;
+    const highlights = Array.isArray(override.highlights) && override.highlights.length
+      ? override.highlights
+      : tool.highlights;
+    return {
+      ...tool,
+      title: override.title && override.title.trim() ? override.title.trim() : tool.title,
+      summary: override.summary && override.summary.trim() ? override.summary.trim() : tool.summary,
+      description:
+        override.description && override.description.trim()
+          ? override.description.trim()
+          : tool.description,
+      categories,
+      highlights,
+      screenshotUrl:
+        override.screenshotUrl && override.screenshotUrl.trim()
+          ? override.screenshotUrl.trim()
+          : tool.screenshotUrl,
+      websiteUrl:
+        override.websiteUrl && override.websiteUrl.trim()
+          ? override.websiteUrl.trim()
+          : tool.websiteUrl,
+      learnMoreUrl:
+        override.learnMoreUrl && override.learnMoreUrl.trim()
+          ? override.learnMoreUrl.trim()
+          : tool.learnMoreUrl,
+      isOverride: true,
+      overrideMeta: {
+        updatedAt: override.updatedAt || null,
+        createdAt: override.createdAt || null,
+      },
+    };
+  });
+}
+
 function getAllTools() {
+  const baseTools = getToolLibraryWithOverrides();
   const custom = state.customTools.map((tool) => ({ ...tool, isCustom: true }));
-  return [...toolLibrary, ...custom];
+  return [...baseTools, ...custom];
 }
 
 function setActiveCategory(categoryId, { announceChange = false } = {}) {
@@ -324,6 +386,12 @@ function renderToolGrid() {
       const badge = document.createElement("span");
       badge.className = "tool-card-badge";
       badge.textContent = "管理者新增";
+      card.appendChild(badge);
+    } else if (tool.isOverride) {
+      card.classList.add("override-tool-card");
+      const badge = document.createElement("span");
+      badge.className = "tool-card-badge override";
+      badge.textContent = "管理者覆寫";
       card.appendChild(badge);
     }
 
@@ -472,6 +540,7 @@ window.addEventListener("storage", (event) => {
   } else if (event.key === STORAGE_KEYS.adminLibrary) {
     const updatedAdmin = loadAdminLibrary();
     state.customTools = sanitizeCustomTools(updatedAdmin.tools);
+    state.toolOverrides = buildToolOverrides(updatedAdmin.tools);
     renderQuickFilters();
     renderFilterList();
     renderToolGrid();
