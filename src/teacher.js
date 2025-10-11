@@ -492,9 +492,7 @@ function buildThemeSelector() {
 function buildMethodsManager() {
   const details = document.createElement("details");
   details.className = "admin-manager";
-  if (state.adminLibrary.methods.length) {
-    details.open = true;
-  }
+  details.open = true;
 
   const summary = document.createElement("summary");
   summary.innerHTML = `
@@ -784,9 +782,7 @@ function buildMethodsManager() {
 function buildPatternsManager() {
   const details = document.createElement("details");
   details.className = "admin-manager";
-  if (state.adminLibrary.patterns.length) {
-    details.open = true;
-  }
+  details.open = true;
 
   const summary = document.createElement("summary");
   summary.innerHTML = `
@@ -1054,9 +1050,7 @@ function buildPatternsManager() {
 function buildToolsManager() {
   const details = document.createElement("details");
   details.className = "admin-manager";
-  if (state.adminLibrary.tools.length) {
-    details.open = true;
-  }
+  details.open = true;
 
   const summary = document.createElement("summary");
   summary.innerHTML = `
