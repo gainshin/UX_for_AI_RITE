@@ -234,7 +234,8 @@ body[data-theme="forest"] {
   font-size: 1rem;
   font-weight: 600;
   background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-  color: #0f172a;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
@@ -344,12 +345,13 @@ body[data-theme="forest"] {
   gap: 0.75rem;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
-  background: var(--card-subtle);
+  background: var(--card);
   border: 1px solid var(--border);
 }
 
 .hero-stat strong {
   font-size: 1.1rem;
+  color: var(--text);
 }
 
 .layout {
@@ -453,10 +455,11 @@ body[data-theme="forest"] {
   padding: 0.75rem 1rem;
   border-radius: 0.85rem;
   background: var(--card);
-  border: 1px dashed var(--border);
-  color: var(--muted);
-  font-size: 0.85rem;
-  line-height: 1.5;
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  opacity: 0.9;
 }
 
 .unit-actions {
@@ -647,7 +650,7 @@ body[data-theme="forest"] {
   padding: 1rem 1.25rem;
   border-radius: 1rem;
   border: 1px solid var(--border);
-  background: var(--card-subtle);
+  background: var(--card);
   display: grid;
   gap: 0.75rem;
   line-height: 1.6;
@@ -663,8 +666,9 @@ body[data-theme="forest"] {
 
 .collapsible-description,
 .collapsible-hint {
-  color: var(--muted);
+  color: var(--text);
   line-height: 1.6;
+  opacity: 0.95;
 }
 
 .collapsible-hint em {
@@ -780,8 +784,10 @@ body[data-theme="forest"] {
 }
 
 .teacher-meta {
-  font-size: 0.85rem;
-  color: var(--muted);
+  font-size: 0.9rem;
+  color: var(--text);
+  opacity: 0.85;
+  line-height: 1.6;
 }
 
 .teacher-answer {
@@ -868,10 +874,12 @@ body[data-theme="forest"] {
 }
 
 .point-list li {
-  background: var(--card-subtle);
+  background: var(--card);
   border-radius: 0.75rem;
-  padding: 1rem;
+  padding: 1rem 1.15rem;
   border: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.6;
 }
 
 .quiz-card {
@@ -893,13 +901,21 @@ body[data-theme="forest"] {
 }
 
 .option {
-  background: var(--card-subtle);
-  padding: 0.75rem 1rem;
+  background: var(--card);
+  padding: 0.85rem 1.1rem;
   border-radius: 0.75rem;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   border: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.6;
+  transition: all 0.2s ease;
+}
+
+.option:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
 }
 
 .option input[type="checkbox"] {
@@ -918,10 +934,12 @@ body[data-theme="forest"] {
   grid-template-columns: 1fr minmax(140px, 220px);
   gap: 1rem;
   align-items: center;
-  background: var(--card-subtle);
-  padding: 0.75rem 1rem;
+  background: var(--card);
+  padding: 0.85rem 1.1rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
+  color: var(--text);
+  line-height: 1.6;
 }
 
 .matching-row select {
@@ -1173,22 +1191,23 @@ body[data-theme="forest"] {
 }
 
 .status-text {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--muted);
-  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--text);
+  padding: 0.85rem 1.1rem;
   border-radius: 0.75rem;
-  background: var(--card-subtle);
+  background: var(--card);
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .status-text.success {
-  color: var(--success);
-  background: rgba(34, 197, 94, 0.12);
-  border-color: rgba(34, 197, 94, 0.3);
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  font-weight: 500;
 }
 
 .status-text.success::before {
@@ -1198,9 +1217,10 @@ body[data-theme="forest"] {
 }
 
 .status-text.error {
-  color: var(--danger);
-  background: rgba(248, 113, 113, 0.12);
-  border-color: rgba(248, 113, 113, 0.3);
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  font-weight: 500;
 }
 
 .status-text.error::before {
@@ -1210,9 +1230,10 @@ body[data-theme="forest"] {
 }
 
 .status-text.info {
-  color: var(--accent);
+  color: var(--text);
   background: var(--accent-soft);
   border-color: var(--accent-border);
+  font-weight: 500;
 }
 
 .status-text.info::before {
@@ -1909,14 +1930,16 @@ body[data-theme="forest"] {
   .tool-card-btn.primary {
     border-color: transparent;
     background: linear-gradient(135deg, var(--accent), var(--accent-strong));
-    color: #0f172a;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .tool-card-btn.primary:hover,
   .tool-card-btn.primary:focus-visible {
     border-color: transparent;
     background: linear-gradient(135deg, var(--accent-strong), var(--accent));
-    color: #0f172a;
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
   .visually-hidden {
