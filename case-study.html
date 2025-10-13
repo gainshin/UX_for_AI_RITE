@@ -6,83 +6,56 @@
   <title>案例研究 - UX for AI RITE</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <header>
-    <div class="container">
-      <div class="header-content">
-        <h1 class="logo">
-          <a href="index.html">UX for AI RITE</a>
-        </h1>
-        <nav>
-          <a href="teacher.html">教學者模式</a>
-          <a href="tools.html">工具庫</a>
-          <a href="patterns.html">設計模式</a>
-          <a href="cases.html">案例庫</a>
-        </nav>
-        <div class="theme-switcher">
-          <button id="theme-btn" aria-label="切換主題">🌙</button>
+<body class="case-study-modal-body">
+  <div class="case-study-backdrop">
+    <article
+      class="case-study-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="study-title"
+    >
+      <button type="button" class="case-study-close" id="case-study-close" aria-label="關閉案例視窗">
+        <span aria-hidden="true">×</span>
+      </button>
+
+      <section class="case-study-header">
+        <h1 id="study-title"></h1>
+        <p class="study-subtitle" id="study-subtitle"></p>
+        
+        <div class="case-study-meta">
+          <span class="category-badge" id="category-badge"></span>
+          <div class="case-study-tags" id="tags-container"></div>
         </div>
-      </div>
-    </div>
-  </header>
+        
+        <p class="study-excerpt" id="study-excerpt"></p>
+      </section>
 
-  <main class="container">
-    <!-- Breadcrumb Navigation -->
-    <nav class="breadcrumb" aria-label="麵包屑導航">
-      <a href="index.html">首頁</a>
-      <span class="separator">›</span>
-      <a href="case-studies.html">深入案例研究</a>
-      <span class="separator">›</span>
-      <span id="current-study">案例研究</span>
-    </nav>
+      <section class="related-patterns" id="related-patterns-section">
+        <h3>相關設計模式</h3>
+        <div class="pattern-chips" id="related-patterns"></div>
+      </section>
 
-    <!-- Case Study Header -->
-    <section class="case-study-header">
-      <h1 id="study-title"></h1>
-      <p class="study-subtitle" id="study-subtitle"></p>
-      
-      <div class="case-study-meta">
-        <span class="category-badge" id="category-badge"></span>
-        <div class="case-study-tags" id="tags-container"></div>
-      </div>
-      
-      <p class="study-excerpt" id="study-excerpt"></p>
-    </section>
+      <article class="case-study-content" id="case-study-content">
+        <div class="loading-state">
+          <p>載入中...</p>
+        </div>
+      </article>
 
-    <!-- Related Patterns -->
-    <section class="related-patterns" id="related-patterns-section">
-      <h3>相關設計模式</h3>
-      <div class="pattern-chips" id="related-patterns"></div>
-    </section>
-
-    <!-- Case Study Content -->
-    <article class="case-study-content" id="case-study-content">
-      <div class="loading-state">
-        <p>載入中...</p>
-      </div>
+      <nav class="case-study-nav">
+        <a href="#" id="prev-study" class="nav-button prev" style="display: none;">
+          <span class="arrow">←</span>
+          <span class="label">上一個案例</span>
+        </a>
+        <a href="case-studies.html" class="nav-button back">
+          <span class="label">返回案例列表</span>
+        </a>
+        <a href="#" id="next-study" class="nav-button next" style="display: none;">
+          <span class="label">下一個案例</span>
+          <span class="arrow">→</span>
+        </a>
+      </nav>
     </article>
-
-    <!-- Navigation Footer -->
-    <nav class="case-study-nav">
-      <a href="#" id="prev-study" class="nav-button prev" style="display: none;">
-        <span class="arrow">←</span>
-        <span class="label">上一個案例</span>
-      </a>
-      <a href="case-studies.html" class="nav-button back">
-        <span class="label">返回案例列表</span>
-      </a>
-      <a href="#" id="next-study" class="nav-button next" style="display: none;">
-        <span class="label">下一個案例</span>
-        <span class="arrow">→</span>
-      </a>
-    </nav>
-  </main>
-
-  <footer>
-    <div class="container">
-      <p>&copy; 2025 UX for AI RITE. All rights reserved.</p>
-    </div>
-  </footer>
+  </div>
 
   <script type="module" src="src/case-study.js"></script>
 </body>

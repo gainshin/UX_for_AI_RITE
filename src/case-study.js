@@ -17,6 +17,7 @@ const studyId = params.get("id");
 
 // DOM elements
 const elements = {
+  closeButton: document.getElementById("case-study-close"),
   categoryBadge: document.getElementById("category-badge"),
   categoryLink: document.getElementById("category-link"),
   currentStudy: document.getElementById("current-study"),
@@ -35,6 +36,8 @@ const elements = {
  * Initialize page
  */
 async function init() {
+  bindCloseControls();
+
   if (!studyId) {
     showError("未指定案例研究 ID");
     return;
@@ -50,6 +53,16 @@ async function init() {
   renderRelatedPatterns(study);
   await loadStudyContent(study);
   setupNavigation(study);
+
+  if (elements.closeButton) {
+    window.setTimeout(() => {
+      try {
+        elements.closeButton.focus();
+      } catch (error) {
+        // Ignore focus errors in non-interactive contexts
+      }
+    }, 120);
+  }
 }
 
 /**
@@ -86,6 +99,34 @@ function renderStudyHeader(study) {
     elements.tagsContainer.innerHTML = study.tags
       .map(tag => `<span class="tag">#${tag}</span>`)
       .join("");
+  }
+}
+
+/**
+ * Handle close interactions
+ */
+function bindCloseControls() {
+  if (elements.closeButton) {
+    elements.closeButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      closeModal();
+    });
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  });
+}
+
+function closeModal() {
+  if (window.history.length > 1) {
+    window.history.back();
+  } else if (window.opener && !window.opener.closed) {
+    window.close();
+  } else {
+    window.location.href = "case-studies.html";
   }
 }
 

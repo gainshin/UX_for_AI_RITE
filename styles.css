@@ -3035,13 +3035,105 @@ body[data-theme="forest"] {
   margin-top: 0.2rem;
 }
 
+/* Case Study Modal Layout */
+.case-study-modal-body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 10, 27, 0.88);
+  padding: 2.5rem 1.5rem;
+  overflow: hidden;
+}
+
+.case-study-backdrop {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.case-study-modal {
+  position: relative;
+  width: min(90vw, 880px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  box-shadow: 0 28px 80px rgba(5, 10, 30, 0.55);
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.case-study-modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.case-study-modal::-webkit-scrollbar-thumb {
+  background: var(--accent-border);
+  border-radius: 999px;
+}
+
+.case-study-close {
+  position: sticky;
+  top: 0;
+  align-self: flex-end;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  transition: background 0.2s ease, color 0.2s ease;
+  margin: -0.5rem -0.5rem 0;
+  z-index: 2;
+}
+
+.case-study-close:hover,
+.case-study-close:focus-visible {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  outline: none;
+}
+
+.case-study-close span {
+  display: block;
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .case-study-modal-body {
+    padding: 1.5rem 0.75rem;
+  }
+
+  .case-study-modal {
+    width: 100%;
+    max-height: calc(100vh - 2rem);
+    padding: 2rem 1.5rem;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .case-study-modal {
+    padding: 1.5rem 1.25rem;
+    max-height: none;
+    min-height: calc(100vh - 1.5rem);
+  }
+}
+
 /* Case Study Content */
 .case-study-content {
   background: var(--card);
   border-radius: 12px;
   padding: 2.5rem;
   border: 1px solid var(--border);
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   line-height: 1.8;
 }
 
