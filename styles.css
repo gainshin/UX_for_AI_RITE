@@ -1383,6 +1383,65 @@ body[data-theme="forest"] {
   gap: 0.6rem;
 }
 
+.method-library-note {
+  margin-top: 2.5rem;
+  padding: 1.75rem;
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--card-subtle);
+  box-shadow: 0 18px 40px var(--panel-shadow);
+  display: grid;
+  gap: 1rem;
+}
+
+.method-library-note .note-lead {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.method-library-note h3 {
+  margin: 0.5rem 0 0.35rem;
+  font-size: 1.1rem;
+}
+
+.method-library-note h4 {
+  margin: 0.75rem 0 0.35rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0.03em;
+}
+
+.method-library-note p {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.method-library-note ul {
+  margin: 0.25rem 0 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.method-library-note li {
+  margin: 0;
+}
+
+.method-library-note code {
+  font-family: "Fira Code", "Source Code Pro", Menlo, monospace;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.5rem;
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--accent);
+}
+
 .method-item {
   padding: 0.65rem 0.85rem;
   border-radius: 0.85rem;

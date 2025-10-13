@@ -2,11 +2,11 @@ export const methodLibrary = [
   {
     id: "phase-ai-intent-sensing",
     chapter: "01",
-    title: "階段一：AI 意圖感知",
+    title: "AI 意圖感知",
     subtitle: "感知策略趨勢與風險假設",
     description:
       "整合市場脈動、資料跡證與初步田野觀察，為 AI 專案定義意圖、機會與風險假設，建立跨部門的共同語言。",
-    phaseLabel: "階段一：AI 意圖感知",
+    phaseLabel: "AI 意圖感知",
     groups: [
       {
         id: "trend-scan",
@@ -37,11 +37,11 @@ export const methodLibrary = [
   {
     id: "phase-ai-context-insight",
     chapter: "02",
-    title: "階段二：AI 情境洞察",
+    title: "AI 情境洞察",
     subtitle: "串聯場景、旅程與利害關係",
     description:
       "將研究輸出的故事、網絡與情感訊號轉譯為洞察框架，鎖定 AI 介入的正向價值與高風險斷點。",
-    phaseLabel: "階段二：AI 情境洞察",
+    phaseLabel: "AI 情境洞察",
     groups: [
       {
         id: "journey-context",
@@ -66,11 +66,11 @@ export const methodLibrary = [
   {
     id: "phase-ai-concept-exploration",
     chapter: "03",
-    title: "階段三：AI 概念探索",
+    title: "AI 概念探索",
     subtitle: "以劇場與敘事驗證體驗假設",
     description:
       "透過多感官敘事、劇場排演與對話草圖，生成候選體驗概念，並檢視價值矩陣假設的可行性。",
-    phaseLabel: "階段三：AI 概念探索",
+    phaseLabel: "AI 概念探索",
     groups: [
       {
         id: "theatrical-concepts",
@@ -92,11 +92,11 @@ export const methodLibrary = [
   {
     id: "phase-ai-solution-validation",
     chapter: "04",
-    title: "階段四：AI 方案驗證",
+    title: "AI 方案驗證",
     subtitle: "校準服務流程與護欄設計",
     description:
       "以劇場壓力測試、服務流程驗證與實體模擬，評估 AI 方案的風險管理、體驗品質與實施條件。",
-    phaseLabel: "階段四：AI 方案驗證",
+    phaseLabel: "AI 方案驗證",
     groups: [
       {
         id: "investigative-stress-test",
@@ -121,11 +121,11 @@ export const methodLibrary = [
   {
     id: "phase-ai-governance",
     chapter: "05",
-    title: "階段五：AI 治理實現",
+    title: "AI 治理實現",
     subtitle: "建立倫理節奏與跨域協作",
     description:
       "以共感暖身、風險檢核與決策節奏整合治理需求，確保 AI 方案在落地過程中可持續對齊價值。",
-    phaseLabel: "階段五：AI 治理實現",
+    phaseLabel: "AI 治理實現",
     groups: [
       {
         id: "ethics-warmups",
