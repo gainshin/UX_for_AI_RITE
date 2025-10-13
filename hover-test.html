@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>按鈕懸停與灰色底測試 | Button Hover & Gray Background Test</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      padding: 3rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-section {
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border: 2px solid var(--border);
+      border-radius: 1rem;
+      background: var(--surface);
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent);
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 0.5rem;
+    }
+    .test-group {
+      margin: 1.5rem 0;
+      padding: 1.5rem;
+      background: var(--card);
+      border-radius: 0.75rem;
+    }
+    .test-group h3 {
+      margin-top: 0;
+      font-size: 1.1rem;
+      color: var(--text);
+    }
+    .button-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+    .status-pass {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status-fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .instruction {
+      padding: 1rem;
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      border-radius: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .instruction strong {
+      color: var(--accent);
+    }
+    .gray-bg-test {
+      padding: 1.5rem;
+      margin-top: 1rem;
+      border-radius: 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 按鈕懸停與灰色底測試頁面</h1>
+  <p style="color: var(--muted); font-size: 1.1rem;">測試所有按鈕和元素的視覺效果</p>
+
+  <!-- Test 1: Button Hover Text Visibility -->
+  <div class="test-section">
+    <h2>🔍 測試 1: 按鈕懸停時文字可見性</h2>
+    
+    <div class="instruction">
+      <strong>測試步驟：</strong> 將滑鼠移到下面的按鈕上，觀察文字是否保持清晰可見。<br>
+      <strong>預期結果：</strong> 按鈕文字應該在懸停時仍然清楚可見，不會消失或被覆蓋。
+    </div>
+
+    <div class="test-group">
+      <h3>主要操作按鈕 (Primary Buttons)</h3>
+      <div class="button-row">
+        <button class="primary-btn">開始學習</button>
+        <button class="primary-btn">提交作業</button>
+        <button class="primary-btn">保存進度</button>
+        <button class="primary-btn">下載資源</button>
+      </div>
+    </div>
+
+    <div class="test-group">
+      <h3>工具卡片按鈕 (Tool Card Buttons)</h3>
+      <div class="button-row">
+        <button class="tool-card-btn primary">立即使用</button>
+        <button class="tool-card-btn primary">查看詳情</button>
+        <button class="tool-card-btn primary">開始創作</button>
+      </div>
+    </div>
+
+    <div class="test-group">
+      <h3>長文本按鈕測試</h3>
+      <div class="button-row">
+        <button class="primary-btn">這是一個很長的按鈕文字用來測試換行和可見性</button>
+        <button class="tool-card-btn primary">Long Text Button for Testing Visibility</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test 2: Gray Backgrounds -->
+  <div class="test-section">
+    <h2>🎨 測試 2: 灰色背景問題修復</h2>
+    
+    <div class="instruction">
+      <strong>測試步驟：</strong> 檢查下面各個元素的背景顏色是否正確。<br>
+      <strong>預期結果：</strong> 所有元素應該使用適當的背景色，避免過深的灰色影響可讀性。
+    </div>
+
+    <div class="test-group">
+      <h3>1. 收合卡片 (Collapsed Cards)</h3>
+      <div class="collapsible-card collapsed" style="margin-bottom: 1rem;">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">收合狀態的卡片</h3>
+          <button class="collapsible-toggle">▼</button>
+        </div>
+      </div>
+      <p style="color: var(--muted); font-size: 0.9rem;">
+        ✓ 應該使用 var(--card) 背景，透明度 0.85
+      </p>
+    </div>
+
+    <div class="test-group">
+      <h3>2. 鎖定的單元按鈕 (Locked Unit Buttons)</h3>
+      <nav class="unit-nav">
+        <button class="unit-nav-button locked">
+          <span class="unit-number">🔒 1</span>
+          <span class="unit-label">已鎖定單元</span>
+        </button>
+        <button class="unit-nav-button locked">
+          <span class="unit-number">🔒 2</span>
+          <span class="unit-label">Locked Unit</span>
+        </button>
+      </nav>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1rem;">
+        ✓ 應該使用 var(--card) 背景和 var(--text) 文字顏色
+      </p>
+    </div>
+
+    <div class="test-group">
+      <h3>3. 禁用的輸入欄位 (Disabled Input Fields)</h3>
+      <div class="admin-form-grid single-column">
+        <label class="admin-field">
+          <span>禁用的文字輸入</span>
+          <input type="text" class="input-field" value="無法編輯的內容" disabled>
+        </label>
+        <label class="admin-field">
+          <span>禁用的文字區域</span>
+          <textarea class="input-field" disabled>這是禁用的文字區域
+可以有多行文字</textarea>
+        </label>
+      </div>
+      <p style="color: var(--muted); font-size: 0.9rem;">
+        ✓ 應該使用 var(--card) 背景
+      </p>
+    </div>
+
+    <div class="test-group">
+      <h3>4. 工具卡片媒體區 (Tool Card Media)</h3>
+      <div class="tool-card-media">
+        <div style="padding: 3rem; text-align: center; color: var(--muted);">
+          圖片載入中...
+        </div>
+      </div>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1rem;">
+        ✓ 應該使用 var(--card) 背景
+      </p>
+    </div>
+
+    <div class="test-group">
+      <h3>5. 管理條目媒體區 (Admin Entry Media)</h3>
+      <div class="admin-entry-media">
+        <div style="padding: 3rem; text-align: center; color: var(--muted);">
+          媒體預覽區域
+        </div>
+      </div>
+      <p style="color: var(--muted); font-size: 0.9rem; margin-top: 1rem;">
+        ✓ 應該使用 var(--card) 背景
+      </p>
+    </div>
+  </div>
+
+  <!-- Test 3: Interactive Test -->
+  <div class="test-section">
+    <h2>🎯 測試 3: 互動測試</h2>
+    
+    <div class="instruction">
+      <strong>測試步驟：</strong> 與下面的元素互動，確保所有狀態正常顯示。
+    </div>
+
+    <div class="test-group">
+      <h3>完整的表單測試</h3>
+      <form class="admin-entry-form">
+        <div class="admin-form-grid two-column">
+          <label class="admin-field">
+            <span>標題</span>
+            <input type="text" placeholder="輸入標題" value="測試標題">
+          </label>
+          <label class="admin-field">
+            <span>類型</span>
+            <select>
+              <option>選項 1</option>
+              <option>選項 2</option>
+            </select>
+          </label>
+          <label class="admin-field full-width">
+            <span>描述</span>
+            <textarea placeholder="輸入描述" rows="4">這是測試描述</textarea>
+          </label>
+          <label class="admin-field">
+            <span>禁用欄位</span>
+            <input type="text" value="無法編輯" disabled>
+          </label>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" class="primary-btn">保存更改</button>
+          <button type="button" class="tool-card-btn primary">取消</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="test-group">
+      <h3>可展開卡片測試</h3>
+      <div class="collapsible-card" style="margin-bottom: 1rem;">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">展開狀態的卡片</h3>
+          <button class="collapsible-toggle">▼</button>
+        </div>
+        <div class="collapsible-content">
+          <p>這是卡片內容，應該清楚可見。</p>
+          <button class="primary-btn">操作按鈕</button>
+        </div>
+      </div>
+      <div class="collapsible-card collapsed">
+        <div class="collapsible-header">
+          <h3 class="collapsible-title">收合狀態的卡片</h3>
+          <button class="collapsible-toggle">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Summary -->
+  <div class="test-section" style="background: linear-gradient(135deg, var(--accent-soft), var(--surface));">
+    <h2>📊 測試結果總結</h2>
+    <div style="font-size: 1.1rem; line-height: 1.8;">
+      <p><strong>✅ 如果按鈕懸停時文字保持可見：</strong> 問題已修復</p>
+      <p><strong>✅ 如果所有背景顏色適當且可讀：</strong> 灰色底問題已解決</p>
+      <p><strong>❌ 如果仍有問題：</strong> 請告訴我具體哪個元素有問題</p>
+    </div>
+  </div>
+
+  <script>
+    // Add some interactivity for testing
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const card = header.closest('.collapsible-card');
+        card.classList.toggle('collapsed');
+        const toggle = header.querySelector('.collapsible-toggle');
+        toggle.textContent = card.classList.contains('collapsed') ? '▶' : '▼';
+      });
+    });
+
+    // Log hover events for debugging
+    document.querySelectorAll('.primary-btn, .tool-card-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', (e) => {
+        console.log('Button hover:', e.target.textContent.trim());
+      });
+    });
+  </script>
+</body>
+</html>

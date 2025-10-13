@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI 策略案例庫 · 方法與設計模式</title>
+    <meta
+      name="description"
+      content="探索 AI 價值矩陣課程延伸案例：方法圖書館、詳細案例說明與 AI 設計模式牆。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">Agentic UX Lab</span>
+        <p class="tagline">對應 RITE + Spike 的流程以及建議設計活動</p>
+      </div>
+      <nav class="site-nav" aria-label="案例庫導覽">
+        <a href="./index.html" class="nav-link">返回學習者版本</a>
+        <a href="./patterns.html" class="nav-link">設計模式牆</a>
+        <a href="./tools.html" class="nav-link">工具庫</a>
+        <a href="./teacher.html" class="nav-link">管理者模式</a>
+      </nav>
+    </header>
+
+    <section class="case-hero">
+      <div class="case-hero-content">
+        <h1>UX for AI 案例庫</h1>
+        <p>
+          將課堂中的方法、實作與治理模式系統化整理，協助團隊快速挑選合適的研究、原型與治理工具。依需求瀏覽方法圖書館、深入閱讀案例，或是以設計模式牆組合出下一步的實驗計畫。
+        </p>
+        <div class="case-hero-actions">
+          <a class="primary-btn" href="#case-method-library">瀏覽方法庫</a>
+          <a class="secondary-btn ghost-btn" href="./patterns.html">探索設計模式</a>
+          <a class="secondary-btn ghost-btn" href="./tools.html">瀏覽工具庫</a>
+        </div>
+      </div>
+      <div class="case-hero-panel">
+        <div class="hero-highlight">
+          <h2>收藏亮點</h2>
+          <ul>
+            <li>54+ 實務方法：對應研究、構想、原型與引導四大章節</li>
+            <li>劇場化原型案例：轉化情緒、節奏與治理護欄</li>
+            <li>AI 設計模式牆（獨立分頁）：針對部署、治理、風險控管快速篩選</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <main id="case-app" class="case-layout" aria-label="AI 案例與模式庫">
+      <section id="case-method-library" class="method-library content-panel" aria-label="方法圖書館">
+        <header class="method-library-header">
+          <div>
+            <h2>方法圖書館</h2>
+            <p>依章節瀏覽 UX for AI 的重點方法，對應設計活動與操作建議。</p>
+          </div>
+        </header>
+        <div id="method-columns" class="method-columns"></div>
+      </section>
+
+      <section id="case-detail" class="case-detail content-panel" aria-live="polite" aria-label="案例詳細內容"></section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© 版權所有 PrivacyUX consulting Ltd. 2025</p>
+    </footer>
+
+    <script type="module" src="./src/cases.js"></script>
+  </body>
+</html>

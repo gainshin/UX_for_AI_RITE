@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>設計模式詳情 · Agentic UX Lab</title>
+    <meta
+      name="description"
+      content="查看 AI 設計模式的詳細指引、變體、設計建議與實際案例。"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="logo-area">
+        <span class="logo">Agentic UX Lab</span>
+        <p class="tagline">AI 設計模式詳情</p>
+      </div>
+      <nav class="site-nav" aria-label="導覽">
+        <a href="./patterns.html" class="nav-link">← 返回設計模式</a>
+        <a href="./cases.html" class="nav-link">案例庫</a>
+        <a href="./tools.html" class="nav-link">工具庫</a>
+        <a href="./teacher.html" class="nav-link">教學者模式</a>
+      </nav>
+    </header>
+
+    <main class="pattern-detail-container">
+      <!-- Loading state -->
+      <div id="loading-state" class="content-panel" style="padding: 3rem; text-align: center;">
+        <p class="status-text info">載入中...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="error-state" class="content-panel" style="padding: 3rem; display: none;">
+        <p class="status-text error" id="error-message"></p>
+        <div style="margin-top: 2rem;">
+          <a href="./patterns.html" class="primary-btn">返回模式牆</a>
+        </div>
+      </div>
+
+      <!-- Content state -->
+      <article id="pattern-content" class="content-panel pattern-detail-content" style="display: none;">
+        <header class="pattern-detail-header">
+          <div class="pattern-breadcrumb">
+            <a href="./patterns.html">設計模式牆</a>
+            <span aria-hidden="true">/</span>
+            <span id="pattern-category"></span>
+          </div>
+          <h1 id="pattern-title"></h1>
+          <p id="pattern-subtitle" class="pattern-detail-subtitle"></p>
+          <div id="pattern-tags" class="pattern-tag-list"></div>
+        </header>
+
+        <div id="pattern-body" class="pattern-detail-body markdown-content">
+          <!-- Markdown content will be rendered here -->
+        </div>
+
+        <footer class="pattern-detail-footer">
+          <a href="./patterns.html" class="secondary-btn">← 返回模式牆</a>
+        </footer>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>© 版權所有 PrivacyUX consulting Ltd. 2025</p>
+    </footer>
+
+    <script type="module" src="./src/pattern-detail.js"></script>
+  </body>
+</html>

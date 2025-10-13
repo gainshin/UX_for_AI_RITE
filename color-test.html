@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>配色改善測試</title>
+  <link rel="stylesheet" href="./styles.css">
+  <style>
+    .comparison-grid {
+      display: grid;
+      gap: 2rem;
+      padding: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .test-section {
+      background: var(--surface);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 1px solid var(--border);
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: var(--accent);
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-area">
+      <span class="logo">配色改善測試</span>
+      <p class="tagline">驗證文字可讀性和按鈕對比度</p>
+    </div>
+  </header>
+
+  <main class="comparison-grid">
+    <!-- 按鈕測試 -->
+    <section class="test-section">
+      <h2>主按鈕測試</h2>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+        <button class="primary-btn">開始測驗</button>
+        <button class="secondary-btn">次要按鈕</button>
+        <button class="secondary-btn danger">危險操作</button>
+      </div>
+    </section>
+
+    <!-- 狀態文字測試 -->
+    <section class="test-section">
+      <h2>狀態訊息測試</h2>
+      <div style="display: grid; gap: 1rem;">
+        <p class="status-text">預設狀態：這是一般訊息文字</p>
+        <p class="status-text success">成功狀態：操作已成功完成</p>
+        <p class="status-text error">錯誤狀態：發生錯誤，請檢查輸入</p>
+        <p class="status-text info">資訊狀態：這是重要的提示訊息</p>
+      </div>
+    </section>
+
+    <!-- 折疊卡片測試 -->
+    <section class="test-section">
+      <h2>折疊卡片測試</h2>
+      <div class="collapsible-card">
+        <button class="collapsible-header">
+          <span class="collapsible-title">準備好了嗎？</span>
+          <span class="collapsible-icon">▼</span>
+        </button>
+        <div class="collapsible-content">
+          <div class="collapsible-text-block">
+            <p class="collapsible-description">
+              完整系統正確的參數約 10 個標記，並且有 70% 以上即認定成功。
+            </p>
+            <p class="collapsible-hint">
+              <em>提示：</em>系統應視為「人在迴路」流程的一部分，不應完全自主決策。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 選項測試 -->
+    <section class="test-section">
+      <h2>選項列表測試</h2>
+      <div class="options">
+        <label class="option">
+          <input type="checkbox" />
+          <span>選項 1：提高準確率，減少誤報風險</span>
+        </label>
+        <label class="option">
+          <input type="checkbox" />
+          <span>選項 2：提高召回率，確保不漏掉重要案例</span>
+        </label>
+        <label class="option">
+          <input type="checkbox" />
+          <span>選項 3：平衡準確率與召回率</span>
+        </label>
+      </div>
+    </section>
+
+    <!-- 提示訊息測試 -->
+    <section class="test-section">
+      <h2>提示訊息測試</h2>
+      <div class="unit-nav-hint">
+        管理者模式可直接瀏覽所有單元並編輯參考答案與連結。
+      </div>
+      <div style="margin-top: 1rem;">
+        <p class="teacher-meta">
+          類型：多選題 ｜ 場景：醫療診斷 ｜ 更新：2024-01-15 10:30
+        </p>
+      </div>
+    </section>
+
+    <!-- 清單項目測試 -->
+    <section class="test-section">
+      <h2>清單項目測試</h2>
+      <ul class="point-list">
+        <li>遵循每個單元的觀念與情境分析，將錯誤成本納入考量。</li>
+        <li>完成互動練習與測驗，累積分數並解鎖實作模板。</li>
+        <li>善用解鎖的程式碼片段，延伸出適合自身場域的 AI 應用。</li>
+      </ul>
+    </section>
+
+    <!-- 匹配題測試 -->
+    <section class="test-section">
+      <h2>匹配題測試</h2>
+      <div class="matching-grid">
+        <div class="matching-row">
+          <span>醫療診斷系統</span>
+          <select>
+            <option>請選擇</option>
+            <option>提高召回率</option>
+            <option>提高準確率</option>
+          </select>
+        </div>
+        <div class="matching-row">
+          <span>垃圾郵件過濾</span>
+          <select>
+            <option>請選擇</option>
+            <option>提高召回率</option>
+            <option>提高準確率</option>
+          </select>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>配色改善測試頁面 · 2025</p>
+  </footer>
+</body>
+</html>

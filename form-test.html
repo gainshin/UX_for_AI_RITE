@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>表單佈局測試</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo-area">
+      <span class="logo">表單測試頁面</span>
+    </div>
+  </header>
+
+  <main class="teacher-layout">
+    <aside class="units-panel">
+      <h2>側邊欄</h2>
+      <p>測試用側邊欄</p>
+    </aside>
+    
+    <div id="teacher-content">
+      <section class="teacher-section content-panel">
+        <div class="teacher-section-header">
+          <h2>表單測試區域</h2>
+          <p class="teacher-meta">測試兩列佈局和響應式表現</p>
+        </div>
+
+        <div class="admin-manager">
+          <details open>
+            <summary>測試表單區塊</summary>
+            <div class="admin-manager-body">
+              <form class="admin-entry-form">
+                <div class="admin-form-grid two-column">
+                  <label class="admin-field">
+                    <span>標題</span>
+                    <input type="text" placeholder="輸入標題" />
+                  </label>
+                  <label class="admin-field">
+                    <span>章節/分類</span>
+                    <input type="text" placeholder="例如 Chapter 7 · Prototyping" />
+                  </label>
+                </div>
+                
+                <label class="admin-field">
+                  <span>摘要</span>
+                  <textarea rows="3" placeholder="輸入摘要內容"></textarea>
+                </label>
+                
+                <label class="admin-field">
+                  <span>重點/備註</span>
+                  <textarea rows="4" placeholder="每行輸入一段備註"></textarea>
+                </label>
+                
+                <div class="admin-form-grid two-column">
+                  <label class="admin-field">
+                    <span>標籤（以逗號分隔）</span>
+                    <input type="text" placeholder="例如 研究, 風險控管" />
+                  </label>
+                  <label class="admin-field">
+                    <span>網址</span>
+                    <input type="url" placeholder="https://example.com" />
+                  </label>
+                </div>
+
+                <div class="admin-form-actions">
+                  <button type="button" class="secondary-btn">取消</button>
+                  <button type="submit" class="primary-btn">儲存</button>
+                </div>
+              </form>
+            </div>
+          </details>
+        </div>
+
+        <div class="teacher-form">
+          <div class="form-grid two-column">
+            <div class="form-group">
+              <label for="test1">測試標籤 1</label>
+              <input type="text" id="test1" class="input-field" placeholder="測試輸入" />
+            </div>
+            <div class="form-group">
+              <label for="test2">測試標籤 2</label>
+              <input type="text" id="test2" class="input-field" placeholder="測試輸入" />
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="button" class="secondary-btn">重置</button>
+            <button type="submit" class="primary-btn">提交</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
