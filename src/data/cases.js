@@ -1,23 +1,23 @@
 export const methodLibrary = [
   {
-    id: "phase-problem-framing",
+    id: "phase-ai-intent-sensing",
     chapter: "01",
-    title: "第一階段：問題框架",
-    subtitle: "釐清需求、風險與利益關係人",
+    title: "階段一：AI 意圖感知",
+    subtitle: "感知策略趨勢與風險假設",
     description:
-      "將 AI 專案置於真實情境，盤點既有知識、風險訊號與關鍵角色，建立後續設計決策的共識地圖。",
-    phaseLabel: "第一階段：問題框架",
+      "整合市場脈動、資料跡證與初步田野觀察，為 AI 專案定義意圖、機會與風險假設，建立跨部門的共同語言。",
+    phaseLabel: "階段一：AI 意圖感知",
     groups: [
       {
-        id: "context-scan",
-        title: "桌面研究與資料盤點",
+        id: "trend-scan",
+        title: "趨勢掃描與資料盤點",
         items: [
           { id: "preparatory-research", title: "Preparatory research" },
           { id: "secondary-research", title: "Secondary research" },
         ],
       },
       {
-        id: "lived-experience",
+        id: "self-community-insights",
         title: "自我與社群洞察",
         items: [
           { id: "autoethnography", title: "Autoethnography" },
@@ -35,61 +35,76 @@ export const methodLibrary = [
     ],
   },
   {
-    id: "phase-ai-design-patterns",
+    id: "phase-ai-context-insight",
     chapter: "02",
-    title: "第二階段：AI 設計模式",
-    subtitle: "生成體驗原型與交互藍圖",
+    title: "階段二：AI 情境洞察",
+    subtitle: "串聯場景、旅程與利害關係",
     description:
-      "透過結構化的拆解、敘事與系統圖譜，快速探索 AI 介入點並塑造具體的設計策略。",
-    phaseLabel: "第二階段：AI 設計模式",
+      "將研究輸出的故事、網絡與情感訊號轉譯為洞察框架，鎖定 AI 介入的正向價值與高風險斷點。",
+    phaseLabel: "階段二：AI 情境洞察",
     groups: [
       {
-        id: "pattern-warmups",
-        title: "挑戰拆解與暖身",
+        id: "journey-context",
+        title: "旅程洞察與情境定位",
         items: [
-          { id: "slicing-the-elephant", title: "Slicing the elephant" },
           { id: "ideas-from-future-journey", title: "Ideas from future-state journey mapping" },
-        ],
-      },
-      {
-        id: "sensory-framing",
-        title: "情感與敘事重構",
-        items: [
-          { id: "aeseo-ergonomics", title: "AESEO – The ergonomics of need" },
           { id: "journey-ideation-arcs", title: "Journey ideation with dramatic arcs" },
         ],
       },
       {
         id: "systems-mapping",
-        title: "系統旅程映射",
+        title: "系統圖譜與利害關係",
         items: [{ id: "future-state-network", title: "Ideas from future-state network mapping" }],
+      },
+      {
+        id: "challenge-framing",
+        title: "議題拆解與聚焦",
+        items: [{ id: "slicing-the-elephant", title: "Slicing the elephant" }],
       },
     ],
   },
   {
-    id: "phase-ai-project-research",
+    id: "phase-ai-concept-exploration",
     chapter: "03",
-    title: "第三階段：AI 專案研究",
-    subtitle: "透過原型驗證假設與護欄",
+    title: "階段三：AI 概念探索",
+    subtitle: "以劇場與敘事驗證體驗假設",
     description:
-      "用劇場式演練、服務流程與對話測試，快速驗證價值矩陣假設並捕捉治理缺口。",
-    phaseLabel: "第三階段：AI 專案研究",
+      "透過多感官敘事、劇場排演與對話草圖，生成候選體驗概念，並檢視價值矩陣假設的可行性。",
+    phaseLabel: "階段三：AI 概念探索",
     groups: [
       {
-        id: "immersive-rehearsal",
-        title: "劇場式演練",
-        items: [
-          { id: "theatrical-methods", title: "Theatrical methods – An introduction" },
-          { id: "investigative-rehearsal", title: "Investigative rehearsal" },
-        ],
+        id: "theatrical-concepts",
+        title: "劇場式構想實驗",
+        items: [{ id: "theatrical-methods", title: "Theatrical methods – An introduction" }],
       },
       {
-        id: "conversation-audits",
-        title: "對話與情緒檢核",
+        id: "dialogue-scripting",
+        title: "對話情緒腳本",
         items: [{ id: "subtext", title: "Subtext" }],
       },
       {
-        id: "service-blueprints",
+        id: "multisensory-design",
+        title: "體驗語感設計",
+        items: [{ id: "aeseo-ergonomics", title: "AESEO – The ergonomics of need" }],
+      },
+    ],
+  },
+  {
+    id: "phase-ai-solution-validation",
+    chapter: "04",
+    title: "階段四：AI 方案驗證",
+    subtitle: "校準服務流程與護欄設計",
+    description:
+      "以劇場壓力測試、服務流程驗證與實體模擬，評估 AI 方案的風險管理、體驗品質與實施條件。",
+    phaseLabel: "階段四：AI 方案驗證",
+    groups: [
+      {
+        id: "investigative-stress-test",
+        title: "劇場壓力測試",
+        items: [{ id: "investigative-rehearsal", title: "Investigative rehearsal" }],
+      },
+      {
+        id: "service-prototype",
         title: "服務流程驗證",
         items: [
           { id: "desktop-walkthrough", title: "Desktop walkthrough" },
@@ -104,16 +119,16 @@ export const methodLibrary = [
     ],
   },
   {
-    id: "phase-ai-ethics-bias",
-    chapter: "04",
-    title: "第四階段：AI 倫理與偏見",
-    subtitle: "治理節奏與跨域協作",
+    id: "phase-ai-governance",
+    chapter: "05",
+    title: "階段五：AI 治理實現",
+    subtitle: "建立倫理節奏與跨域協作",
     description:
-      "以協作暖身與風險檢核建立共同語言，持續校準 AI 系統的公平性與問責機制。",
-    phaseLabel: "第四階段：AI 倫理與偏見",
+      "以共感暖身、風險檢核與決策節奏整合治理需求，確保 AI 方案在落地過程中可持續對齊價值。",
+    phaseLabel: "階段五：AI 治理實現",
     groups: [
       {
-        id: "alignment-warmups",
+        id: "ethics-warmups",
         title: "倫理暖身與共感",
         items: [
           { id: "three-brain-warmup", title: "Three-brain warm-up" },
