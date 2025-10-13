@@ -1358,6 +1358,26 @@ body[data-theme="forest"] {
   color: var(--muted);
 }
 
+.method-activity-label {
+  margin: 0 0 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+}
+
+.method-activity-label::before {
+  content: "◎";
+  font-size: 0.65rem;
+}
+
 .method-items {
   display: grid;
   gap: 0.6rem;
@@ -1797,6 +1817,7 @@ body[data-theme="forest"] {
   }
 
   .tool-card {
+    position: relative;
     display: grid;
     gap: 1.1rem;
     border-radius: 1.25rem;
@@ -1804,6 +1825,54 @@ body[data-theme="forest"] {
     background: var(--card);
     box-shadow: 0 18px 36px var(--panel-shadow);
     overflow: hidden;
+  }
+
+  .tool-card-badges {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    z-index: 2;
+  }
+
+  .tool-card-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(18, 20, 48, 0.8);
+    color: #ffffff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 18px 32px rgba(10, 12, 30, 0.35);
+    backdrop-filter: blur(6px);
+  }
+
+  .tool-card-badge.custom {
+    background: rgba(81, 132, 255, 0.85);
+    border-color: rgba(114, 164, 255, 0.5);
+  }
+
+  .tool-card-badge.override {
+    background: rgba(164, 104, 255, 0.85);
+    border-color: rgba(188, 140, 255, 0.45);
+  }
+
+  .tool-card-badge.featured {
+    background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+    border-color: transparent;
+    box-shadow: 0 24px 48px var(--accent-glow);
+  }
+
+  .featured-tool-card {
+    border-color: var(--accent-border);
+    box-shadow: 0 26px 52px var(--accent-glow);
   }
 
   .tool-card-media {

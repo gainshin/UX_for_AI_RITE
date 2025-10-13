@@ -17,6 +17,8 @@ const categoryLabelMap = toolCategories.reduce((acc, category) => {
   return acc;
 }, {});
 
+const FEATURED_HIGHLIGHT = "精選推薦";
+
 function sanitizeCategory(categoryId) {
   return categoryId && categoryLabelMap[categoryId] ? categoryId : "all";
 }
@@ -73,6 +75,10 @@ function buildToolOverrides(entries) {
     map.set(id, { ...entry });
   });
   return map;
+}
+
+function isFeaturedTool(tool) {
+  return Array.isArray(tool && tool.highlights) && tool.highlights.includes(FEATURED_HIGHLIGHT);
 }
 
 const storedState = loadCaseLibraryState() || {};
@@ -211,7 +217,7 @@ function hydrateTopToggle() {
     state.topOnly = Boolean(event.target.checked);
     persistState();
     renderToolGrid();
-    announce(state.topOnly ? "已僅顯示精選類別工具。" : "已恢復顯示全部工具類別。");
+    announce(state.topOnly ? "已僅顯示精選工具。" : "已恢復顯示全部工具。");
   });
 }
 
@@ -320,9 +326,7 @@ function getFilteredTools() {
     const matchesCategory = active === "all" || categories.includes(active);
     if (!matchesCategory) return false;
 
-    const matchesTop = !limitToTop
-      ? true
-      : categories.some((categoryId) => topCategoryIds.includes(categoryId));
+    const matchesTop = !limitToTop ? true : isFeaturedTool(tool);
     if (!matchesTop) return false;
 
     if (!search) return true;
@@ -358,7 +362,7 @@ function renderToolGrid() {
       categoryLabelMap[state.activeCategory]?.label || "全部工具";
     const flags = [];
     if (state.topOnly) {
-      flags.push("僅顯示精選類別");
+      flags.push("僅顯示精選工具");
     }
     if (state.searchTerm.trim()) {
       flags.push(`搜尋「${state.searchTerm.trim()}」`);
@@ -381,18 +385,36 @@ function renderToolGrid() {
     const card = document.createElement("article");
     card.className = "tool-card";
     card.setAttribute("role", "listitem");
+
+    const badgeContainer = document.createElement("div");
+    badgeContainer.className = "tool-card-badges";
+
     if (tool.isCustom) {
       card.classList.add("custom-tool-card");
       const badge = document.createElement("span");
-      badge.className = "tool-card-badge";
+      badge.className = "tool-card-badge custom";
       badge.textContent = "管理者新增";
-      card.appendChild(badge);
-    } else if (tool.isOverride) {
+      badgeContainer.appendChild(badge);
+    }
+
+    if (tool.isOverride) {
       card.classList.add("override-tool-card");
       const badge = document.createElement("span");
       badge.className = "tool-card-badge override";
       badge.textContent = "管理者覆寫";
-      card.appendChild(badge);
+      badgeContainer.appendChild(badge);
+    }
+
+    if (isFeaturedTool(tool)) {
+      card.classList.add("featured-tool-card");
+      const featuredBadge = document.createElement("span");
+      featuredBadge.className = "tool-card-badge featured";
+      featuredBadge.textContent = "精選";
+      badgeContainer.appendChild(featuredBadge);
+    }
+
+    if (badgeContainer.childElementCount > 0) {
+      card.appendChild(badgeContainer);
     }
 
     const media = document.createElement("figure");

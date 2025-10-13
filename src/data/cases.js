@@ -1,31 +1,32 @@
 export const methodLibrary = [
   {
-    id: "research",
-    chapter: "05",
-    title: "Research",
-    subtitle: "Desk & Ethnographic Insights",
+    id: "phase-problem-framing",
+    chapter: "01",
+    title: "第一階段：問題框架",
+    subtitle: "釐清需求、風險與利益關係人",
     description:
-      "Ground your AI value-matrix work with rigorous desk research and lived-experience studies that surface contextual risks.",
+      "將 AI 專案置於真實情境，盤點既有知識、風險訊號與關鍵角色，建立後續設計決策的共識地圖。",
+    phaseLabel: "第一階段：問題框架",
     groups: [
       {
-        id: "desk-research",
-        title: "Desk research",
+        id: "context-scan",
+        title: "桌面研究與資料盤點",
         items: [
           { id: "preparatory-research", title: "Preparatory research" },
           { id: "secondary-research", title: "Secondary research" },
         ],
       },
       {
-        id: "self-ethnography",
-        title: "Self-ethnographic approach",
+        id: "lived-experience",
+        title: "自我與社群洞察",
         items: [
           { id: "autoethnography", title: "Autoethnography" },
           { id: "online-ethnography", title: "Online ethnography" },
         ],
       },
       {
-        id: "participant-approach",
-        title: "Participant approach",
+        id: "field-inquiry",
+        title: "情境訪談與參與觀察",
         items: [
           { id: "participant-observation", title: "Participant observation" },
           { id: "contextual-interview", title: "Contextual interview" },
@@ -34,89 +35,96 @@ export const methodLibrary = [
     ],
   },
   {
-    id: "ideation",
-    chapter: "06",
-    title: "Ideation",
-    subtitle: "Framing & Concept Generation",
+    id: "phase-ai-design-patterns",
+    chapter: "02",
+    title: "第二階段：AI 設計模式",
+    subtitle: "生成體驗原型與交互藍圖",
     description:
-      "Navigate messy problem spaces with facilitation patterns that slice challenges, reuse journeys, and reframe opportunities.",
+      "透過結構化的拆解、敘事與系統圖譜，快速探索 AI 介入點並塑造具體的設計策略。",
+    phaseLabel: "第二階段：AI 設計模式",
     groups: [
       {
-        id: "pre-ideation",
-        title: "Pre-ideation",
+        id: "pattern-warmups",
+        title: "挑戰拆解與暖身",
         items: [
           { id: "slicing-the-elephant", title: "Slicing the elephant" },
           { id: "ideas-from-future-journey", title: "Ideas from future-state journey mapping" },
         ],
       },
       {
-        id: "extra",
-        title: "Extra",
+        id: "sensory-framing",
+        title: "情感與敘事重構",
         items: [
           { id: "aeseo-ergonomics", title: "AESEO – The ergonomics of need" },
           { id: "journey-ideation-arcs", title: "Journey ideation with dramatic arcs" },
         ],
       },
       {
-        id: "network-mapping",
-        title: "Network mapping",
-        items: [
-          { id: "future-state-network", title: "Ideas from future-state network mapping" },
-        ],
+        id: "systems-mapping",
+        title: "系統旅程映射",
+        items: [{ id: "future-state-network", title: "Ideas from future-state network mapping" }],
       },
     ],
   },
   {
-    id: "prototyping",
-    chapter: "07",
-    title: "Prototyping",
-    subtitle: "Embodied Experiments",
+    id: "phase-ai-project-research",
+    chapter: "03",
+    title: "第三階段：AI 專案研究",
+    subtitle: "透過原型驗證假設與護欄",
     description:
-      "Prototype value-matrix interventions through staged rehearsals, walkthroughs, and cardboard sets that stress-test signals and safeguards.",
+      "用劇場式演練、服務流程與對話測試，快速驗證價值矩陣假設並捕捉治理缺口。",
+    phaseLabel: "第三階段：AI 專案研究",
     groups: [
       {
-        id: "extra",
-        title: "Extra",
-        items: [{ id: "theatrical-methods", title: "Theatrical methods – An introduction" }],
-      },
-      {
-        id: "service-process",
-        title: "Prototyping service processes & experiences",
+        id: "immersive-rehearsal",
+        title: "劇場式演練",
         items: [
+          { id: "theatrical-methods", title: "Theatrical methods – An introduction" },
           { id: "investigative-rehearsal", title: "Investigative rehearsal" },
-          { id: "subtext", title: "Subtext" },
-          { id: "desktop-walkthrough", title: "Desktop walkthrough" },
         ],
       },
       {
-        id: "physical-environment",
-        title: "Prototyping physical objects & environments",
+        id: "conversation-audits",
+        title: "對話與情緒檢核",
+        items: [{ id: "subtext", title: "Subtext" }],
+      },
+      {
+        id: "service-blueprints",
+        title: "服務流程驗證",
+        items: [
+          { id: "desktop-walkthrough", title: "Desktop walkthrough" },
+          { id: "redesigning-digital-services", title: "Redesigning digital services" },
+        ],
+      },
+      {
+        id: "spatial-prototyping",
+        title: "實體情境模擬",
         items: [{ id: "cardboard-prototyping", title: "Cardboard prototyping" }],
       },
-      {
-        id: "digital-services",
-        title: "Prototyping digital services & software",
-        items: [{ id: "redesigning-digital-services", title: "Redesigning digital services" }],
-      },
     ],
   },
   {
-    id: "facilitation",
-    chapter: "10",
-    title: "Facilitation",
-    subtitle: "Team Warm-ups",
+    id: "phase-ai-ethics-bias",
+    chapter: "04",
+    title: "第四階段：AI 倫理與偏見",
+    subtitle: "治理節奏與跨域協作",
     description:
-      "Prime collaborators with warm-ups and playback rituals that keep AI governance conversations constructive.",
+      "以協作暖身與風險檢核建立共同語言，持續校準 AI 系統的公平性與問責機制。",
+    phaseLabel: "第四階段：AI 倫理與偏見",
     groups: [
       {
-        id: "energizers",
-        title: "Warm-ups",
+        id: "alignment-warmups",
+        title: "倫理暖身與共感",
         items: [
           { id: "three-brain-warmup", title: "Three-brain warm-up" },
           { id: "color-chain-warmup", title: "Color-chain warm-up" },
           { id: "yes-and-warmup", title: '"Yes, and …" warm-up' },
-          { id: "red-green-feedback", title: "Red and green feedback" },
         ],
+      },
+      {
+        id: "risk-reviews",
+        title: "風險檢核與決策對齊",
+        items: [{ id: "red-green-feedback", title: "Red and green feedback" }],
       },
     ],
   },

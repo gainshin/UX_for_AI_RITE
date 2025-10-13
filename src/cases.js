@@ -145,6 +145,15 @@ function renderMethodColumns() {
       heading.textContent = group.title;
       section.appendChild(heading);
 
+      const activityLabelText = group.activityLabel || column.phaseLabel;
+      if (activityLabelText) {
+        const activityLabel = document.createElement("p");
+        activityLabel.className = "method-activity-label";
+        activityLabel.textContent = activityLabelText;
+        activityLabel.setAttribute("aria-label", `活動分類：${activityLabelText}`);
+        section.appendChild(activityLabel);
+      }
+
       const list = document.createElement("div");
       list.className = "method-items";
 
