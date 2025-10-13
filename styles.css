@@ -3298,6 +3298,44 @@ body[data-theme="forest"] {
   margin: 1rem 0 0;
 }
 
+.case-category-nav {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.case-category-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.case-category-link:hover {
+  border-color: var(--accent-border);
+  color: var(--accent-strong);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+.case-category-link--active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  font-weight: 600;
+}
+
+.case-category-link:focus-visible {
+  outline: 3px solid var(--accent-border);
+  outline-offset: 2px;
+}
+
 .case-studies-intro {
   text-align: center;
   margin: 0 0 3rem;

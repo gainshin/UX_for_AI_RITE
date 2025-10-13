@@ -90,6 +90,30 @@ function renderStudyHeader(study) {
 }
 
 /**
+ * Derive bilingual labels for pattern chips
+ */
+function getPatternDisplayNames(pattern) {
+  const title = typeof pattern.title === "string" ? pattern.title.trim() : "";
+  const subtitle = typeof pattern.subtitle === "string" ? pattern.subtitle.trim() : "";
+
+  const english = title ? title.split("(")[0].trim() : "";
+  const chineseMatch = title.match(/\(([^)]+)\)/);
+  const chineseFromTitle = chineseMatch ? chineseMatch[1].trim() : "";
+
+  const primary = chineseFromTitle || subtitle || english || title || pattern.id;
+
+  let secondary = english;
+  if (!secondary || secondary === primary) {
+    secondary = subtitle && subtitle !== primary ? subtitle : "";
+  }
+
+  return {
+    primary,
+    secondary,
+  };
+}
+
+/**
  * Render related patterns
  */
 function renderRelatedPatterns(study) {
@@ -109,13 +133,19 @@ function renderRelatedPatterns(study) {
     return;
   }
 
+  if (elements.relatedPatternsSection) {
+    elements.relatedPatternsSection.style.display = "block";
+  }
+
   elements.relatedPatterns.innerHTML = relatedPatternData
     .map(pattern => {
       const href = `pattern-detail.html?id=${encodeURIComponent(pattern.id)}`;
+      const { primary, secondary } = getPatternDisplayNames(pattern);
+      const secondaryLine = secondary ? `<span class="pattern-name-en">${secondary}</span>` : "";
       return `
         <a href="${href}" class="pattern-chip">
-          <span class="pattern-name">${pattern.name}</span>
-          <span class="pattern-name-en">${pattern.nameEn}</span>
+          <span class="pattern-name">${primary}</span>
+          ${secondaryLine}
         </a>
       `;
     })

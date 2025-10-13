@@ -588,6 +588,14 @@ export const patternCatalog = [
     filters: ["dark-patterns"],
   },
   {
+    id: "urgency",
+    title: "Urgency Prompts (急迫性提示)",
+    subtitle: "倒數與即時提醒",
+    summary:
+      "透過倒數計時、即時通知或閃爍提示營造急迫感，驅動使用者快速做出決策或完成交易。",
+    filters: ["dark-patterns"],
+  },
+  {
     id: "hard-to-cancel",
     title: "Hard to Cancel (退訂阻力／Roach Motel)",
     subtitle: "進來容易出去難",
