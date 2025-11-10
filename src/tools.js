@@ -180,6 +180,15 @@ function renderFilterList() {
       }
     });
 
+    // 同時監聽 label 的點擊事件，確保切換正常工作
+    wrapper.addEventListener("click", (event) => {
+      // 如果點擊的不是 input 本身，手動觸發 input 的點擊
+      if (event.target !== input) {
+        input.checked = true;
+        setActiveCategory(category.id, { announceChange: true });
+      }
+    });
+
     const text = document.createElement("span");
     text.className = "tool-filter-label";
     text.textContent = category.label;
