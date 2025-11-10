@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>篩選點擊測試</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.7rem 0.85rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f9f9f9;
+        }
+        .filter-item.selected {
+            border-color: #0066cc;
+            background: #e6f2ff;
+        }
+        .filter-item input {
+            width: 1rem;
+            height: 1rem;
+        }
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f0f0f0;
+            border-radius: 8px;
+        }
+        .badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 999px;
+            background: #ffc107;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <h1>篩選點擊功能測試</h1>
+    <p>點擊下方任意位置（包括文字、徽章）來測試篩選切換是否正常工作</p>
+    
+    <div id="filters"></div>
+    
+    <div class="result">
+        <h3>當前選中的類別：</h3>
+        <div id="current-selection" style="font-size: 1.5rem; font-weight: bold;">全部工具</div>
+    </div>
+
+    <script>
+        const categories = [
+            { id: "all", label: "全部工具", featured: false },
+            { id: "ai-ux-design", label: "AI in UX Design", featured: true },
+            { id: "ux-communities", label: "UX Communities & Resources", featured: true },
+            { id: "ai-pattern-library", label: "AI Pattern Library", featured: true }
+        ];
+        
+        let activeCategory = "all";
+        
+        function renderFilters() {
+            const container = document.getElementById('filters');
+            container.innerHTML = '';
+            
+            categories.forEach((category) => {
+                const wrapper = document.createElement("label");
+                wrapper.className = "filter-item";
+                if (activeCategory === category.id) {
+                    wrapper.classList.add("selected");
+                }
+                
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "category";
+                input.value = category.id;
+                input.checked = activeCategory === category.id;
+                
+                // 原有的 change 事件監聽器
+                input.addEventListener("change", () => {
+                    if (input.checked) {
+                        setActive(category.id);
+                    }
+                });
+                
+                // 新增的 label 點擊事件監聽器
+                wrapper.addEventListener("click", (event) => {
+                    if (event.target !== input) {
+                        input.checked = true;
+                        setActive(category.id);
+                    }
+                });
+                
+                const text = document.createElement("span");
+                text.textContent = category.label;
+                text.style.flex = "1";
+                
+                wrapper.appendChild(input);
+                wrapper.appendChild(text);
+                
+                if (category.featured) {
+                    const badge = document.createElement("span");
+                    badge.className = "badge";
+                    badge.textContent = "精選";
+                    wrapper.appendChild(badge);
+                }
+                
+                container.appendChild(wrapper);
+            });
+        }
+        
+        function setActive(categoryId) {
+            activeCategory = categoryId;
+            const category = categories.find(c => c.id === categoryId);
+            document.getElementById('current-selection').textContent = category ? category.label : categoryId;
+            renderFilters();
+        }
+        
+        renderFilters();
+    </script>
+</body>
+</html>

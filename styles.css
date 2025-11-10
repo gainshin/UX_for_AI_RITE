@@ -1568,6 +1568,67 @@ body[data-theme="forest"] {
   line-height: 1.6;
 }
 
+.case-table-wrapper {
+  overflow-x: auto;
+  margin: 1rem 0;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.case-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  background: var(--card);
+}
+
+.case-table thead {
+  background: var(--accent-soft);
+  border-bottom: 2px solid var(--accent-border);
+}
+
+.case-table th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--accent);
+  border-right: 1px solid var(--border);
+}
+
+.case-table th:last-child {
+  border-right: none;
+}
+
+.case-table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s ease;
+}
+
+.case-table tbody tr:hover {
+  background: var(--card-subtle);
+}
+
+.case-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.case-table tbody th {
+  background: var(--card-subtle);
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.case-table td {
+  padding: 0.85rem 1rem;
+  border-right: 1px solid var(--border);
+  line-height: 1.5;
+}
+
+.case-table td:last-child {
+  border-right: none;
+}
+
 .case-resources ul,
 .case-references ul {
   list-style: none;

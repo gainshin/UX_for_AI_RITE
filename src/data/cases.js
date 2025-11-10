@@ -9,6 +9,13 @@ export const methodLibrary = [
     phaseLabel: "AI 意圖感知",
     groups: [
       {
+        id: "framework-overview",
+        title: "框架總覽",
+        items: [
+          { id: "ux-ai-framework", title: "UX for AI 設計框架對照" },
+        ],
+      },
+      {
         id: "trend-scan",
         title: "趨勢掃描與資料盤點",
         items: [
@@ -146,6 +153,124 @@ export const methodLibrary = [
 ];
 
 export const methodDetails = {
+  "ux-ai-framework": {
+    id: "ux-ai-framework",
+    title: "UX for AI 設計框架對照",
+    chapter: "Framework Overview",
+    summary:
+      "整合 GARRETT 五層設計元素、AIPET Agentic UX 框架與 PAUL BRYAN 責任導向指標，建立完整的 AI 體驗設計思維架構。",
+    lead:
+      "此框架對照表協助團隊在不同設計層次中，同時考量 AI 的能動性（Agency）與責任性（Accountability），確保體驗設計與治理策略的一致性。",
+    tags: ["Framework", "Strategy", "Governance"],
+    meta: [
+      { label: "適用階段", value: "全專案週期" },
+      { label: "參考對象", value: "產品、設計、治理、技術團隊" },
+      { label: "更新頻率", value: "專案里程碑審查時" },
+    ],
+    sections: [
+      {
+        heading: "框架對照說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "本框架整合三大設計思維體系，協助團隊在 AI 產品開發的各個層次中，平衡使用者體驗、AI 能動性與責任治理："
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "GARRETT 五層設計元素：提供從策略到表面的完整設計架構",
+              "AIPET Agentic / Agentive UX 框架：聚焦 AI 系統的能動性與信任建立",
+              "PAUL BRYAN 責任導向指標：確保設計決策符合倫理與治理要求"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "三大框架對照表",
+        body: [
+          {
+            type: "paragraph",
+            text: "以下表格展示三個框架在五個設計層次上的對應關係與重點考量："
+          },
+          {
+            type: "table",
+            headers: ["GARRETT 五層設計元素", "AIPET AGENTIC / AGENTIVE UX 框架", "PAUL BRYAN 責任導向指標"],
+            rows: [
+              ["策略 Strategy", "Agency / Trust", "Control / Safety"],
+              ["範圍 Scope", "Privacy / Interaction", "Diversity"],
+              ["結構 Structure", "Experience Continuity", "Performance"],
+              ["架構 Skeleton", "Interaction & Agency", "Control / Safety"],
+              ["表面 Surface", "Trust / Privacy", "Balance"]
+            ]
+          }
+        ]
+      },
+      {
+        heading: "層次說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "**策略層 (Strategy)**：定義 AI 產品的核心價值主張，在能動性（Agency）與信任（Trust）之間建立平衡，同時確保使用者對系統的控制權（Control）與安全性（Safety）。"
+          },
+          {
+            type: "paragraph",
+            text: "**範圍層 (Scope)**：界定 AI 功能的邊界，考量隱私保護（Privacy）與互動模式（Interaction），確保系統設計能夠支持多樣性（Diversity）需求。"
+          },
+          {
+            type: "paragraph",
+            text: "**結構層 (Structure)**：建立體驗的連續性（Experience Continuity），確保 AI 系統在不同情境下的一致性與效能（Performance）。"
+          },
+          {
+            type: "paragraph",
+            text: "**架構層 (Skeleton)**：設計互動流程與 AI 能動性的具體呈現，在使用者控制與系統自主性之間找到適當的平衡點。"
+          },
+          {
+            type: "paragraph",
+            text: "**表面層 (Surface)**：透過視覺與互動細節建立信任感，傳達隱私保護承諾，並在體驗的各個接觸點維持平衡（Balance）。"
+          }
+        ]
+      },
+      {
+        heading: "應用建議",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "在專案啟動階段，使用此框架對照表進行跨部門對齊，確保所有利害關係人理解設計決策的多維度考量",
+              "在每個設計階段，參考對應的框架維度進行自我檢核，避免過度聚焦單一面向而忽略其他重要考量",
+              "在里程碑審查時，使用此表格作為溝通工具，向管理層或客戶解釋設計決策如何同時滿足體驗、能動性與責任性要求",
+              "將框架對照表作為設計批評（Design Critique）的評估架構，確保回饋意見涵蓋完整的設計層次",
+              "在與法務、合規或倫理委員會溝通時，使用 PAUL BRYAN 責任導向指標來展示設計如何支持治理目標"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "Garrett, J. J. (2010). The Elements of User Experience: User-Centered Design for the Web and Beyond (2nd ed.). New Riders.",
+      "Yang, Q., Steinfeld, A., Rosé, C., & Zimmerman, J. (2020). Re-examining Whether, Why, and How Human-AI Interaction Is Uniquely Difficult to Design. CHI 2020.",
+      "Bryan, P. (2023). Responsible AI Design: Frameworks and Practices. O'Reilly Media."
+    ],
+    resources: [
+      {
+        label: "GARRETT 五層模型詳細說明",
+        href: "https://www.jjg.net/elements/",
+        description: "Jesse James Garrett 的原創五層設計模型完整文件"
+      },
+      {
+        label: "AI 能動性設計指南",
+        href: "https://pair.withgoogle.com/",
+        description: "Google PAIR 團隊的 AI 互動設計資源與案例"
+      },
+      {
+        label: "責任 AI 設計實踐",
+        href: "https://www.microsoft.com/en-us/ai/responsible-ai",
+        description: "Microsoft 責任 AI 原則與實施框架"
+      }
+    ]
+  },
   "theatrical-methods": {
     id: "theatrical-methods",
     title: "Theatrical methods – An introduction",
@@ -495,7 +620,63 @@ export const methodDetails = {
       "以顏色與身體動作連結團隊默契，建立快速應對情境。",
     lead: "鼓勵跨部門互動，降低討論門檻。",
     tags: ["Facilitation", "Energy"],
-    sections: [],
+    sections: [
+      {
+        heading: "活動目的",
+        body: [
+          {
+            type: "paragraph",
+            text: "Color-chain warm-up 是一種快速的團隊暖場活動，透過顏色聯想和肢體動作來建立團隊默契。特別適合跨部門工作坊開始前，幫助參與者快速進入狀態，降低溝通障礙。"
+          },
+          {
+            type: "paragraph",
+            text: "此活動能有效打破部門間的隔閡，讓技術、設計、產品和治理團隊在輕鬆的氛圍中建立連結，為後續的深度討論奠定基礎。"
+          }
+        ]
+      },
+      {
+        heading: "操作步驟",
+        body: [
+          {
+            type: "list",
+            style: "numbered",
+            items: [
+              "參與者圍成一圈站立，主持人說明規則：每個人輪流說出一個顏色，並做出與該顏色相關的肢體動作",
+              "第一位參與者說出顏色（如「紅色」），並做出對應動作（如舉起雙手模擬火焰）",
+              "下一位參與者需要記住前一個顏色和動作，然後加上自己的顏色和動作",
+              "依序進行，每個人都要重複所有之前的顏色和動作，再加上自己的",
+              "當有人忘記或做錯時，全體一起重新開始，營造互相支持的氛圍",
+              "活動持續 5-8 分鐘，直到所有人都輪過一次或達到預定輪數"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "注意事項與技巧",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "鼓勵參與者選擇有趣或誇張的動作，增加活動趣味性",
+              "當團隊較大時（超過 12 人），可以分成兩組同時進行",
+              "主持人可以先示範一輪，幫助大家理解規則",
+              "強調「犯錯是正常的」，重點是建立輕鬆的氛圍而非完美表現",
+              "結束後可以簡短分享：這個活動如何反映了跨部門協作的挑戰和樂趣"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "適用場景",
+        body: [
+          {
+            type: "paragraph",
+            text: "此活動特別適合 AI 專案初期的工作坊，當團隊成員彼此還不太熟悉，或是需要打破僵硬的會議氛圍時使用。也適合在午休後或長時間討論的中場休息使用，幫助團隊恢復專注力和能量。"
+          }
+        ]
+      }
+    ],
     references: [],
     resources: [],
   },

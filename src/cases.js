@@ -538,6 +538,52 @@ function renderBodyBlock(block) {
     });
     return list;
   }
+  if (block.type === "table") {
+    const tableWrapper = document.createElement("div");
+    tableWrapper.className = "case-table-wrapper";
+    const table = document.createElement("table");
+    table.className = "case-table";
+    
+    // 創建表頭
+    if (block.headers && Array.isArray(block.headers)) {
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+      block.headers.forEach((header) => {
+        const th = document.createElement("th");
+        th.textContent = header;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+    }
+    
+    // 創建表格主體
+    if (block.rows && Array.isArray(block.rows)) {
+      const tbody = document.createElement("tbody");
+      block.rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((cell, index) => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          // 第一列使用 th 標籤
+          if (index === 0) {
+            const th = document.createElement("th");
+            th.scope = "row";
+            th.textContent = cell;
+            tr.appendChild(th);
+          } else {
+            td.textContent = cell;
+            tr.appendChild(td);
+          }
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+    }
+    
+    tableWrapper.appendChild(table);
+    return tableWrapper;
+  }
   return null;
 }
 
