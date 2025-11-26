@@ -16,6 +16,15 @@ export const methodLibrary = [
         ],
       },
       {
+        id: "ux-ai-key-concepts",
+        title: "UX for AI 關鍵概念",
+        items: [
+          { id: "right-use-case", title: "選擇正確戰場 (Right Use Case)" },
+          { id: "avoid-death-traps", title: "避開死亡陷阱 (Avoid Death Traps)" },
+          { id: "value-storyboarding", title: "讓價值可見 (Storyboarding)" },
+        ],
+      },
+      {
         id: "trend-scan",
         title: "趨勢掃描與資料盤點",
         items: [
@@ -59,6 +68,15 @@ export const methodLibrary = [
         ],
       },
       {
+        id: "ux-ai-key-concepts-ch2",
+        title: "UX for AI 關鍵概念",
+        items: [
+          { id: "digital-twin", title: "數位雙胞胎 (Digital Twin)" },
+          { id: "value-matrix", title: "價值矩陣 (Value Matrix)" },
+          { id: "sumo-copilot", title: "Sumo Copilot 成功要素" },
+        ],
+      },
+      {
         id: "systems-mapping",
         title: "系統圖譜與利害關係",
         items: [{ id: "future-state-network", title: "Ideas from future-state network mapping" }],
@@ -83,6 +101,15 @@ export const methodLibrary = [
         id: "theatrical-concepts",
         title: "劇場式構想實驗",
         items: [{ id: "theatrical-methods", title: "Theatrical methods – An introduction" }],
+      },
+      {
+        id: "ux-ai-key-concepts-ch3",
+        title: "UX for AI 關鍵概念",
+        items: [
+          { id: "dynamic-dashboards", title: "動態儀表板 (Dynamic Dashboards)" },
+          { id: "ai-driven-ia", title: "資訊架構的變革" },
+          { id: "bias-swot", title: "解決推薦偏見" },
+        ],
       },
       {
         id: "dialogue-scripting",
@@ -123,6 +150,18 @@ export const methodLibrary = [
         title: "實體情境模擬",
         items: [{ id: "cardboard-prototyping", title: "Cardboard prototyping" }],
       },
+      {
+        id: "ux-ai-key-concepts-ch4",
+        title: "UX for AI 關鍵概念",
+        items: [
+          { id: "copilot-presence", title: "Copilot 存在感" },
+          { id: "guided-query", title: "引導式查詢 (Guided Query)" },
+          { id: "explainability-trust", title: "可解釋性與信任" },
+          { id: "spike-testing", title: "Spike (技術探針/概念驗證)" },
+          { id: "rite-method", title: "RITE 研究方法" },
+          { id: "ux-glue", title: "四人小組協作 (UX = Glue)" },
+        ],
+      },
     ],
   },
   {
@@ -148,9 +187,35 @@ export const methodLibrary = [
         title: "風險檢核與決策對齊",
         items: [{ id: "red-green-feedback", title: "Red and green feedback" }],
       },
+      {
+        id: "ux-ai-key-concepts-ch5",
+        title: "UX for AI 關鍵概念",
+        items: [
+          { id: "tactical-prototypes", title: "戰術原型 (Tactical Prototypes)" },
+          { id: "identifying-bias", title: "識別隱性偏見" },
+          { id: "innovation-ambassador", title: "創新大使" },
+        ],
+      },
     ],
   },
 ];
+
+const commonFrameworkSection = {
+  heading: "框架對照表",
+  body: [
+    {
+      type: "table",
+      headers: ["GARRETT 五層設計元素", "AIPET AGENTIC / AGENTIVE UX 框架", "PAUL BRYAN 責任導向指標"],
+      rows: [
+        ["策略 Strategy", "Agency / Trust", "Control / Safety"],
+        ["範圍 Scope", "Privacy / Interaction", "Diversity"],
+        ["結構 Structure", "Experience Continuity", "Performance"],
+        ["架構 Skeleton", "Interaction & Agency", "Control / Safety"],
+        ["表面 Surface", "Trust / Privacy", "Balance"]
+      ]
+    }
+  ]
+};
 
 export const methodDetails = {
   "ux-ai-framework": {
@@ -211,23 +276,23 @@ export const methodDetails = {
         body: [
           {
             type: "paragraph",
-            text: "**策略層 (Strategy)**：定義 AI 產品的核心價值主張，在能動性（Agency）與信任（Trust）之間建立平衡，同時確保使用者對系統的控制權（Control）與安全性（Safety）。"
+            text: "策略層 (Strategy)：定義 AI 產品的核心價值主張，在能動性（Agency）與信任（Trust）之間建立平衡，同時確保使用者對系統的控制權（Control）與安全性（Safety）。"
           },
           {
             type: "paragraph",
-            text: "**範圍層 (Scope)**：界定 AI 功能的邊界，考量隱私保護（Privacy）與互動模式（Interaction），確保系統設計能夠支持多樣性（Diversity）需求。"
+            text: "範圍層 (Scope)：界定 AI 功能的邊界，考量隱私保護（Privacy）與互動模式（Interaction），確保系統設計能夠支持多樣性（Diversity）需求。"
           },
           {
             type: "paragraph",
-            text: "**結構層 (Structure)**：建立體驗的連續性（Experience Continuity），確保 AI 系統在不同情境下的一致性與效能（Performance）。"
+            text: "結構層 (Structure)：建立體驗的連續性（Experience Continuity），確保 AI 系統在不同情境下的一致性與效能（Performance）。"
           },
           {
             type: "paragraph",
-            text: "**架構層 (Skeleton)**：設計互動流程與 AI 能動性的具體呈現，在使用者控制與系統自主性之間找到適當的平衡點。"
+            text: "架構層 (Skeleton)：設計互動流程與 AI 能動性的具體呈現，在使用者控制與系統自主性之間找到適當的平衡點。"
           },
           {
             type: "paragraph",
-            text: "**表面層 (Surface)**：透過視覺與互動細節建立信任感，傳達隱私保護承諾，並在體驗的各個接觸點維持平衡（Balance）。"
+            text: "表面層 (Surface)：透過視覺與互動細節建立信任感，傳達隱私保護承諾，並在體驗的各個接觸點維持平衡（Balance）。"
           }
         ]
       },
@@ -271,10 +336,1073 @@ export const methodDetails = {
       }
     ]
   },
+  "right-use-case": {
+    id: "right-use-case",
+    title: "選擇正確戰場 (Right Use Case)",
+    chapter: "Chapter 01",
+    summary: "對應 101 Design Methods: 1.12 Initial Opportunity Map (初始機會地圖)",
+    lead: "繪製 2×2 矩陣（如：專家主導 vs. AI 主導 / 高風險 vs. 低風險），找出 AI 最能「增強」而非「取代」人類的機會點。",
+    tags: ["Strategy", "Opportunity Map"],
+    sections: [
+      {
+        heading: "核心失敗原則：試圖用 AI 取代訓練有素的專家",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "AI 不應該告訴專家如何做他們的工作",
+              "專家具備 AI 無法複製的隱性知識 (tacit knowledge) 和經驗",
+              "忽略專家的領域知識 (domain knowledge) 是致命錯誤"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "醫療診斷系統想要取代醫生判斷",
+              "結果：醫生拒絕使用，因為系統建議與他們的專業判斷衝突"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "AI 應該增強 (augment) 專家能力，而非取代 (replace)",
+              "提供額外資訊和見解 (insights)",
+              "讓專家保持最終決策權 (final say)"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "確認 AI 是增強 (augment) 而非取代 (replace) 專家",
+              "完成成本效益分析 (cost-benefit analysis)",
+              "評估數據可用性 (data availability) 和品質 (quality)",
+              "明確定義要解決的問題",
+              "進行用戶研究驗證需求"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 1.12 Initial Opportunity Map",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 01: Case Study: How to Completely F*ck Up Your AI Project",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "avoid-death-traps": {
+    id: "avoid-death-traps",
+    title: "避開死亡陷阱 (Avoid Death Traps)",
+    chapter: "Chapter 01",
+    summary: "對應 101 Design Methods: 1.14 Intent Statement (意圖陳述)",
+    lead: "撰寫明確的意圖聲明：誰是客戶？什麼是機會？有什麼風險？用來對齊團隊目標，避免落入「為了做 AI 而做 AI」的陷阱。",
+    tags: ["Strategy", "Intent Statement"],
+    sections: [
+      {
+        heading: "核心失敗原則：AI 模型回答錯誤問題",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "解決技術上可行但實際無用的問題",
+              "未釐清真正的用戶需求 (user needs)",
+              "問題定義過於模糊"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "智能客服系統專注於回答 FAQ",
+              "結果：未能解決用戶真正的複雜問題，導致滿意度下降"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "從用戶痛點 (user pain points) 出發",
+              "驗證問題的真實性 (problem validation)",
+              "確保問題值得解決"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "明確定義要解決的問題",
+              "驗證問題解決方案的匹配度",
+              "進行用戶研究驗證需求"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 1.14 Intent Statement",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 01: Case Study: How to Completely F*ck Up Your AI Project",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "value-storyboarding": {
+    id: "value-storyboarding",
+    title: "讓價值可見 (Storyboarding)",
+    chapter: "Chapter 01",
+    summary: "對應 101 Design Methods: 6.7 Solution Storyboard (解決方案故事板)",
+    lead: "畫出用戶「使用前」與「使用後」的情境。在 AI 專案中，特別要畫出「AI 出錯時」用戶如何介入的流程，以驗證人機協作的價值。",
+    tags: ["Prototyping", "Storyboard"],
+    sections: [
+      {
+        heading: "核心概念：故事板的戰略價值",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "許多 AI 專案失敗的原因是無法正確框架問題。故事板能在投入開發前，視覺化複雜的 AI 互動流程，提前識別潛在問題。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：Mental Health Assistant</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "版本一（AI 治療師）：故事板揭露了因果關係斷裂與風險評估缺失。",
+              "版本二（社交焦慮助手）：重新定義場景後，解決方案顯得更現實且具備市場價值。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "專注於故事的「什麼」和「為什麼」，刻意省略介面細節。",
+              "使用「主角到 AI (Subject-to-AI)」轉場來展示 AI 作為故事角色的互動。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "識別所有相關角色和利害關係人",
+              "定義清晰的成功和失敗標準",
+              "為每個 AI 決策點設計多種結果場景",
+              "包含人機協作的關鍵觸點"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 6.7 Solution Storyboard",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 03: Storyboarding for AI Projects",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "digital-twin": {
+    id: "digital-twin",
+    title: "數位雙胞胎 (Digital Twin)",
+    chapter: "Chapter 02",
+    summary: "對應 101 Design Methods: 4.5 ERAF Systems Diagram (ERAF 系統圖)",
+    lead: "這是最完美的對應工具。用來繪製系統中的實體 (Entities)、關係 (Relations)、屬性 (Attributes) 和流動 (Flows)。這正是建立數位雙胞胎所需的數據結構基礎。",
+    tags: ["Context", "System Mapping"],
+    sections: [
+      {
+        heading: "核心失敗原則：建立技術展示品而非實用工具",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "過度關注視覺效果和技術複雜度，忽略實際業務價值。",
+              "導致數位雙胞胎變成昂貴的「數位古董」(digital artifact)。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：智慧工廠失敗</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "投資 500 萬美元建立的 3D 生產線系統，因與實際操作需求脫節而被棄用。",
+              "操作員只需要簡單的「正常/異常」燈號，而非複雜的 3D 模型。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "遵循「盡可能簡單，但不能過於簡化」原則。",
+              "從業務需求出發，專注於可操作的洞察 (actionable insights)。",
+              "採用 MVP 漸進式實施策略。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "明確定義要解決的業務問題",
+              "評估數據來源的可靠性",
+              "制定 MVP 和分階段部署計劃",
+              "進行深度用戶研究和工作流程分析"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 4.5 ERAF Systems Diagram",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 04: Digital Twin—Digital Representation of the Physical Components of Your System",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "value-matrix": {
+    id: "value-matrix",
+    title: "價值矩陣 (Value Matrix)",
+    chapter: "Chapter 02",
+    summary: "對應 101 Design Methods: 5.3 Value Hypothesis (價值假設)",
+    lead: "定義什麼對用戶有價值，什麼是無法接受的風險。在此階段，需明確定義「偽陰性（漏報）」與「偽陽性（誤報）」對用戶造成的具體損失。",
+    tags: ["Context", "Value Hypothesis"],
+    sections: [
+      {
+        heading: "核心概念：AI 的準確率是個陷阱",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "迷信準確性指標 (The Accuracy Fetish)，忽略了並非所有錯誤都生而平等。",
+              "未考慮偽陰性 (FN) 與偽陽性 (FP) 的成本差異。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：TSA 思想實驗</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "一個永遠預測「不是恐怖份子」的 AI 準確率接近 100%，但完全無用。",
+              "錯過一次攻擊的成本 (FN) 遠高於誤攔旅客的成本 (FP)。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "建立價值矩陣，為四種結果 (TP, FP, TN, FN) 賦予金錢價值。",
+              "計算投資回報率 (ROI) 而非僅看準確率。",
+              "根據不同情境設計動態的決策閾值。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "定義具體的商業價值指標",
+              "量化四種結果 (TP, FN, FP, TN) 的真實成本與效益",
+              "建立初步的價值矩陣作為評估框架",
+              "確保技術目標與商業目標完全對齊"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 5.3 Value Hypothesis",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 05: Value Matrix—AI Accuracy Is Bullshit. Here’s What UX Must Do About It",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "dynamic-dashboards": {
+    id: "dynamic-dashboards",
+    title: "動態儀表板 (Dynamic Dashboards)",
+    chapter: "Chapter 03",
+    summary: "對應 101 Design Methods: 5.6 Concept-Generating Matrix (概念生成矩陣)",
+    lead: "將「用戶情境（如：緊急 vs 探索）」與「資訊模組」做交叉矩陣，生成不同情境下應優先顯示的儀表板佈局。",
+    tags: ["Concept", "Matrix"],
+    sections: [
+      {
+        heading: "核心概念：視覺甜點 (Visual Dessert)",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "搞清楚特定客戶下一步想看什麼是一個棘手的問題。動態儀表板（又稱 Eye Meat）是 AI 構建個性化體驗的平台。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：Amazon 與 Google</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "Amazon：雖然演算法試圖預測購買行為，但常犯下荒謬錯誤（如向養狗人士推薦貓食）。",
+              "Google：對「Jungle Book」的搜尋結果在手機和桌面上截然不同，顯示了 AI 對模糊查詢的詮釋差異。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "採用「視覺自助餐 (Visual Buffet)」方法，允許 AI 在不同區塊 (rubrics) 使用不同演算法。",
+              "接受一定程度的「AI 模糊性」，但需提供足夠的上下文讓用戶理解。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 5.6 Concept-Generating Matrix",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Maeda, J. (n.d.). Eye Meat.",
+      "Chapter 11: AI Search Part 2: 'Eye Meat' and DOI Sort Algorithms",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "ai-driven-ia": {
+    id: "ai-driven-ia",
+    title: "資訊架構的變革",
+    chapter: "Chapter 03",
+    summary: "對應 101 Design Methods: 4.9 Tree/Semi-Lattice Diagramming (樹狀/半網狀圖)",
+    lead: "用來重新梳理資訊架構。在 AI 時代，資訊不再是固定的樹狀結構，而是根據用戶意圖動態生成的半網狀結構（Semi-Lattice）。",
+    tags: ["Concept", "Information Architecture"],
+    sections: [
+      {
+        heading: "核心概念：AI 優先的資訊架構",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "「聊天是新的命令列」，但單憑聊天無法構成完整的應用程式。用戶需要結構化的資訊架構 (IA) 來理解應用程式的功能和價值。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>解決方案：AI-First IA 框架</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>分析總覽 (Analysis Overview)：</b> 取代傳統首頁，提供高度個性化的摘要和洞察。",
+              "<b>類別分析 (Category Analysis)：</b> 理解用戶興趣，講述連貫的產品故事。",
+              "<b>LLM 搜尋 (LLM Search)：</b> 處理模糊查詢，提供帶有解釋和評分的結果。",
+              "<b>商品詳情 (Product Details)：</b> 提供情境化的一站式問答和摘要。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>關鍵洞察：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "AI 優先的設計不僅是添加聊天機器人，而是利用 AI 在顧客需求的背景下「講故事」。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 4.9 Tree/Semi-Lattice Diagramming",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Nielsen, J. (2023). AI: First new UI paradigm in 60 years.",
+      "Chapter 12: Modern Information Architecture for AI-First Applications",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "bias-swot": {
+    id: "bias-swot",
+    title: "解決推薦偏見",
+    chapter: "Chapter 03",
+    summary: "對應 101 Design Methods: 2.11 SWOT Analysis (SWOT 分析)",
+    lead: "分析 AI 模型在「優勢（精準推薦）」背後的「威脅（偏見與迴聲室效應）」。特別要檢視訓練數據中的隱性偏見。",
+    tags: ["Concept", "SWOT Analysis"],
+    sections: [
+      {
+        heading: "核心概念：小心 AI 推薦中的偏見",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "演算法的排序和推薦往往帶有隱性偏見，這不僅影響用戶體驗，還可能塑造錯誤的認知。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>實際案例：總統候選人搜尋</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "2016 年：Google 搜尋結果顯示三位候選人，而非兩位主要提名人。",
+              "2024 年：Google 搜尋結果嚴重偏頗，甚至在圖片搜尋中難以找到特定候選人的照片。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>正確做法：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "設計師必須敏銳意識到 AI 偏見 (AI Bias)。",
+              "理解演算法（如 Facebook 的動態消息）如何創造回音室效應 (Echo Chambers)。",
+              "在設計儀表板和排序邏輯時，主動檢測和減輕偏見。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "實作檢查清單",
+        body: [
+          {
+            type: "list",
+            style: "unordered",
+            items: [
+              "進行 SWOT 分析，特別關注 AI 推薦的潛在威脅（如：過濾泡泡、偏見放大）。",
+              "審查訓練數據，識別潛在的隱性偏見來源。",
+              "設計反制策略，例如：引入多樣性、提供用戶控制選項、透明化推薦邏輯。",
+              "定期監測 AI 推薦結果，評估偏見的影響並迭代改進。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 2.11 SWOT Analysis",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Huo, J., & Bond, S. (2023). New study reveals how Facebook's algorithms shape conservative and liberal bubbles. NPR.",
+      "Chapter 11: AI Search Part 2: 'Eye Meat' and DOI Sort Algorithms",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "sumo-copilot": {
+    id: "sumo-copilot",
+    title: "Sumo Copilot 成功要素",
+    chapter: "Chapter 02",
+    summary: "對應 101 Design Methods: 1.13 Offering-Activity-Culture Map (產品-活動-文化地圖)",
+    lead: "Sumo Logic Copilot 的成功案例展示了如何將 AI 整合到複雜的 B2B 產品中。關鍵在於不僅僅是添加一個聊天機器人，而是重新思考整個工作流程。",
+    tags: ["Case Study", "Success Factors"],
+    sections: [
+      {
+        heading: "四大成功關鍵",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>1. 強而有力的使用案例 (Strong AI Use Case)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "解決了 Sumo Logic 查詢語言 (SQL) 複雜難學的痛點，讓非技術用戶也能透過自然語言查詢日誌。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>2. 清晰的願景 (Clear Vision)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "以「絕不讓用戶空手而歸 (Never leave the user empty-handed)」為核心原則，確保每次互動都有價值。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>3. 專用的全螢幕 UI (Dedicated Full-Screen UI)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "捨棄側邊欄設計，提供沉浸式的全螢幕體驗，以有效呈現複雜的數據和圖表。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>4. AI 驅動的自動完成 (AI-Driven Autocomplete)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "引導用戶構建查詢，並提供情境化的後續步驟建議 (Next-Steps Suggestions)。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 1.13 Offering-Activity-Culture Map",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Nudelman, G. (2024). Designing Sumo Logic Mo Copilot for success. Sumologic.com blog.",
+      "Chapter 06: Case Study - The Success Story of Sumo Copilot",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "copilot-presence": {
+    id: "copilot-presence",
+    title: "Copilot 存在感",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 3.4 User Journey Maps (用戶旅程圖)",
+    lead: "決定 Copilot 在用戶旅程中的介入程度：是安靜的側邊欄助手 (Sidebar)、情境感知的覆蓋層 (Overlay)，還是全屏的沉浸式工作區 (Full Page)？",
+    tags: ["Validation", "User Journey"],
+    sections: [
+      {
+        heading: "三種主要的 Copilot 存在模式",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>1. 側邊欄 (Sidebar)：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>特性：</b> 持續存在，不干擾主要工作區。",
+              "<b>適用：</b> 隨時待命的助手，如 Microsoft Copilot 或 Zoom AI Companion。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>2. 覆蓋層 (Overlay)：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>特性：</b> 情境感知，在需要時出現。",
+              "<b>適用：</b> 針對特定選取內容的快速操作，如 Notion AI 的寫作助手。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>3. 全屏 (Full Page)：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>特性：</b> 沉浸式體驗，AI 是主要互動對象。",
+              "<b>適用：</b> 複雜的推理任務或創意發想，如 ChatGPT 或 Claude 的主介面。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 3.4 User Journey Maps",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 07: UX Best Practices for SaaS Copilot Design",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "guided-query": {
+    id: "guided-query",
+    title: "引導式查詢 (Guided Query)",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 5.1 Brainstorming (腦力激盪)",
+    lead: "不要讓用戶面對空白的輸入框發呆。使用「填空題 (Mad Libs)」或「自動完成」來引導用戶構建有效的 Prompt。",
+    tags: ["Validation", "Prompt Engineering"],
+    sections: [
+      {
+        heading: "核心概念：消除「空白頁恐懼症」",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "用戶通常不知道 AI 能做什麼，或者如何精確表達他們的需求。自由文本輸入框往往導致挫折感。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>解決方案：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>自動完成 (Auto-Complete)：</b> 像 Google 搜尋一樣，預測用戶意圖並提供建議。",
+              "<b>填空題 (Mad Libs)：</b> 提供結構化的模板，讓用戶只需填入關鍵變數（如：「幫我寫一封 [語氣] 的郵件給 [對象]，關於 [主題]」）。",
+              "<b>引導式構建：</b> 逐步引導用戶完善他們的查詢，確保 AI 獲得足夠的上下文。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 5.1 Brainstorming",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 09: LLM Design Patterns",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "explainability-trust": {
+    id: "explainability-trust",
+    title: "可解釋性與信任",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 4.3 Concept Scenarios (概念場景)",
+    lead: "信任是 AI 產品的貨幣。透過「引用來源」、「思維鏈 (Chain of Thought)」和「置信度分數」來建立可解釋性。",
+    tags: ["Validation", "Trust"],
+    sections: [
+      {
+        heading: "信任的三大支柱",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>1. 透明度 (Transparency)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "清楚說明 AI 如何做出決策。例如，顯示引用的文件來源，或展示 AI 的推理過程（思維鏈）。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>2. 可靠性 (Reliability)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "系統必須表現一致。如果 AI 對同一問題給出矛盾的答案，信任會迅速崩塌。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>3. 問責制 (Accountability)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "明確誰對 AI 的輸出負責。提供反饋機制，讓用戶能糾正錯誤，並讓系統從中學習。"
+          }
+        ]
+      },
+      {
+        heading: "實作技巧",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "使用<b>置信度分數</b>（如：「90% 匹配」）來管理預期。",
+              "提供<b>「為什麼？」</b>按鈕，讓用戶深入了解背後的邏輯。",
+              "承認<b>局限性</b>，當 AI 不確定時，誠實地告訴用戶。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 4.3 Concept Scenarios",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Bryan, P. (2024). AI Humanity Manifesto.",
+      "Chapter 22: AI Ethics",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "spike-testing": {
+    id: "spike-testing",
+    title: "Spike (技術探針/概念驗證)",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 6.1 Prototyping (原型製作)",
+    lead: "在投入大規模開發前，先用 Python Notebook 進行快速的技術探針 (Spike)。驗證「AI 真的能做到嗎？」以及「數據足夠好嗎？」",
+    tags: ["Validation", "Prototyping"],
+    sections: [
+      {
+        heading: "核心概念：Code Talks, Bullshit Walks",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>問題核心：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "Figma 原型只是漂亮的圖片。在 AI 專案中，最大的風險通常在於模型能力和數據品質，而這些是 Figma 無法驗證的。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>解決方案：Spike</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>定義：</b> 一個快速、粗糙的程式碼概念驗證 (PoC)，通常使用 Python Notebook。",
+              "<b>目的：</b> 驗證特定模型在真實數據上的表現。回答「這個想法在技術上可行嗎？」",
+              "<b>流程：</b> 在設計初期就並行進行 Spike，讓技術現實為設計提供資訊 (inform design)。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 6.1 Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Teller, A. (2016). Tackle the monkey first.",
+      "Chapter 17: The New Normal: AI-Infused User-Centered Design Process",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "rite-method": {
+    id: "rite-method",
+    title: "RITE 研究方法",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 7.3 Usability Testing (可用性測試)",
+    lead: "快速迭代測試與評估 (Rapid Iterative Testing and Evaluation)。不只是找問題，而是即時修復問題並驗證解決方案。",
+    tags: ["Validation", "User Research"],
+    sections: [
+      {
+        heading: "RITE vs. 傳統可用性測試",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>傳統可用性測試：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "大樣本 (8-10 人)。",
+              "測試期間不更改原型。",
+              "產出是「問題報告」。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>RITE 研究：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "小樣本 (3-4 人一輪)，進行多輪。",
+              "<b>關鍵差異：</b> 在輪次之間立即修復發現的問題。",
+              "產出是「改進後的設計解決方案」。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "為什麼 AI 需要 RITE？",
+        body: [
+          {
+            type: "paragraph",
+            text: "AI 產品充滿不確定性。RITE 允許團隊快速驗證用例、調整 AI 行為預期，並在昂貴的開發之前修正根本性的設計缺陷。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 7.3 Usability Testing",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Nudelman, G. (2014). The $1 Prototype.",
+      "Chapter 19: RITE, the Cornerstone of Your AI Research",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "ux-glue": {
+    id: "ux-glue",
+    title: "四人小組協作 (UX = Glue)",
+    chapter: "Chapter 04",
+    summary: "對應 101 Design Methods: 1.1 Plan the System (規劃系統)",
+    lead: "UX 不再只是畫圖。UX 是黏合劑，將產品 (PM)、技術 (Dev) 和數據 (Data Science) 緊密結合，共同解決「邪惡問題 (Wicked Problems)」。",
+    tags: ["Validation", "Collaboration"],
+    sections: [
+      {
+        heading: "四人一組 (Four in a Box)",
+        body: [
+          {
+            type: "paragraph",
+            text: "在 AI 時代，傳統的「三人一組」(PM, UX, Dev) 已經不夠了。必須加入<b>數據科學家 (Data Scientist)</b>。"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>PM：</b> 定義商業價值和目標。",
+              "<b>Dev：</b> 確保系統可擴展性和穩定性。",
+              "<b>Data Scientist：</b> 確保 AI 模型和數據的可行性。",
+              "<b>UX：</b> 作為「黏著劑」，將這些技術能力轉化為以人為本的體驗。"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "UX 的新角色：創新大使",
+        body: [
+          {
+            type: "paragraph",
+            text: "UX 設計師不僅是執行者，更是「創新大使」，負責將複雜的 AI 技術轉化為普通用戶能理解並從中受益的產品。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 1.1 Plan the System",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 17: The New Normal: AI-Infused User-Centered Design Process",
+      "Chapter 23: UX is Dead, Long Live UX for AI!",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "tactical-prototypes": {
+    id: "tactical-prototypes",
+    title: "戰術原型 (Tactical Prototypes)",
+    chapter: "Chapter 05",
+    summary: "對應 101 Design Methods: 6.1 Prototyping (原型製作)",
+    lead: "與「願景原型 (Vision Prototypes)」相對。戰術原型關注當下，解決具體的、短期的問題（1-2 個 Sprint），並考慮實際的技術限制。",
+    tags: ["Ethics", "Prototyping"],
+    sections: [
+      {
+        heading: "戰術原型 vs. 願景原型",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>願景原型 (Vision Prototypes)：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>時間跨度：</b> 1-2 年後的未來。",
+              "<b>目的：</b> 激發想像，設定北極星目標。",
+              "<b>限制：</b> 忽略當下的技術限制。"
+            ]
+          },
+          {
+            type: "paragraph",
+            text: "<b>戰術原型 (Tactical Prototypes)：</b>"
+          },
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>時間跨度：</b> 1-2 個 Sprint (短期)。",
+              "<b>目的：</b> 交付具體功能，解決當前痛點。",
+              "<b>限制：</b> 嚴格遵守當下的技術和資源限制。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 6.1 Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "identifying-bias": {
+    id: "identifying-bias",
+    title: "識別隱性偏見",
+    chapter: "Chapter 05",
+    summary: "對應 101 Design Methods: 2.3 User Research (用戶研究)",
+    lead: "所有 AI 都是有偏見的。設計師的職責不是消除所有偏見（不可能），而是識別並減輕有害偏見。問自己：「誰被遺漏了？」",
+    tags: ["Ethics", "Bias"],
+    sections: [
+      {
+        heading: "常見的 AI 偏見類型",
+        body: [
+          {
+            type: "paragraph",
+            text: "<b>1. 代表性偏見 (Representation Bias)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "訓練數據中某些群體代表性不足。例如，Midjourney 生成的「CEO」大多是白人男性。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>2. 倖存者偏差 (Survivorship Bias)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "只關注現有的成功案例，忽略了被系統過濾掉的人。例如，二戰飛機的彈孔分析。"
+          },
+          {
+            type: "paragraph",
+            text: "<b>3. 歷史偏見 (Historical Bias)：</b>"
+          },
+          {
+            type: "paragraph",
+            text: "AI 學習並放大了人類歷史上的偏見和刻板印象。"
+          }
+        ]
+      },
+      {
+        heading: "設計師的行動清單",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>多樣化測試團隊：</b> 確保測試人員背景多元。",
+              "<b>反向測試：</b> 故意輸入可能誘發偏見的 Prompt，測試系統的邊界。",
+              "<b>提供反饋機制：</b> 讓用戶能輕易報告偏見內容。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 2.3 User Research",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 21: All AI is Biased",
+      "Chapter 22: AI Ethics",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
+  "innovation-ambassador": {
+    id: "innovation-ambassador",
+    title: "創新大使",
+    chapter: "Chapter 05",
+    summary: "對應 101 Design Methods: 7.6 Launch Strategy (發布策略)",
+    lead: "UX 設計師是技術與大眾之間的橋樑。我們的任務是讓這項強大但陌生的技術變得平易近人、安全且有用。",
+    tags: ["Ethics", "Role"],
+    sections: [
+      {
+        heading: "為什麼我們是大使？",
+        body: [
+          {
+            type: "paragraph",
+            text: "技術人員專注於「能做什麼 (Can we build it?)」，商業人員專注於「能賺多少 (Will it make money?)」。"
+          },
+          {
+            type: "paragraph",
+            text: "UX 設計師必須專注於<b>「這對人有什麼影響 (How does it affect people?)」</b>。"
+          }
+        ]
+      },
+      {
+        heading: "大使的職責",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "<b>教育 (Educate)：</b> 幫助團隊和用戶理解 AI 的能力與局限。",
+              "<b>倡導 (Advocate)：</b> 為用戶的權益和安全發聲。",
+              "<b>轉化 (Translate)：</b> 將複雜的技術術語轉化為簡單的人類語言。"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 7.6 Launch Strategy",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "Chapter 23: UX is Dead, Long Live UX for AI!",
+      "Nudelman, G., & Kempka, D. (2025). UX for AI: A framework for designing human-centric AI-driven products. Wiley.",
+    ],
+    resources: [],
+  },
   "theatrical-methods": {
     id: "theatrical-methods",
     title: "Theatrical methods – An introduction",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
       "Theater offers many methods which can be used to investigate, ideate, prototype, and roll out both physical and digital services.",
     lead:
@@ -356,9 +1484,9 @@ export const methodDetails = {
   "preparatory-research": {
     id: "preparatory-research",
     title: "Preparatory research",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "Map existing knowledge, signals, and blind spots before kicking off live fieldwork for your AI value matrix.",
+      "對應 101 Design Methods: 2.1 Competitive Analysis (競爭分析)",
     lead:
       "適合在計畫啟動前兩週進行，幫助團隊釐清優先假設與資料需求。",
     tags: ["Research", "Desk study", "Risk framing"],
@@ -388,15 +1516,19 @@ export const methodDetails = {
         ],
       },
     ],
-    references: ["PrivacyUX internal desk review rubric"],
+    references: [
+      "101 Design Methods: 2.1 Competitive Analysis",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "PrivacyUX internal desk review rubric",
+    ],
     resources: [],
   },
   "secondary-research": {
     id: "secondary-research",
     title: "Secondary research",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "快速掃描已發表的報告、政策與數據集，補足價值矩陣所需的外部脈絡。",
+      "對應 101 Design Methods: 2.1 Competitive Analysis (競爭分析)",
     lead: "聚焦於可信度高的公開資料，如監管單位白皮書與產業基準研究。",
     tags: ["Research", "Policy", "Benchmark"],
     sections: [
@@ -408,7 +1540,7 @@ export const methodDetails = {
             style: "numbered",
             items: [
               "界定感興趣的關鍵字：如 " +
-                "bias mitigation、incident report、governance baseline。",
+              "bias mitigation、incident report、governance baseline。",
               "鎖定政府、學術、產業三大來源，為每個來源記錄資料品質與出版日期。",
               "摘要每份文件對誤報/漏報的敘述，轉換成可量化的風險指標。",
             ],
@@ -416,15 +1548,20 @@ export const methodDetails = {
         ],
       },
     ],
-    references: ["OECD AI Incidents Monitor", "MITRE ATLAS"],
+    references: [
+      "101 Design Methods: 2.1 Competitive Analysis",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+      "OECD AI Incidents Monitor",
+      "MITRE ATLAS",
+    ],
     resources: [],
   },
   "autoethnography": {
     id: "autoethnography",
     title: "Autoethnography",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "以研究者自身的使用情境紀錄，探索價值矩陣在真實生活中的摩擦點。",
+      "對應 101 Design Methods: 2.5 Ethnographic Research (民族誌研究)",
     lead:
       "透過結合日誌與情緒標記，挖掘決策流程中被忽略的暗黑路徑。",
     tags: ["Research", "Self-ethnography"],
@@ -440,184 +1577,505 @@ export const methodDetails = {
         ],
       },
     ],
-    references: [],
+    references: [
+      "101 Design Methods: 2.5 Ethnographic Research",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "online-ethnography": {
     id: "online-ethnography",
     title: "Online ethnography",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "觀察線上社群、評價與論壇，了解使用者如何實際協商 AI 工具的價值與風險。",
+      "對應 101 Design Methods: 2.5 Ethnographic Research (民族誌研究)",
     lead:
       "特別適合監測高波動或快速演化的情境，例如詐騙手法或政策辯論。",
     tags: ["Research", "Community listening"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "線上民族誌 (Online Ethnography) 是一種觀察與分析線上社群行為的研究方法。透過監測論壇、社群媒體、評價網站等數位空間，了解使用者如何實際討論、評價和使用 AI 工具，捕捉真實的使用情境與痛點。"
+          },
+          {
+            type: "paragraph",
+            text: "此方法特別適合快速變化的 AI 領域，能即時掌握使用者對新功能的反應、發現潛在的倫理問題，以及追蹤詐騙手法或誤用案例的演變。"
+          }
+        ]
+      },
+      {
+        heading: "操作步驟",
+        body: [
+          {
+            type: "list",
+            style: "numbered",
+            items: [
+              "選定觀察平台：Reddit、Twitter/X、Discord、專業論壇等使用者活躍的社群",
+              "設定關鍵字與追蹤主題：AI 產品名稱、功能特性、常見問題等",
+              "持續記錄：截圖、引用、情緒標記，建立觀察日誌",
+              "分析模式：找出重複出現的抱怨、讚美、誤解或創新用法",
+              "整理洞察：將發現轉化為設計建議或風險警示"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "注意事項",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "遵守平台使用條款與隱私政策，不侵犯使用者隱私",
+              "注意樣本偏差：線上社群可能不代表全體使用者",
+              "區分真實反饋與行銷操作或機器人帳號",
+              "定期更新觀察範圍，因為社群平台會遷移"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 2.5 Ethnographic Research",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "participant-observation": {
     id: "participant-observation",
     title: "Participant observation",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "讓研究者實際參與服務流程，貼近決策與情緒節點。",
+      "對應 101 Design Methods: 2.6 Contextual Interview (情境訪談)",
     lead: "與一線人員共同執行任務，記錄制度護欄與人工作業之間的落差。",
     tags: ["Research", "Fieldwork"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "參與式觀察 (Participant Observation) 是研究者實際參與服務流程，從內部視角觀察與記錄的田野研究方法。透過與一線人員共同執行任務，能深入理解制度規範與實際操作之間的落差，發現文件中未記載的隱性知識與工作技巧。"
+          }
+        ]
+      },
+      {
+        heading: "操作重點",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "取得組織許可，明確說明研究目的與保密原則",
+              "實際執行工作任務，記錄決策節點與情緒反應",
+              "觀察人工介入 AI 系統的時機與原因",
+              "記錄非正式的溝通與協作模式",
+              "訪談一線人員，了解他們對 AI 工具的真實看法"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 2.6 Contextual Interview",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "contextual-interview": {
     id: "contextual-interview",
     title: "Contextual interview",
-    chapter: "Chapter 5 · Research",
+    chapter: "Chapter 05",
     summary:
-      "在實際環境中進行訪談，邊操作邊追問決策依據與錯誤成本。",
+      "對應 101 Design Methods: 2.6 Contextual Interview (情境訪談)",
     lead: "搭配價值矩陣四象限提問法，捕捉細節。",
     tags: ["Research", "Interview"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "情境訪談 (Contextual Interview) 是在使用者實際工作環境中進行的訪談方法。邊觀察使用者操作 AI 系統，邊追問決策依據、錯誤成本與應對策略，能捕捉到實驗室環境中難以發現的細節。"
+          }
+        ]
+      },
+      {
+        heading: "價值矩陣四象限提問法",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "真陽性 (True Positive)：AI 正確判斷時，你如何確認？節省了多少時間？",
+              "假陽性 (False Positive)：AI 誤報時，造成什麼損失？如何補救？",
+              "真陰性 (True Negative)：AI 正確排除時，你是否會再次確認？",
+              "假陰性 (False Negative)：AI 漏報時，後果有多嚴重？如何發現？"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 2.6 Contextual Interview",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "slicing-the-elephant": {
     id: "slicing-the-elephant",
     title: "Slicing the elephant",
-    chapter: "Chapter 6 · Ideation",
+    chapter: "Chapter 06",
     summary:
-      "將複雜挑戰拆解為可行的子題，避免一次討論過多變因。",
+      "對應 101 Design Methods: 4.1 Issue Analysis (議題分析)",
     lead: "適合開場暖身，讓團隊迅速聚焦。",
     tags: ["Ideation", "Framing"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "切分大象 (Slicing the Elephant) 是將複雜挑戰拆解為可管理子題的議題分析方法。面對 AI 專案的多重變因時，透過系統化拆解，讓團隊能聚焦於優先議題，避免陷入過度發散的討論。"
+          }
+        ]
+      },
+      {
+        heading: "拆解維度範例",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "按使用者群體：新手 vs. 專家、內部 vs. 外部",
+              "按風險等級：高風險決策 vs. 低風險建議",
+              "按時間軸：短期快贏 vs. 長期願景",
+              "按技術成熟度：現有能力 vs. 需要研發",
+              "按倫理影響：隱私、公平性、透明度等面向"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 4.1 Issue Analysis",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "ideas-from-future-journey": {
     id: "ideas-from-future-journey",
     title: "Ideas from future-state journey mapping",
-    chapter: "Chapter 6 · Ideation",
+    chapter: "Chapter 06",
     summary:
-      "運用未來旅程藍圖挖掘 AI 介入點，並標記需要的護欄。",
+      "對應 101 Design Methods: 3.4 User Journey Maps (用戶旅程圖)",
     lead: "將價值矩陣放在每個旅程觸點旁作為檢查節點。",
     tags: ["Ideation", "Journey mapping"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "未來旅程發想 (Ideas from Future-State Journey Mapping) 是運用未來狀態旅程圖挖掘 AI 介入點的方法。透過描繪理想的使用者體驗，標記出 AI 可以提供價值的觸點，同時識別需要的護欄與人工監督節點。"
+          }
+        ]
+      },
+      {
+        heading: "與價值矩陣的結合",
+        body: [
+          {
+            type: "paragraph",
+            text: "在旅程圖的每個觸點旁，放置價值矩陣作為檢查節點。評估該觸點的 AI 介入可能產生的四種結果（TP/FP/TN/FN），以及各自的使用者影響與業務成本。這有助於優先處理高風險觸點的設計。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 3.4 User Journey Maps",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "aeseo-ergonomics": {
     id: "aeseo-ergonomics",
     title: "AESEO – The ergonomics of need",
-    chapter: "Chapter 6 · Ideation",
+    chapter: "Chapter 06",
     summary:
-      "以五感與情緒評估 AI 介面需求，確保建議不偏離人性化體驗。",
+      "對應 101 Design Methods: 5.5 Experience Prototyping (體驗原型)",
     lead: "搭配實物道具或音效模擬，討論信任指標。",
     tags: ["Ideation", "Experience"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "AESEO 需求人因學 (AESEO – The Ergonomics of Need) 是以五感與情緒評估 AI 介面需求的方法。AESEO 代表聽覺 (Acoustic)、情緒 (Emotional)、語意 (Semantic)、環境 (Environmental)、操作 (Operational) 五個維度，確保 AI 體驗設計不偏離人性化。"
+          }
+        ]
+      },
+      {
+        heading: "五個評估維度",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "聽覺 (Acoustic)：語音提示的音調、節奏是否令人安心？",
+              "情緒 (Emotional)：互動是否建立信任？錯誤訊息是否引發焦慮？",
+              "語意 (Semantic)：用詞是否清晰？是否避免技術黑話？",
+              "環境 (Environmental)：在嘗雜或私密環境中是否適用？",
+              "操作 (Operational)：手勢、點擊流程是否符合直覺？"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 5.5 Experience Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "journey-ideation-arcs": {
     id: "journey-ideation-arcs",
     title: "Journey ideation with dramatic arcs",
-    chapter: "Chapter 6 · Ideation",
+    chapter: "Chapter 06",
     summary:
-      "將旅程轉換為戲劇弧線，強化情緒轉折與協作節點。",
+      "對應 101 Design Methods: 3.4 User Journey Maps (用戶旅程圖)",
     lead: "與價值矩陣搭配時，可快速定位風險緩衝點。",
     tags: ["Ideation", "Story"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "戲劇弧線旅程發想 (Journey Ideation with Dramatic Arcs) 是將使用者旅程轉換為戲劇敘事結構的方法。透過起承轉合的情緒曲線，強化關鍵轉折點與協作節點的設計，讓 AI 介入更具戲劇張力與情感共鳴。"
+          }
+        ]
+      },
+      {
+        heading: "與價值矩陣的搭配",
+        body: [
+          {
+            type: "paragraph",
+            text: "在情緒低谷（如：遇到 AI 錯誤）或高峰（如：AI 成功解決問題）時，檢視價值矩陣的四象限。低谷通常對應假陽性或假陰性，需要設計風險緩衝機制；高峰則對應真陽性，可強化正向回饋。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 3.4 User Journey Maps",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "future-state-network": {
     id: "future-state-network",
     title: "Ideas from future-state network mapping",
-    chapter: "Chapter 6 · Ideation",
+    chapter: "Chapter 06",
     summary:
-      "檢視跨部門與外部夥伴的資料流，為價值矩陣建立治理版圖。",
+      "對應 101 Design Methods: 4.4 Stakeholder Maps (利害關係人地圖)",
     lead: "特別適合大型平台或多方合作服務。",
     tags: ["Ideation", "Ecosystem"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "未來網絡發想 (Ideas from Future-State Network Mapping) 是檢視跨部門與外部夥伴資料流的系統圖譜方法。透過繪製利害關係人網絡，為價值矩陣建立治理版圖，明確各方在 AI 決策鏈中的角色與責任。"
+          }
+        ]
+      },
+      {
+        heading: "適用場景",
+        body: [
+          {
+            type: "paragraph",
+            text: "特別適合大型平台或多方合作的 AI 服務，例如：金融科技的反詐騙系統（涉及銀行、監管機構、第三方資料提供商）、醫療 AI（涉及醫院、保險公司、患者、監管單位）等複雜生態系統。"
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 4.4 Stakeholder Maps",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "investigative-rehearsal": {
     id: "investigative-rehearsal",
     title: "Investigative rehearsal",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
-      "以偵查劇形式重現服務，追查風險訊號與責任人。",
+      "對應 101 Design Methods: 6.5 Scenario Testing (情境測試)",
     lead: "適合處理高風險客訴或事故復盤。",
     tags: ["Prototyping", "Scenario"],
-    sections: [],
-    references: [],
+    sections: [commonFrameworkSection],
+    references: [
+      "101 Design Methods: 6.5 Scenario Testing",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "subtext": {
     id: "subtext",
     title: "Subtext",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
-      "分析對話下的未說出口需求與情緒，避免 AI 回應過於冰冷。",
+      "對應 101 Design Methods: 5.2 Storytelling (故事敘述)",
     lead: "搭配情緒標籤與價值矩陣檢查表。",
     tags: ["Prototyping", "Conversation"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "方法說明",
+        body: [
+          {
+            type: "paragraph",
+            text: "潛台詞分析 (Subtext) 是分析對話下未說出口需求與情緒的方法。在 AI 對話設計中，使用者的表面問題往往隱藏著更深層的焦慮、期待或不信任。透過潛台詞分析，避免 AI 回應過於字面化或冰冷。"
+          }
+        ]
+      },
+      {
+        heading: "分析技巧",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "表面問題：「這個 AI 推薦準確嗎？」",
+              "潛台詞可能是：「我擔心被誤導」、「我需要第二意見」、「我想了解推薦依據」",
+              "設計回應時，除了回答準確率，也要提供引用來源、信心分數、人工覆核選項",
+              "搭配情緒標籤（焦慮、好奇、懷疑）與價值矩陣檢查表，確保回應涵蓋使用者的真實需求"
+            ]
+          }
+        ]
+      }
+    ],
+    references: [
+      "101 Design Methods: 5.2 Storytelling",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "desktop-walkthrough": {
     id: "desktop-walkthrough",
     title: "Desktop walkthrough",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
-      "快速搭建系統流程，檢視跨部門交接與資料防護。",
+      "對應 101 Design Methods: 6.6 Service Prototyping (服務原型)",
     lead: "與法律、客服共同操作最有效。",
     tags: ["Prototyping", "Service blueprint"],
-    sections: [],
-    references: [],
+    sections: [commonFrameworkSection],
+    references: [
+      "101 Design Methods: 6.6 Service Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "cardboard-prototyping": {
     id: "cardboard-prototyping",
     title: "Cardboard prototyping",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
-      "使用紙箱與模型重現物理服務場景，記錄安全與隱私風險。",
+      "對應 101 Design Methods: 6.4 Physical Prototyping (實體原型)",
     lead: "搭配 IoT 或裝置導向服務時尤其實用。",
     tags: ["Prototyping", "Physical"],
-    sections: [],
-    references: [],
+    sections: [commonFrameworkSection],
+    references: [
+      "101 Design Methods: 6.4 Physical Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "redesigning-digital-services": {
     id: "redesigning-digital-services",
     title: "Redesigning digital services",
-    chapter: "Chapter 7 · Prototyping",
+    chapter: "Chapter 07",
     summary:
-      "運用價值矩陣重構 AI 介面與後台權限。",
+      "對應 101 Design Methods: 6.6 Service Prototyping (服務原型)",
     lead: "適合做為治理儀表板或透明度報告的雛型練習。",
     tags: ["Prototyping", "Digital"],
-    sections: [],
-    references: [],
+    sections: [commonFrameworkSection],
+    references: [
+      "101 Design Methods: 6.6 Service Prototyping",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "three-brain-warmup": {
     id: "three-brain-warmup",
     title: "Three-brain warm-up",
-    chapter: "Chapter 10 · Facilitation",
+    chapter: "Chapter 10",
     summary:
-      "用頭腦、心腦、腸腦三層思考，帶出團隊的理性與情感視角。",
+      "對應 101 Design Methods: 7.1 Pilot Testing (試驗測試)",
     lead: "適合作為價值矩陣工作坊的開場。",
     tags: ["Facilitation", "Warm-up"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "活動目的",
+        body: [
+          {
+            type: "paragraph",
+            text: "Three-brain warm-up 是一種幫助團隊從不同角度思考問題的暖場活動。透過「頭腦（理性）、心腦（情感）、腸腦（直覺）」三個層次的思考，幫助參與者跳脫單一維度的分析，對 AI 專案的價值與風險進行全面評估。"
+          },
+          {
+            type: "paragraph",
+            text: "此活動特別適合在討論價值矩陣或倫理議題時使用，能有效平衡技術團隊的理性分析、設計團隊的同理心，以及業務團隊的實務直覺。"
+          }
+        ]
+      },
+      {
+        heading: "操作步驟",
+        body: [
+          {
+            type: "list",
+            style: "numbered",
+            items: [
+              "主持人提出一個 AI 專案相關的問題或情境（例如：「我們應該如何處理 AI 推薦系統的偏見問題？」）",
+              "請參與者先從「頭腦」角度回答：理性分析、數據證據、邏輯推理（約 2-3 分鐘）",
+              "接著從「心腦」角度回答：情感反應、使用者感受、團隊氣氛（約 2-3 分鐘）",
+              "最後從「腸腦」角度回答：直覺判斷、經驗法則、未明說的顧慮（約 2-3 分鐘）",
+              "小組分享三個層次的回答，討論如何整合這些不同的視角"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "注意事項與技巧",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "強調沒有「正確答案」，每個層次的思考都同等重要",
+              "鼓勵參與者誠實表達各層次的感受，即使看似矛盾",
+              "可以先用簡單的練習題目暖身，再進入正式議題",
+              "記錄三個層次的關鍵洞察，作為後續討論的參考"
+            ]
+          }
+        ]
+      },
+      commonFrameworkSection
+    ],
+    references: [
+      "101 Design Methods: 7.1 Pilot Testing",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "color-chain-warmup": {
     id: "color-chain-warmup",
     title: "Color-chain warm-up",
-    chapter: "Chapter 10 · Facilitation",
+    chapter: "Chapter 10",
     summary:
-      "以顏色與身體動作連結團隊默契，建立快速應對情境。",
+      "對應 101 Design Methods: 7.1 Pilot Testing (試驗測試)",
     lead: "鼓勵跨部門互動，降低討論門檻。",
     tags: ["Facilitation", "Energy"],
     sections: [
@@ -675,33 +2133,90 @@ export const methodDetails = {
             text: "此活動特別適合 AI 專案初期的工作坊，當團隊成員彼此還不太熟悉，或是需要打破僵硬的會議氛圍時使用。也適合在午休後或長時間討論的中場休息使用，幫助團隊恢復專注力和能量。"
           }
         ]
-      }
+      },
+      commonFrameworkSection
     ],
-    references: [],
+    references: [
+      "101 Design Methods: 7.1 Pilot Testing",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "yes-and-warmup": {
     id: "yes-and-warmup",
     title: '"Yes, and …" warm-up',
-    chapter: "Chapter 10 · Facilitation",
+    chapter: "Chapter 10",
     summary:
-      "透過即興練習，把批判能量轉化為共同建構的動能。",
+      "對應 101 Design Methods: 7.1 Pilot Testing (試驗測試)",
     lead: "幫助技術與法遵釐清彼此的語言落差。",
     tags: ["Facilitation", "Collaboration"],
-    sections: [],
-    references: [],
+    sections: [
+      {
+        heading: "活動目的",
+        body: [
+          {
+            type: "paragraph",
+            text: "\"Yes, and …\" warm-up 是源自即興劇場的經典練習，幫助團隊從「批判性思維」轉換到「建設性協作」。透過練習接納他人的想法並加以擴展，而非立即否定或批評，幫助跨部門團隊建立共同創造的氣氛。"
+          },
+          {
+            type: "paragraph",
+            text: "此活動特別適合用於技術團隊與法遵團隊的溝通，幫助雙方理解彼此的語言和關切點，將「但是」的阻礙思維轉化為「而且」的建設思維。"
+          }
+        ]
+      },
+      {
+        heading: "操作步驟",
+        body: [
+          {
+            type: "list",
+            style: "numbered",
+            items: [
+              "兩人一組，一人提出一個 AI 專案相關的想法或建議",
+              "另一人必須以 \"Yes, and …\" 開頭回應，接納對方的想法並加以擴展",
+              "禁止使用 \"Yes, but …\" 或 \"No, because …\" 等否定性語句",
+              "輪流進行 3-4 輪，讓想法逐步發展和豐富",
+              "換組繼續練習，或全體分享印象深刻的對話經驗"
+            ]
+          }
+        ]
+      },
+      {
+        heading: "注意事項與技巧",
+        body: [
+          {
+            type: "list",
+            style: "bullet",
+            items: [
+              "初次練習時，可以用輕鬆的話題暖身（例如：規劃一個假期）",
+              "主持人需要溫柔但堅定地提醒參與者遵守 \"Yes, and\" 規則",
+              "強調目標不是找到最佳解法，而是練習建設性傾聽和協作",
+              "結束後可以討論：這種思維模式如何改善跨部門溝通",
+              "將這個精神延伸到正式會議：鼓勵先說 \"Yes, and\" 再提出顧慮"
+            ]
+          }
+        ]
+      },
+      commonFrameworkSection
+    ],
+    references: [
+      "101 Design Methods: 7.1 Pilot Testing",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
   "red-green-feedback": {
     id: "red-green-feedback",
     title: "Red and green feedback",
-    chapter: "Chapter 10 · Facilitation",
+    chapter: "Chapter 10",
     summary:
-      "用紅綠貼紙標示風險與亮點，快速收斂行動優先權。",
+      "對應 101 Design Methods: 7.4 Feedback Capture (回饋收集)",
     lead: "適合價值矩陣審查會議，或跨部門治理同步。",
     tags: ["Facilitation", "Feedback"],
-    sections: [],
-    references: [],
+    sections: [commonFrameworkSection],
+    references: [
+      "101 Design Methods: 7.4 Feedback Capture",
+      "Kumar, V. (2012). 101 Design Methods: A Structured Approach for Driving Innovation in Your Organization. Wiley.",
+    ],
     resources: [],
   },
 };

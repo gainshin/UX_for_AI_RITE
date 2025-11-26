@@ -25,6 +25,8 @@ applyTheme(state.theme);
 const elements = {
   methodColumns: document.querySelector("#method-columns"),
   detailPanel: document.querySelector("#case-detail"),
+  introNote: document.querySelector(".method-library-note"),
+  noteHeader: document.querySelector(".note-header"),
 };
 
 function sanitizeCustomMethods(entries) {
@@ -46,15 +48,15 @@ function sanitizeCustomMethods(entries) {
         tags: Array.isArray(entry.tags) ? entry.tags.map((tag) => (typeof tag === "string" ? tag : "")).filter(Boolean) : [],
         resources: Array.isArray(entry.resources)
           ? entry.resources
-              .map((resource) => {
-                if (!resource || typeof resource !== "object") return null;
-                const label = typeof resource.label === "string" ? resource.label.trim() : "";
-                const href = typeof resource.href === "string" ? resource.href.trim() : "";
-                const description = typeof resource.description === "string" ? resource.description.trim() : "";
-                if (!label && !href) return null;
-                return { label: label || href, href, description };
-              })
-              .filter(Boolean)
+            .map((resource) => {
+              if (!resource || typeof resource !== "object") return null;
+              const label = typeof resource.label === "string" ? resource.label.trim() : "";
+              const href = typeof resource.href === "string" ? resource.href.trim() : "";
+              const description = typeof resource.description === "string" ? resource.description.trim() : "";
+              if (!label && !href) return null;
+              return { label: label || href, href, description };
+            })
+            .filter(Boolean)
           : [],
         createdAt: typeof entry.createdAt === "string" ? entry.createdAt : null,
         updatedAt: typeof entry.updatedAt === "string" ? entry.updatedAt : null,
@@ -81,7 +83,30 @@ function buildMethodOverrides(entries) {
 
 function init() {
   renderMethodColumns();
-  renderCaseDetail();
+
+  if (elements.noteHeader) {
+    elements.noteHeader.addEventListener("click", toggleNote);
+    elements.noteHeader.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        toggleNote();
+      }
+    });
+  }
+
+  // Restore state or default to 'ux-ai-framework'
+  const savedMethodId = localStorage.getItem("selectedMethodId");
+  const urlParams = new URLSearchParams(window.location.search);
+  const urlMethodId = urlParams.get("method");
+
+  if (urlMethodId && methodDetails[urlMethodId]) {
+    selectMethod(urlMethodId);
+  } else if (savedMethodId && methodDetails[savedMethodId]) {
+    selectMethod(savedMethodId);
+  } else {
+    // Default to 'ux-ai-framework' if no state
+    selectMethod("ux-ai-framework");
+  }
 }
 
 function persistState() {
@@ -145,14 +170,7 @@ function renderMethodColumns() {
       heading.textContent = group.title;
       section.appendChild(heading);
 
-      const activityLabelText = group.activityLabel || column.phaseLabel;
-      if (activityLabelText) {
-        const activityLabel = document.createElement("p");
-        activityLabel.className = "method-activity-label";
-        activityLabel.textContent = activityLabelText;
-        activityLabel.setAttribute("aria-label", `活動分類：${activityLabelText}`);
-        section.appendChild(activityLabel);
-      }
+
 
       const list = document.createElement("div");
       list.className = "method-items";
@@ -251,6 +269,14 @@ function selectMethod(methodId) {
   renderCaseDetail();
 }
 
+function toggleNote() {
+  if (elements.introNote) {
+    elements.introNote.classList.toggle("collapsed");
+    const isCollapsed = elements.introNote.classList.contains("collapsed");
+    elements.noteHeader.setAttribute("aria-expanded", !isCollapsed);
+  }
+}
+
 function updateMethodSelection() {
   const buttons = elements.methodColumns?.querySelectorAll(".method-item");
   if (!buttons) return;
@@ -345,58 +371,75 @@ function renderCaseDetail() {
     header.classList.add("override-case-detail");
   }
 
-  const heading = document.createElement("div");
-  heading.className = "case-detail-heading";
+  // 1. Main Header Group (Title, Chapter, Badges)
+  const mainHeader = document.createElement("div");
+  mainHeader.className = "case-header-main";
+
+  const headingGroup = document.createElement("div");
+  headingGroup.className = "case-heading-group";
 
   const title = document.createElement("h2");
   title.textContent = detail.title;
-  heading.appendChild(title);
+  headingGroup.appendChild(title);
 
   const chapterText = detail.chapter ?? (isCustom ? "管理者新增案例" : "");
   if (chapterText) {
     const chapter = document.createElement("p");
     chapter.className = "case-detail-chapter";
     chapter.textContent = chapterText;
-    heading.appendChild(chapter);
+    headingGroup.appendChild(chapter);
   }
+
+  mainHeader.appendChild(headingGroup);
 
   if (isCustom) {
     const badge = document.createElement("span");
     badge.className = "case-custom-badge";
     badge.textContent = "管理者新增";
-    heading.appendChild(badge);
+    mainHeader.appendChild(badge);
   } else if (isOverride) {
     const badge = document.createElement("span");
     badge.className = "case-override-badge";
     badge.textContent = "管理者覆寫";
-    heading.appendChild(badge);
+    mainHeader.appendChild(badge);
   }
+
+  header.appendChild(mainHeader);
+
+  // 2. Info Group (Tags, Meta)
+  const infoGroup = document.createElement("div");
+  infoGroup.className = "case-header-info";
 
   if (detail.tags?.length) {
     const tagList = document.createElement("ul");
     tagList.className = "case-tag-list";
     detail.tags.forEach((tag) => {
       const li = document.createElement("li");
-      li.textContent = tag;
+      li.textContent = `# ${tag}`;
       tagList.appendChild(li);
     });
-    heading.appendChild(tagList);
+    infoGroup.appendChild(tagList);
   }
-
-  header.appendChild(heading);
 
   if (!isCustom && detail.meta?.length) {
     const metaList = document.createElement("dl");
     metaList.className = "case-meta";
     detail.meta.forEach((item) => {
+      const div = document.createElement("div");
+      div.className = "meta-item";
       const dt = document.createElement("dt");
       dt.textContent = item.label;
       const dd = document.createElement("dd");
       dd.textContent = item.value;
-      metaList.appendChild(dt);
-      metaList.appendChild(dd);
+      div.appendChild(dt);
+      div.appendChild(dd);
+      metaList.appendChild(div);
     });
-    header.appendChild(metaList);
+    infoGroup.appendChild(metaList);
+  }
+
+  if (infoGroup.childElementCount > 0) {
+    header.appendChild(infoGroup);
   }
 
   container.appendChild(header);
@@ -524,7 +567,7 @@ function renderBodyBlock(block) {
   if (!block) return null;
   if (block.type === "paragraph") {
     const p = document.createElement("p");
-    p.textContent = block.text || "";
+    p.innerHTML = block.text || "";
     return p;
   }
   if (block.type === "list") {
@@ -533,7 +576,7 @@ function renderBodyBlock(block) {
     list.className = "case-list";
     (block.items || []).forEach((item) => {
       const li = document.createElement("li");
-      li.textContent = item;
+      li.innerHTML = item;
       list.appendChild(li);
     });
     return list;
@@ -543,7 +586,7 @@ function renderBodyBlock(block) {
     tableWrapper.className = "case-table-wrapper";
     const table = document.createElement("table");
     table.className = "case-table";
-    
+
     // 創建表頭
     if (block.headers && Array.isArray(block.headers)) {
       const thead = document.createElement("thead");
@@ -556,7 +599,7 @@ function renderBodyBlock(block) {
       thead.appendChild(headerRow);
       table.appendChild(thead);
     }
-    
+
     // 創建表格主體
     if (block.rows && Array.isArray(block.rows)) {
       const tbody = document.createElement("tbody");
@@ -580,7 +623,7 @@ function renderBodyBlock(block) {
       });
       table.appendChild(tbody);
     }
-    
+
     tableWrapper.appendChild(table);
     return tableWrapper;
   }
